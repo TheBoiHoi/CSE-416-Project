@@ -4,13 +4,17 @@
   "description": "server for cse 416 final project",
   "main": "index.js",
   "scripts": {
-    "start": "node",
+    "start": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Team QRify",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.3",
     "mongoose": "^6.2.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }
