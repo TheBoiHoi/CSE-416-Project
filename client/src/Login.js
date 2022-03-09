@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {useNavigate} from 'react-router-dom'
+import Logo from './Icons/Logo.png'
 
 import apis from './api'
 
@@ -21,7 +22,7 @@ function Copyright(props) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        QRify LLC
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -63,9 +64,9 @@ const Login = (props) =>  {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
+          
+            <img style={{width:'20%'}}src= {Logo}/>
+          
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
@@ -99,6 +100,9 @@ const Login = (props) =>  {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              style={{
+                backgroundColor:"#38d5a0"
+              }}
             >
               Sign In
             </Button>
