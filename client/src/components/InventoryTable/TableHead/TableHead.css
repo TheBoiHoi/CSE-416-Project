@@ -1,0 +1,20 @@
+.table_head_container {
+  justify-content: center;
+  align-items: center;
+}
+.table_head_row {
+  justify-content: center;
+  align-items: center;
+}
+
+.table_label {
+  text-align: center;
+}
+
+.seperator {
+  border-bottom: 0.1rem;
+  border-bottom-style: solid;
+  border-color: rgb(197, 185, 185);
+  align-items: center;
+  padding-top: 1rem;
+}

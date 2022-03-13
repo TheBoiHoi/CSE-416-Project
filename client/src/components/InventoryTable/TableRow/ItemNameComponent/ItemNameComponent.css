@@ -1,0 +1,12 @@
+.name_description {
+  margin-right: 3rem;
+}
+.item_name_row {
+  padding-left: 3rem;
+}
+.shoe_img {
+  vertical-align: middle;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}

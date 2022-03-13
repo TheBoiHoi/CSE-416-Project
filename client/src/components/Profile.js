@@ -1,4 +1,4 @@
-const Profile = (props) => {
+export const Profile = (props) => {
 
     return(
         <div>
@@ -6,5 +6,3 @@ const Profile = (props) => {
         </div>
     )
 }
-
-export default Profile
