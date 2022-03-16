@@ -15,6 +15,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import Logo from '../Icons/Logo.png'
 import apis from '../api'
+import { useNavigate } from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -32,18 +33,22 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function Register() {
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const payload = {
-        name: data.get('name'),
-        email: data.get('email'),
-        password: data.get('password'),
-    }
-    console.log("Payload:",payload);
-    const user = await apis.Register(payload)
-    console.log("User:", user)
-  };
+    const navigate = useNavigate()
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        const payload = {
+            name:data.get('name'),
+            email:data.get('email'),
+            password:data.get('password')
+        }
+        apis.Register(payload).then(response=>{
+            navigate('/profile')
+        }).catch(error => {
+            console.log("error:", error.response)
+        })
+        
+    };
 
   return (
     <ThemeProvider theme={theme}>
@@ -100,12 +105,15 @@ export default function Register() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              style={{
+                backgroundColor:"#38d5a0"
+              }}
             >
               Sign Up
             </Button>
-            <Grid container justifyContent="flex-end">
+            <Grid container justifyContent="center">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="./login" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>

@@ -60,11 +60,12 @@ const Login = (props) =>  {
           }}
         >
           
-            <img style={{width:'20%'}}src= {Logo}/>
+          <img style={{width:'20%'}}src= {Logo}/>
           
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
+          <Box sx={{mt:2}}>User Company</Box>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -108,8 +109,8 @@ const Login = (props) =>  {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                <Link href="/register" variant="body2">
+                  Don't have an account? Sign Up
                 </Link>
               </Grid>
             </Grid>
