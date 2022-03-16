@@ -1,0 +1,33 @@
+.show_image {
+  height: auto;
+  width: 1rem;
+}
+
+.test {
+  background-color: aquamarine;
+}
+
+.table_row_container {
+  padding-top: 1rem;
+}
+
+.date,
+.serial_number,
+.locaton {
+  text-align: center;
+}
+.location {
+  padding-left: 7rem;
+}
+
+.serial_number {
+  padding-left: 3rem;
+}
+
+.seperator {
+  border-bottom: 0.1rem;
+  border-bottom-style: solid;
+  border-color: rgb(197, 185, 185);
+  align-items: center;
+  padding-top: 1rem;
+}
