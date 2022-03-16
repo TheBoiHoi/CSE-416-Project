@@ -38,18 +38,13 @@ const Login = (props) =>  {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    })
-    const response = await apis.Login({email:data.get('email'), password:data.get('password')})
-    const user = response.data.user
-    if(user){
-      console.log(user.email, "has logged in")
+    
+    const response = apis.Login({email:data.get('email'), password:data.get('password')}).then(response=>{
+      console.log("response:", response)
       navigate('/profile')
-    }
-    
-    
+    }).catch(error => {
+      console.log("error:", error.response)
+    })
   };
 
   return (
@@ -65,11 +60,12 @@ const Login = (props) =>  {
           }}
         >
           
-            <img style={{width:'20%'}}src= {Logo}/>
+          <img style={{width:'20%'}}src= {Logo}/>
           
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
+          <Box sx={{mt:2}}>User Company</Box>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -113,8 +109,8 @@ const Login = (props) =>  {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                <Link href="/register" variant="body2">
+                  Don't have an account? Sign Up
                 </Link>
               </Grid>
             </Grid>
