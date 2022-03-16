@@ -47,8 +47,6 @@ const Login = (props) =>  {
       console.log(user.email, "has logged in")
       navigate('/profile')
     }
-    
-    
   };
 
   return (
