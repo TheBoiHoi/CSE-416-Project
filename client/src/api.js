@@ -5,9 +5,12 @@ const api=axios.create({
 
 const Login = (payload)=>api.post('/login', payload)
 const Register = (payload) => api.post('./register', payload)
+
+const GetUser = (id) => api.get(`/profile/${id}`)
 const apis = {
     Login,
-    Register
+    Register,
+    GetUser
 }
 
 export default apis
