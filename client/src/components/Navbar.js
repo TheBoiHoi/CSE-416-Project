@@ -77,12 +77,12 @@ const Navbar = (props) => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-                <Link to="/login">
+                <Link class="link-remove-outline" to="/login">
                     <MenuItem >
                         <Typography style={{color:'black'}} textAlign="center">Login</Typography>
                     </MenuItem>
                 </Link>
-                <Link to="/register">
+                <Link class="link-remove-outline" to="/register">
                     <MenuItem >
                         <Typography style={{color:'black'}} textAlign="center">Register</Typography>
                     </MenuItem>
@@ -90,14 +90,14 @@ const Navbar = (props) => {
             </Menu>
         </Box>
         <Box   sx={{  flexDirection: 'row-reverse', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <Link to="/login">
+            <Link class="link-remove-outline" style={{padding:'5px'}} to="/login">
                 <Button
-                    sx={{ my: 2, color: 'black', display: 'block' }}
+                    sx={{ my: 2, color: 'black', display: 'block' ,backgroundColor:'black', color:'white'}}
                 >
                     Login
                 </Button>
             </Link>
-            <Link to="/register">
+            <Link class="link-remove-outline" style={{padding:'5px'}}  to="/register">
                 <Button
                     sx={{ my: 2, color: 'black', display: 'block' }}
                 >
@@ -106,7 +106,7 @@ const Navbar = (props) => {
             </Link>
         </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
+          <Box sx={{ flexGrow: 0, padding:'5px' }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
