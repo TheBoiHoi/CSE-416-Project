@@ -1,12 +1,14 @@
-import {Link} from "react-router-dom"
-const Welcome = (props) => {
-    return(
-        <div>
-            This is the welcome page<br></br>
-            <Link to="/login">Login</Link><br></br>
-            <Link to="/register">Register</Link>
-        </div>
-    )
-}
+import Navbar from './Navbar'
 
-export default Welcome
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
+const Welcome = (props) => {
+  
+  return (
+      <div>
+    <Navbar></Navbar>
+    <h1>LANDING PAGE STUFF</h1>
+    </div>
+  );
+};
+export default Welcome;
