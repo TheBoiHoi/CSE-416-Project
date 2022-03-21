@@ -4,9 +4,10 @@ const api=axios.create({
 })
 
 const Login = (payload)=>api.post('/login', payload)
-
+const Register = (payload) => api.post('./register', payload)
 const apis = {
-    Login
+    Login,
+    Register
 }
 
 export default apis
