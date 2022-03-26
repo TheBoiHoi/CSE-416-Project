@@ -32,7 +32,10 @@ const getUser = async(req, res)=>{
     const user = await User.findOne({_id:req.params.id})
     if(user){
         return res.status(200).json({
-            user:user
+            user:{
+                name:user.name,
+                items_owned:user.items_owned
+            }
         })
     }
     
