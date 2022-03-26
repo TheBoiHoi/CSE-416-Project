@@ -13,10 +13,10 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Welcome/>}/>
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/profile/:userId" element={<Profile/>}/>
+          <Route path="/user_login" element={<Login/>}/>
+          <Route path="/user_profile/:userId" element={<Profile/>}/>
           <Route path ="/inventory_table" element={<InventoryTable/>}/>
-          <Route path="/register" element={<Register/>}/>
+          <Route path="/user_register" element={<Register/>}/>
         </Routes>
       </BrowserRouter>
     </div>
