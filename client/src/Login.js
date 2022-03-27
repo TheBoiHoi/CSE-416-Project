@@ -42,7 +42,7 @@ const Login = (props) =>  {
     const response = apis.Login({email:data.get('email'), password:data.get('password')}).then(response=>{
       console.log("response:", response.data.user)
       const userId = response.data.user._id
-      navigate(`/profile/${userId}`)
+      navigate(`/user_profile/${userId}`)
     }).catch(error => {
       console.log("error:", error.response)
     })
@@ -110,7 +110,7 @@ const Login = (props) =>  {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/register" variant="body2">
+                <Link href="/user_register" variant="body2">
                   Don't have an account? Sign Up
                 </Link>
               </Grid>

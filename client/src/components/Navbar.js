@@ -77,12 +77,12 @@ const Navbar = (props) => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-                <Link class="link-remove-outline" to="/login">
+                <Link class="link-remove-outline" to="/user_login">
                     <MenuItem >
                         <Typography style={{color:'black'}} textAlign="center">Login</Typography>
                     </MenuItem>
                 </Link>
-                <Link class="link-remove-outline" to="/register">
+                <Link class="link-remove-outline" to="/user_register">
                     <MenuItem >
                         <Typography style={{color:'black'}} textAlign="center">Register</Typography>
                     </MenuItem>
@@ -97,7 +97,7 @@ const Navbar = (props) => {
                     Login
                 </Button>
             </Link>
-            <Link class="link-remove-outline" style={{padding:'5px'}}  to="/register">
+            <Link class="link-remove-outline" style={{padding:'5px'}}  to="/user_register">
                 <Button
                     sx={{ my: 2, color: 'black', display: 'block' }}
                 >
