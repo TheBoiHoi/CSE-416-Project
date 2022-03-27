@@ -1,15 +1,16 @@
 import * as React from 'react';
 import {Tab,Tabs} from 'react-bootstrap';
+import ExchangesTab from '../TabContent/ExchangesTab/ExchangesTab';
 const PrivateTabs=(props)=>{
     return(
-    <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
-        <Tab eventKey="home" title="Home">
-            <h1>home</h1>
+    <Tabs style={{width:"50%"}} defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
+        <Tab style={{width:"50%",boxShadow: "1px 1px 1px #9E9E9E"}} eventKey="Exchanges" title="Exchanges">
+            <ExchangesTab></ExchangesTab>
         </Tab>
-        <Tab eventKey="profile" title="Profile">
+        <Tab style={{width:"50%",boxShadow: "1px 1px 1px #9E9E9E"}} eventKey="Inventory" title="Inventory">
             <h1>profile</h1>
         </Tab>
-        <Tab eventKey="contact" title="Contact" >
+        <Tab style={{width:"50%",boxShadow: "1px 1px 1px #9E9E9E"}} eventKey="Pending" title="Pending" >
             <h1>contact</h1>
         </Tab>
     </Tabs>

@@ -1,17 +1,22 @@
 
 import * as React from 'react';
 import {Card, Button} from 'react-bootstrap'; 
+import Duckpfp from '../../Icons/duckpfp.png'
 const ProfileCard = (props) =>{
     return (
         <Card style={{ width: '18rem' }}>
-        <Card.Img variant="top" src="holder.js/100px180" />
+        <Card.Img style={{width:"50%",margin:"auto"}} variant="top" src={Duckpfp} />
         <Card.Body>
-            <Card.Title>Card Title</Card.Title>
-            <Card.Text>
-            Some quick example text to build on the card title and make up the bulk of
-            the card's content.
+            <Card.Title style={{textAlign:"center"}}>user5748</Card.Title>
+            <Card.Text style={{textAlign:"center"}}>
+            1dxads091r11rk
             </Card.Text>
-            <Button variant="primary">Go somewhere</Button>
+            <Card.Text style={{textAlign:"center"}}>
+            Joined 02/22/2022
+            </Card.Text>
+            <div class="col-md-12 text-center">
+                <Button style={{margin:"auto"}} variant="primary">Generate QR Code</Button>
+            </div>
         </Card.Body>
         </Card>
     );

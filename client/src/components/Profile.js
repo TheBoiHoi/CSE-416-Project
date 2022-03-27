@@ -25,8 +25,20 @@ export const Profile = (props) => {
         return(
             <div>
                 <Navbar></Navbar>
-                <ProfileCard></ProfileCard>
-                <PrivateTabs></PrivateTabs>
+                <div style={{}} class="row align-items-center">
+                    <br></br>
+                </div>
+                <div class="row align-items-center">
+                <div  align="center" class="col">
+                    <ProfileCard></ProfileCard>
+                </div>
+                </div>
+                <div class="row align-items-center">
+                <div   align="center" class="col">
+                    <PrivateTabs></PrivateTabs>
+                </div>
+                </div>
+               
             </div>
         )
     }
