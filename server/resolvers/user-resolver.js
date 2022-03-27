@@ -22,12 +22,27 @@ const register = async(req, res)=>{
     const user = new User({name:name, email:email, password:hash, items_owned:[], pending_trades:[], completed_trades:[]})
     const saved = await user.save()
     res.status(200).json({user:{
-        email:saved.email,
-        password:saved.password
+        _id:saved._id,
+        name:saved.name
     }})
+}
+
+const getUser = async(req, res)=>{
+    console.log("request", req.params.id)
+    const user = await User.findOne({_id:req.params.id})
+    if(user){
+        return res.status(200).json({
+            user:{
+                name:user.name,
+                items_owned:user.items_owned
+            }
+        })
+    }
+    
 }
 
 module.exports = {
     login,
-    register
+    register,
+    getUser
 }
