@@ -1,6 +1,9 @@
 import {useParams} from 'react-router-dom'
 import {useState, useEffect} from 'react'
 import apis from '../api'
+import Navbar from './Navbar'
+import ProfileCard from './PrivateProfile/ProfileCard'
+import PrivateTabs from './PrivateProfile/PrivateTabs'
 export const Profile = (props) => {
     const {userId} = useParams()
     const [user, setUser] = useState(null)
@@ -21,7 +24,9 @@ export const Profile = (props) => {
     else{
         return(
             <div>
-                Nothing
+                <Navbar></Navbar>
+                <ProfileCard></ProfileCard>
+                <PrivateTabs></PrivateTabs>
             </div>
         )
     }
