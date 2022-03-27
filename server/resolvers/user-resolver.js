@@ -28,7 +28,6 @@ const register = async(req, res)=>{
 }
 
 const getUser = async(req, res)=>{
-    console.log("request", req.params.id)
     const user = await User.findOne({_id:req.params.id})
     if(user){
         return res.status(200).json({

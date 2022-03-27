@@ -7,7 +7,7 @@ const ProfileCard = (props) =>{
         <Card style={{ width: '18rem' }}>
         <Card.Img style={{width:"50%",margin:"auto"}} variant="top" src={Duckpfp} />
         <Card.Body>
-            <Card.Title style={{textAlign:"center"}}>user5748</Card.Title>
+            <Card.Title style={{textAlign:"center"}}>{props.name}</Card.Title>
             <Card.Text style={{textAlign:"center"}}>
             1dxads091r11rk
             </Card.Text>
