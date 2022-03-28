@@ -1,6 +1,7 @@
 const User=require('../models/user')
 const bcrypt=require('bcrypt')
-
+const Item = require('../models/item')
+const PendingTrade=require('../models/pendingTrade')
 const login = async(req, res)=>{
     const {email, password} = req.body
     const user = await User.findOne({email:email})
@@ -37,7 +38,25 @@ const getUser = async(req, res)=>{
             }
         })
     }
-    
+}
+
+const createPendingTrade = async(req, res)=>{
+    const {sellerId, buyerId, itemId} = req.body
+    const seller=await User.findOne({_id:sellerId})
+    const buyer=await User.findOne({_id:buyerId})
+    const item = await Item.findOne({_id:itemId})
+    const newTrade= new PendingTrade({
+        buyer_id:buyerId,
+        seller_id:sellerId,
+        buyer_status:false,
+        seller_status:false,
+        item_id:itemId
+    })
+    const saved=await newTrade.save()
+    if(saved){
+        return res.status(200).json({msg:"OK"})
+    }
+    return res.status(404).json({msg:"ERROR"})
 }
 
 module.exports = {
