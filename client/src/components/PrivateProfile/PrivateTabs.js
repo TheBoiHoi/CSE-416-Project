@@ -1,6 +1,8 @@
 import * as React from 'react';
 import {Tab,Tabs} from 'react-bootstrap';
-import ExchangesTab from '../TabContent/ExchangesTab/ExchangesTab';
+import ExchangesTab from './TabContent/ExchangesTab/ExchangesTab';
+import InventoryTab  from './TabContent/InventoryTab/InventoryTab';
+import PendingTab from './TabContent/PendingTab/PendingTab';
 const PrivateTabs=(props)=>{
     return(
     <Tabs style={{width:"50%"}} defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
@@ -8,10 +10,10 @@ const PrivateTabs=(props)=>{
             <ExchangesTab></ExchangesTab>
         </Tab>
         <Tab style={{width:"50%",boxShadow: "1px 1px 1px #9E9E9E"}} eventKey="Inventory" title="Inventory">
-            <h1>profile</h1>
+            <InventoryTab></InventoryTab>
         </Tab>
         <Tab style={{width:"50%",boxShadow: "1px 1px 1px #9E9E9E"}} eventKey="Pending" title="Pending" >
-            <h1>contact</h1>
+            <PendingTab></PendingTab>
         </Tab>
     </Tabs>
     )
