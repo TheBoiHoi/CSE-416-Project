@@ -37,8 +37,23 @@ export const Profile = (props) => {
         )
     }
     else{
-        return(<div>
-
+        return(
+        <div>
+            <Navbar></Navbar>
+            
+            <div style={{}} class="row align-items-center">
+                <br></br>
+            </div>
+            <div class="row align-items-center">
+            <div  align="center" class="col">
+                <ProfileCard name="testuser"/>
+            </div>
+            </div>
+            <div class="row align-items-center">
+            <div   align="center" class="col">
+                <PrivateTabs></PrivateTabs>
+            </div>
+            </div>
         </div>
         )
     }
