@@ -43,7 +43,7 @@ export default function Register() {
             password:data.get('password')
         }
         apis.Register(payload).then(response=>{
-            navigate(`/user_profile/${response.data.user._id}`)
+            navigate(`/profile/${response.data.user._id}`)
         }).catch(error => {
             console.log("error:", error.response)
         })
@@ -113,7 +113,7 @@ export default function Register() {
             </Button>
             <Grid container justifyContent="center">
               <Grid item>
-                <Link href="./user_login" variant="body2">
+                <Link href="/login" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>

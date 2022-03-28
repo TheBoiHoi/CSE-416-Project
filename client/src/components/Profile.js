@@ -17,29 +17,32 @@ export const Profile = (props) => {
     if(user){
         return(
             <div>
-                Hello, {user.name}! You have successfully logged in
+                
+
+                <div>
+                    <Navbar></Navbar>
+                    Hello, {user.name}! You have successfully logged in
+                    <div style={{}} class="row align-items-center">
+                        <br></br>
+                    </div>
+                    <div class="row align-items-center">
+                    <div  align="center" class="col">
+                        <ProfileCard name={user.name}/>
+                    </div>
+                    </div>
+                    <div class="row align-items-center">
+                    <div   align="center" class="col">
+                        <PrivateTabs></PrivateTabs>
+                    </div>
+                    </div>
+                </div>
             </div>
         )
     }
     else{
-        return(
-            <div>
-                <Navbar></Navbar>
-                <div style={{}} class="row align-items-center">
-                    <br></br>
-                </div>
-                <div class="row align-items-center">
-                <div  align="center" class="col">
-                    <ProfileCard></ProfileCard>
-                </div>
-                </div>
-                <div class="row align-items-center">
-                <div   align="center" class="col">
-                    <PrivateTabs></PrivateTabs>
-                </div>
-                </div>
-               
-            </div>
+        return(<div>
+
+        </div>
         )
     }
     
