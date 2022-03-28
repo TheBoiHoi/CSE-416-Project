@@ -1,4 +1,3 @@
-import Navbar from './Navbar'
 import {Link} from "react-router-dom"
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
@@ -22,8 +21,6 @@ const Welcome = (props) => {
   
   return (
     <div>
-      <Navbar></Navbar>
-      
       <div style={{padding:'30px'}}class="section first-section">
         <div class="container-fluid">
           <div style={{}} class="row align-items-center">

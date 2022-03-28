@@ -1,0 +1,15 @@
+.company_nav_search_bar {
+  position: relative;
+  bottom: 0.8rem;
+}
+
+.company_notification,
+.company_add,
+.company_nav_search_bar {
+  padding-left: 3rem;
+}
+
+.company_nav_container {
+  padding-right: 10rem;
+  padding-top: 1rem;
+}

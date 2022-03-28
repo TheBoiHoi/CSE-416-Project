@@ -13,7 +13,6 @@ export const TableHead = () =>{
         <Col className="table_label">Serial Number</Col>
         <Col className="table_label">Location</Col>
       </Row>
-      <div className="seperator"></div>
     </Container>
   )
 }

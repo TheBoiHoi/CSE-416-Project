@@ -6,20 +6,23 @@ import {Profile} from './components/Profile'
 import {InventoryTable} from './components/InventoryTable/MainTable/InventoryTable';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import {Navbar} from './components/Navbar';
 
 function App() {
   return (
     <div>
       <BrowserRouter>
+      <Navbar isCompany ={true}/>
         <Routes>
           <Route path="/" element={<Welcome/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/profile/:userId" element={<Profile/>}/>
+          <Route path="/profile" element={<Profile/>}/>
           <Route path ="/inventory_table" element={<InventoryTable/>}/>
           <Route path="/register" element={<Register/>}/>
-
         </Routes>
       </BrowserRouter>
+      
     </div>
     
   );

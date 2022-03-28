@@ -13,10 +13,13 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Logo from '../Icons/Logo-removebg-preview.png'
+import {CompanyNavbarFunctions} from './CompanyNavbarFunctions/CompanyNavbarFunctions';
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-const Navbar = (props) => {
+
+
+export const Navbar = (props) => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -34,8 +37,9 @@ const Navbar = (props) => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-{/* <Link to="/login">Login</Link><br></br>
-            <Link to="/register">Register</Link> */}
+
+  const isCompany = props.isCompany; //for testing purposes
+
   return (
     <AppBar style={{backgroundColor:'white'}}  position="static">
       <Container  maxWidth="xl">
@@ -82,6 +86,8 @@ const Navbar = (props) => {
                         <Typography style={{color:'black'}} textAlign="center">Login</Typography>
                     </MenuItem>
                 </Link>
+                
+                
                 <Link class="link-remove-outline" to="/user_register">
                     <MenuItem >
                         <Typography style={{color:'black'}} textAlign="center">Register</Typography>
@@ -89,13 +95,17 @@ const Navbar = (props) => {
                 </Link>
             </Menu>
         </Box>
-        <Box   sx={{  flexDirection: 'row-reverse', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+        
+        {!isCompany && (<Box   sx={{  flexDirection: 'row-reverse', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          
             <Link class="link-remove-outline" style={{padding:'5px'}} to="/login">
                 <Button
                     sx={{ my: 2, color: 'black', display: 'block' ,backgroundColor:'black', color:'white'}}
                 >
                     Login
                 </Button>
+
+
             </Link>
             <Link class="link-remove-outline" style={{padding:'5px'}}  to="/user_register">
                 <Button
@@ -104,14 +114,28 @@ const Navbar = (props) => {
                     Register
                 </Button>
             </Link>
-        </Box>
+        </Box>)}
+
+        {isCompany && <CompanyNavbarFunctions/>}
+
+
+
 
           <Box sx={{ flexGrow: 0, padding:'5px' }}>
-            <Tooltip title="Open settings">
+              {isCompany ? ( <Button
+                    title="Open settings"
+                    sx={{ my: 2, color: 'black', display: 'block' ,backgroundColor:'white'}}
+                    onClick ={handleOpenUserMenu}
+                >
+                    Nike Corp.
+                </Button>) : ( <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
               </IconButton>
-            </Tooltip>
+              
+            </Tooltip> )}
+           
+           
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"
@@ -140,4 +164,3 @@ const Navbar = (props) => {
     </AppBar>
   );
 };
-export default Navbar;
