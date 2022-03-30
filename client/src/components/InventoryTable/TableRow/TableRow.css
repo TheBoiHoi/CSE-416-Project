@@ -9,6 +9,12 @@
 
 .table_row_container {
   padding-top: 1rem;
+  background-color: white;
+}
+.table_row_container_hover {
+  padding-top: 1rem;
+  background-color: rgb(215, 216, 216);
+  cursor: pointer;
 }
 
 .date,

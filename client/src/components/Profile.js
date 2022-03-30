@@ -39,8 +39,6 @@ export const Profile = (props) => {
     else{
         return(
         <div>
-            <Navbar></Navbar>
-            
             <div style={{}} class="row align-items-center">
                 <br></br>
             </div>

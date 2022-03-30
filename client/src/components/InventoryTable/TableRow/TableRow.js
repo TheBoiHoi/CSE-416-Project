@@ -2,11 +2,32 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {ItemNameComponent} from "./ItemNameComponent/ItemNameComponent";
-import "./TableRow.css"
+import "./TableRow.css";
+import {useEffect, useState} from 'react';
+import {TableModal} from '../TableModal/TableModal';
 
 export const TableRow = () =>{
+
+  const [background,setBackground] = useState("table_row_container");
+
+  const [showModal,setShowModal] = useState(false);
+
+  // const toggleModal =() =>{
+  //   setShowModal(!showModal);
+  // }
+
   return (
-    <Container className="table_row_container">
+    <>
+    <Container className={background} onMouseEnter={()=>{
+      setBackground("table_row_container_hover");
+    }}
+    onMouseLeave={()=>{
+      setBackground("table_row_container");
+    }}
+    onClick={()=>{
+      setShowModal(true);
+    }}
+    >
       <Row>
         <Col>
         <ItemNameComponent/>
@@ -18,5 +39,7 @@ export const TableRow = () =>{
       </Row>
       <div className="seperator"></div>
     </Container>
+    <TableModal showModal={showModal} toggleModal={setShowModal}/>
+    </>
   )
 }
