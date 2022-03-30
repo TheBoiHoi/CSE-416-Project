@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Table} from 'react-bootstrap';
+import {FlipCard} from './FlipCard'
 import { MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
 import './InventoryTab.css';
 const InventoryTab =(props)=>{
@@ -31,8 +32,8 @@ const InventoryTab =(props)=>{
       };
       
     return(
-        <div >
-            <MDBTable maxHeight="450px" borderless scrollY>
+        <div class = "container-fluid">
+            {/* <MDBTable maxHeight="450px" borderless scrollY>
                 <MDBTableHead  columns={data.columns} />
                 <MDBTableBody>
                 {data.rows.map((data)=>{
@@ -47,7 +48,15 @@ const InventoryTab =(props)=>{
                     )
                 })}
                 </MDBTableBody>
-            </MDBTable>
+                
+            </MDBTable> */}
+            <div class="row align-items-start">
+            <div  class="col ">
+              <FlipCard></FlipCard>
+            </div>
+            
+            
+            </div>
         </div>
     );
 };
