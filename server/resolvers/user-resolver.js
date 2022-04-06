@@ -18,9 +18,9 @@ const login = async(req, res)=>{
 }
 
 const register = async(req, res)=>{
-    const{name, email, password} = req.body
+    const{name, email, password,algoAddr,algoPass} = req.body
     const hash = await bcrypt.hash(password, 10)
-    const user = new User({name:name, email:email, password:hash, items_owned:[], pending_trades:[], completed_trades:[]})
+    const user = new User({name:name, email:email, password:hash,algoAddr:algoAddr,algoPass:algoPass, items_owned:[], pending_trades:[], completed_trades:[]})
     const saved = await user.save()
     res.status(200).json({user:{
         _id:saved._id,
