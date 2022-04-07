@@ -2,19 +2,34 @@ const User=require('../models/user')
 const bcrypt=require('bcrypt')
 const Item = require('../models/item')
 const PendingTrade=require('../models/pendingTrade')
+const auth=require('../token.js')
 const login = async(req, res)=>{
-    const {email, password} = req.body
-    const user = await User.findOne({email:email})
-    if(user==null){
-        return res.status(404).send()
+    try{
+        const {email, password} = req.body
+        const user = await User.findOne({email:email})
+        if(user==null){
+            return res.status(404).send()
+        }
+        const hash=await user.password
+        const valid = await bcrypt.compare(password, hash)
+        if(!valid){
+            return res.status(404).send('Invalid Password')
+        }
+        else{
+            token=auth.generate(user)
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "None"
+            })
+            res.status(200).json({userId:user._id}).send()
+        }
     }
-    const hash=user.password
-    const valid = await bcrypt.compare(password, hash)
-    if(!valid){
-        return res.status(404).send('Invalid Password')
+    catch(e){
+        console.log("error:", e)
+        return res.status(500).send();
     }
-    else
-        return res.status(200).json({user:user}).send()
+    
 }
 
 const register = async(req, res)=>{
