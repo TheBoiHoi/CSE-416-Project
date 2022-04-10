@@ -22,7 +22,7 @@ const login = async(req, res)=>{
                 secure: true,
                 sameSite: "None"
             })
-            res.status(200).json({userId:user._id}).send()
+            return res.status(200).json({userId:user._id}).send()
         }
     }
     catch(e){
@@ -37,10 +37,21 @@ const register = async(req, res)=>{
     const hash = await bcrypt.hash(password, 10)
     const user = new User({name:name, email:email, password:hash,algoAddr:algoAddr,algoPass:algoPass, items_owned:[], pending_trades:[], completed_trades:[]})
     const saved = await user.save()
-    res.status(200).json({user:{
-        _id:saved._id,
-        name:saved.name
-    }})
+
+    token=auth.generate(user)
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None"
+    })
+    return res.status(200).json({msg:"OK", userId:user._id}).send()
+}
+
+const logout = async(req, res)=>{
+    const{userId}=req.body
+    const user=await User.findOne({_id:userId})
+    res.clearCookie("token")
+    res.status(200).send()
 }
 
 const getUser = async(req, res)=>{
@@ -115,5 +126,8 @@ const completeTrade = async(req, res)=>{
 module.exports = {
     login,
     register,
-    getUser
+    logout,
+    getUser,
+    createPendingTrade,
+    completeTrade,
 }

@@ -1,6 +1,7 @@
 const Company=require('../models/company')
 const bcrypt=require('bcrypt')
 const Item=require('../models/item')
+const QRCode=require('qrcode')
 const login=async(req, res)=>{
     const {email, password}=req.body
     const company=await Company.findOne({email:email})
@@ -13,8 +14,15 @@ const login=async(req, res)=>{
     if(!valid){
         return res.status(404).send('Invalid Password')
     }
-    else
-        return res.status(200).json({user:user}).send()
+    else{
+        token=auth.generate(company)
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "None"
+            })
+            return res.status(200).json({companyId:company._id}).send()
+    }
 }
 
 const register = async(req, res)=>{
@@ -66,9 +74,23 @@ const addItem = async(req, res)=>{
     return res.status(404).json({"message":"ERROR"})
 }
 
+const generateQRCode = async(req, res)=>{
+    QRCode.toFile('../qrcodes/temp.png', 'www.google.com', {
+        color: {
+          dark: '#000000',  // Blue dots
+          light: '#FFFFFF' // Transparent background
+        }
+      }, function (err) {
+        if (err) throw err
+        console.log('done')
+    })
+    res.end()
+}
+
 module.exports={
     register,
     login,
     getCompany,
-    addItem
+    addItem,
+    generateQRCode
 }
