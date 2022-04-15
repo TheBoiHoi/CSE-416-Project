@@ -38,4 +38,5 @@ app.get('/qrcode/item/:itemId', (req, res)=>{
     const itemId=req.params.itemId
     return res.sendFile(__dirname+`/qrcodes/${itemId}.png`)
 })
+app.post('/qrcode/profile', user.generateProfileQRCode)
 app.listen(PORT, ()=>{console.log(`app is listening in ${PORT}`)})

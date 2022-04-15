@@ -76,8 +76,8 @@ const addItem = async(req, res)=>{
 
 const generateItemQRCode = async(req, res)=>{
     const {itemId} = req.body
-    const url=`http://localhost/qrcodes/item/${itemId}`
-    QRCode.toFile(`./qrcodes/${itemId}.png`, url, {
+    const url=`http://localhost/qrcode/item/${itemId}`
+    QRCode.toFile(`./qrcodes/items/${itemId}.png`, url, {
         color: {
           dark: '#000000',  // Blue dots
           light: '#FFFFFF' // Transparent background
@@ -89,10 +89,6 @@ const generateItemQRCode = async(req, res)=>{
     res.status(200).json({status:"ok"})
 }
 
-const getItemQRCode=(req, res)=>{
-    const itemId=req.params.itemId
-    return res.sendFile(__dirname+`/qrcodes/${itemId}.png`)
-}
 
 module.exports={
     register,
@@ -100,5 +96,4 @@ module.exports={
     getCompany,
     addItem,
     generateItemQRCode,
-    getItemQRCode
 }
