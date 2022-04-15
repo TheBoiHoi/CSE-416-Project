@@ -2,7 +2,10 @@ const User=require('../models/user')
 const bcrypt=require('bcrypt')
 const Item = require('../models/item')
 const PendingTrade=require('../models/pendingTrade')
+const PublicProfile=require('../models/PublicProfile')
 const auth=require('../token.js')
+const ObjectId=require('bson-objectid')
+const QRCode=require('qrcode')
 const login = async(req, res)=>{
     try{
         const {email, password} = req.body
@@ -123,6 +126,30 @@ const completeTrade = async(req, res)=>{
     return res.status(200).json({msg:"OK"})
 }
 
+const generateProfileQRCode = (req, res)=>{
+    const {userId} = req.body
+    const key=new ObjectId().toString()
+    const newProfileCode = new PublicProfile({userId:userId, key:key})
+    
+    newProfileCode.save().then(()=>{
+        const url=`/${userId}/${key}`
+        QRCode.toFile(`./qrcodes/profiles/${userId}-${key}.png`, url, {
+            color: {
+              dark: '#000000',  // Blue dots
+              light: '#FFFFFF' // Transparent background
+            }
+          }, function (err) {
+            if (err) throw err
+            console.log('done')
+        })
+        return res.sendStatus(200)
+    }).catch((e)=>{
+        console.log("error:", e)
+        return res.status(404).json({message:e.message})
+    })
+
+}
+
 module.exports = {
     login,
     register,
@@ -130,4 +157,5 @@ module.exports = {
     getUser,
     createPendingTrade,
     completeTrade,
+    generateProfileQRCode
 }
