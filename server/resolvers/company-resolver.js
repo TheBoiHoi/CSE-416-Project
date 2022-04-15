@@ -28,7 +28,12 @@ const login=async(req, res)=>{
 const register = async(req, res)=>{
     const{name, email, password} = req.body
     const hash = await bcrypt.hash(password, 10)
-    const company = new Company({name:name, email:email, password:hash, items:[]})
+    const algosdk = require('algosdk');
+    let account = algosdk.generateAccount();
+    let passphrase = algosdk.secretKeyToMnemonic(account.sk);
+    console.log( "My address: " + account.addr );
+    console.log( "My passphrase: " + passphrase );
+    const company = new Company({name:name, email:email, password:hash, items:[],algoAddr:account.addr,algoPass:passphrase})
     const saved = await company.save()
     res.status(200).json({company:{
         _id:saved._id,
