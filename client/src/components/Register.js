@@ -50,7 +50,7 @@ export default function Register() {
             algoPass:passphrase
         }
         apis.Register(payload).then(response=>{
-            navigate(`/profile/${response.data.user._id}`)
+            navigate(`/profile/${response.data.userId}`)
         }).catch(error => {
             console.log("error:", error.response)
         })
