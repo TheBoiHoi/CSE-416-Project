@@ -79,8 +79,10 @@ const addItem = async(req, res)=>{
     return res.status(404).json({"message":"ERROR"})
 }
 
-const generateQRCode = async(req, res)=>{
-    QRCode.toFile('../qrcodes/temp.png', 'www.google.com', {
+const generateItemQRCode = async(req, res)=>{
+    const {itemId} = req.body
+    const url=`http://localhost/qrcodes/item/${itemId}`
+    QRCode.toFile(`./qrcodes/${itemId}.png`, url, {
         color: {
           dark: '#000000',  // Blue dots
           light: '#FFFFFF' // Transparent background
@@ -89,7 +91,12 @@ const generateQRCode = async(req, res)=>{
         if (err) throw err
         console.log('done')
     })
-    res.end()
+    res.status(200).json({status:"ok"})
+}
+
+const getItemQRCode=(req, res)=>{
+    const itemId=req.params.itemId
+    return res.sendFile(__dirname+`/qrcodes/${itemId}.png`)
 }
 
 module.exports={
@@ -97,5 +104,6 @@ module.exports={
     login,
     getCompany,
     addItem,
-    generateQRCode
+    generateItemQRCode,
+    getItemQRCode
 }
