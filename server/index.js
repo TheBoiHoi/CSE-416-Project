@@ -32,6 +32,12 @@ app.post('/complete_trade', auth.verify, user.completeTrade)
 app.post('/company_register', company.register)
 app.post('/company_login', company.login)
 app.get(`/inventory/:id`, auth.verify, company.getCompany)
+app.post('/company_createItem', company.createItem)
 app.post('/company_addItem', auth.verify, company.addItem)
-app.post('/generate_qrcode', company.generateQRCode)
+app.post('/generate/qrcode/item', company.generateItemQRCode)
+app.get('/qrcode/item/:itemId', (req, res)=>{
+    const itemId=req.params.itemId
+    return res.sendFile(__dirname+`/qrcodes/${itemId}.png`)
+})
+app.post('/qrcode/profile', user.generateProfileQRCode)
 app.listen(PORT, ()=>{console.log(`app is listening in ${PORT}`)})

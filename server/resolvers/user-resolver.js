@@ -2,7 +2,12 @@ const User=require('../models/user')
 const bcrypt=require('bcrypt')
 const Item = require('../models/item')
 const PendingTrade=require('../models/pendingTrade')
+const PublicProfile=require('../models/PublicProfile')
 const auth=require('../token.js')
+const ObjectId=require('bson-objectid')
+const QRCode=require('qrcode')
+const algosdk = require('algosdk');
+const company = require('../models/company')
 const login = async(req, res)=>{
     try{
         const {email, password} = req.body
@@ -69,6 +74,11 @@ const getUser = async(req, res)=>{
 const createPendingTrade = async(req, res)=>{
     const {sellerId, buyerId, itemId} = req.body
     const seller=await User.findOne({_id:sellerId})
+    if(seller){
+
+    }else{
+        seller=await company.findOne({_id:sellerId})
+    }
     const buyer=await User.findOne({_id:buyerId})
     const newTrade= new PendingTrade({
         buyer_id:buyerId,
@@ -94,9 +104,49 @@ const completeTrade = async(req, res)=>{
     const {buyer_id, seller_id, item_id}=trade
 
     const seller=await User.findOne({_id:seller_id})
+    if(seller){
+
+    }else{
+        seller=await company.findOne({_id:sellerId})
+    }
     const buyer=await User.findOne({_id:buyer_id})
 
     await Item.updateOne({_id:item_id}, {owner:buyer_id})
+
+    //Start algorand asset transaction
+    const token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    const server = "http://localhost";
+    const port = 4001;
+    let algodclient = new algosdk.Algodv2(token, server, port);
+    let params = await algodclient.getTransactionParams().do();
+    let sender_acc  = algosdk.mnemonicToSecretKey(seller.algoPass)
+    let reciver_acc = algosdk.mnemonicToSecretKey(buyer.algoPass)
+    let sender = sender_acc.algoAddr
+    let recipient = reciver_acc.algoAddr
+    const target_item = await Item.findOne({_id:item_id})
+    let assetID = target_item.assetID
+    let revocationTarget = undefined;
+    let closeRemainderTo = undefined;
+    let amount = 1;
+    let xtxn = algosdk.makeAssetTransferTxnWithSuggestedParams(
+        sender, 
+        recipient, 
+        closeRemainderTo, 
+        revocationTarget,
+        amount,  
+        note, 
+        assetID, 
+        params);
+    // Must be signed by the account sending the asset  
+    rawSignedTxn = xtxn.signTxn(sender_acc.sk)
+    let xtx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
+    // Wait for confirmation
+    confirmedTxn = await algosdk.waitForConfirmation(algodclient, xtx.txId, 4);
+    //Get the completed Transaction
+    console.log("Transaction " + xtx.txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
+    // You should now see the 10 assets listed in the account information
+    console.log("Account 3 = " + reciver_acc.addr);
+    await printAssetHolding(algodclient, reciver_acc.addr, assetID);
 
     //remove item from the seller
     const sellerItems=seller.items_owned
@@ -123,6 +173,30 @@ const completeTrade = async(req, res)=>{
     return res.status(200).json({msg:"OK"})
 }
 
+const generateProfileQRCode = (req, res)=>{
+    const {userId} = req.body
+    const key=new ObjectId().toString()
+    const newProfileCode = new PublicProfile({userId:userId, key:key})
+    
+    newProfileCode.save().then(()=>{
+        const url=`/${userId}/${key}`
+        QRCode.toFile(`./qrcodes/profiles/${userId}-${key}.png`, url, {
+            color: {
+              dark: '#000000',  // Blue dots
+              light: '#FFFFFF' // Transparent background
+            }
+          }, function (err) {
+            if (err) throw err
+            console.log('done')
+        })
+        return res.sendStatus(200)
+    }).catch((e)=>{
+        console.log("error:", e)
+        return res.status(404).json({message:e.message})
+    })
+
+}
+
 module.exports = {
     login,
     register,
@@ -130,4 +204,5 @@ module.exports = {
     getUser,
     createPendingTrade,
     completeTrade,
+    generateProfileQRCode
 }
