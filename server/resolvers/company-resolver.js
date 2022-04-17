@@ -2,6 +2,7 @@ const Company=require('../models/company')
 const bcrypt=require('bcrypt')
 const Item=require('../models/item')
 const QRCode=require('qrcode')
+const algosdk = require('algosdk');
 const login=async(req, res)=>{
     const {email, password}=req.body
     const company=await Company.findOne({email:email})
@@ -55,8 +56,7 @@ const getCompany = async(req, res)=>{
 }
 
 const createItem = async(req,res)=>{
-    const{id,name,manu_date,manu_location,manu_owner} = req.body
-    const algosdk = require('algosdk');
+    const{id,name,manu_date,manu_location,manu_owner,serial_number} = req.body
     const token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
     const server = "http://localhost";
     const port = 4001;
@@ -81,7 +81,7 @@ const createItem = async(req,res)=>{
     // integer number of decimals for asset unit calculation
     let decimals = 0;
     // total number of this asset available for circulation   
-    let totalIssuance = 1000;
+    let totalIssuance = 1;
     // Used to display asset units to user    
     let unitName = "Qrify";
     // Friendly name of the asset    
@@ -138,13 +138,16 @@ const createItem = async(req,res)=>{
         owner:company.name,
         transactions:[],
         asset_id:assetID,
-        serial_number:123,
+        serial_number:serial_number,
         manu_date:manu_date,
         manu_location:manu_location,
         manu_owner:manu_owner
     })
-    const save = await newItem.save()
-    if(save){
+    company.items.push(newItem.serial_number)
+    console.log("new item serial number", newItem.serial_number)
+    await newItem.save()
+    const saved=await Company.updateOne({_id:id}, {items:company.items})
+    if(saved){
         return res.status(404).json({"message":"yes"})
     }
     return res.status(404).json({"message":"err"})
