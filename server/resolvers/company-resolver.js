@@ -54,6 +54,102 @@ const getCompany = async(req, res)=>{
     
 }
 
+const createItem = async(req,res)=>{
+    const{id,name,manu_date,manu_location,manu_owner} = req.body
+    const algosdk = require('algosdk');
+    const token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    const server = "http://localhost";
+    const port = 4001;
+    // Instantiate the algod wrapper
+    let algodclient = new algosdk.Algodv2(token, server, port);
+    const company=await Company.findOne({_id:id})
+    const companyAcc = algosdk.mnemonicToSecretKey(company.algoPass)
+    //Algo stuff
+    let params = await algodclient.getTransactionParams().do();
+    //comment out the next two lines to use suggested fee
+    params.fee = 1000;
+    params.flatFee = true;
+    console.log(params);
+    let note = undefined; // arbitrary data to be stored in the transaction; here, none is stored
+    // Asset creation specific parameters
+    // The following parameters are asset specific
+    // Throughout the example these will be re-used. 
+    // We will also change the manager later in the example
+    let addr = companyAcc.addr;
+    // Whether user accounts will need to be unfrozen before transacting    
+    let defaultFrozen = false;
+    // integer number of decimals for asset unit calculation
+    let decimals = 0;
+    // total number of this asset available for circulation   
+    let totalIssuance = 1000;
+    // Used to display asset units to user    
+    let unitName = "Qrify";
+    // Friendly name of the asset    
+    let assetName = "CSE416 QRify testing";
+    // Optional string pointing to a URL relating to the asset
+    let assetURL = "http://CSE416";
+    // Optional hash commitment of some sort relating to the asset. 32 character length.
+    let assetMetadataHash = "16efaa3924a6fd9d3a4824799a4ac611";
+    // The following parameters are the only ones
+    // that can be changed, and they have to be changed
+    // by the current manager
+    // Specified address can change reserve, freeze, clawback, and manager
+    let manager = companyAcc.addr;
+    // Specified address is considered the asset reserve
+    // (it has no special privileges, this is only informational)
+    let reserve = companyAcc.addr;
+    // Specified address can freeze or unfreeze user asset holdings 
+    let freeze = companyAcc.addr;
+    // Specified address can revoke user asset holdings and send 
+    // them to other addresses    
+    let clawback = companyAcc.addr;
+
+    // signing and sending "txn" allows "addr" to create an asset
+    let txn = algosdk.makeAssetCreateTxnWithSuggestedParams(
+        addr, 
+        note,
+        totalIssuance, 
+        decimals, 
+        defaultFrozen, 
+        manager, 
+        reserve, 
+        freeze,
+        clawback, 
+        unitName, 
+        assetName, 
+        assetURL, 
+        assetMetadataHash, 
+        params);
+
+    let rawSignedTxn = txn.signTxn(companyAcc.sk)
+    let tx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
+    
+
+    let assetID = null;
+    // wait for transaction to be confirmed
+    const ptx = await algosdk.waitForConfirmation(algodclient, tx.txId, 4);
+    // Get the new asset's information from the creator account
+    // let ptx = await algodclient.pendingTransactionInformation(tx.txId).do();
+    assetID = ptx["asset-index"];
+    //Get the completed Transaction
+    console.log("Transaction " + tx.txId + " confirmed in round " + ptx["confirmed-round"]);
+    const newItem=new Item({
+        name:name,
+        owner:company.name,
+        transactions:[],
+        asset_id:assetID,
+        serial_number:123,
+        manu_date:manu_date,
+        manu_location:manu_location,
+        manu_owner:manu_owner
+    })
+    const save = await newItem.save()
+    if(save){
+        return res.status(404).json({"message":"yes"})
+    }
+    return res.status(404).json({"message":"err"})
+}
+
 const addItem = async(req, res)=>{
     const {id, item}=req.body
     const company=await Company.findOne({_id:id})
@@ -101,4 +197,5 @@ module.exports={
     getCompany,
     addItem,
     generateItemQRCode,
+    createItem,
 }
