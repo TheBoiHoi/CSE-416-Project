@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Table} from 'react-bootstrap';
+import {Table,Row,Col,Container} from 'react-bootstrap';
 import {FlipCard} from './FlipCard'
 import { MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
 import './InventoryTab.css';
@@ -50,8 +50,8 @@ const InventoryTab =(props)=>{
                 </MDBTableBody>
                 
             </MDBTable> */}
-            <div class="row align-items-start">
-            <div  class="col ">
+            <div >
+            <div >
               <FlipCard></FlipCard>
             </div>
             
