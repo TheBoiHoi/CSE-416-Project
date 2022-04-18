@@ -8,9 +8,12 @@ const ObjectId=require('bson-objectid')
 const QRCode=require('qrcode')
 const algosdk = require('algosdk');
 const company = require('../models/company')
-const token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-const server = "http://localhost";
-const port = 4001;
+const baseServer = 'https://testnet-algorand.api.purestake.io/ps2'
+const port = '';
+const token = {
+    'X-API-Key': 'X4SwVT0RbP46NwfrQxmM61U3pqTUoekDLSigOTpb'
+}
+const algodclient = new algosdk.Algodv2(token, baseServer, port);
 
 const login = async(req, res)=>{
     try{
@@ -108,7 +111,6 @@ const completeTrade = async(req, res)=>{
     const target_item = await Item.findOne({_id:item_id})
 
     //Buyer opt in
-    let algodclient = new algosdk.Algodv2(token, server, port);
     let params = await algodclient.getTransactionParams().do();
     params.fee = 1000;
     params.flatFee = true;

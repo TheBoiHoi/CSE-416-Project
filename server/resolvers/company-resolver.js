@@ -4,9 +4,12 @@ const Item=require('../models/item')
 const QRCode=require('qrcode')
 const algosdk = require('algosdk');
 const user = require('../models/user');
-const token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-const server = "http://localhost";
-const port = 4001;
+const baseServer = 'https://testnet-algorand.api.purestake.io/ps2'
+const port = '';
+const token = {
+    'X-API-Key': 'X4SwVT0RbP46NwfrQxmM61U3pqTUoekDLSigOTpb'
+}
+const algodclient = new algosdk.Algodv2(token, baseServer, port);
 const login=async(req, res)=>{
     const {email, password}=req.body
     const company=await Company.findOne({email:email})
@@ -64,7 +67,6 @@ const createItem = async(req,res)=>{
     const{id,name,manu_date,manu_location,manu_owner,serial_number} = req.body
 
     // Instantiate the algod wrapper
-    let algodclient = new algosdk.Algodv2(token, server, port);
     const company=await Company.findOne({_id:id})
     const companyAcc = algosdk.mnemonicToSecretKey(company.algoPass)
     //Algo stuff
@@ -175,7 +177,6 @@ const sellItem = async(req,res)=>{
     const companyAcc = algosdk.mnemonicToSecretKey(company.algoPass)
 
     //buyer opt in for this assets
-    let algodclient = new algosdk.Algodv2(token, server, port);
     params = await algodclient.getTransactionParams().do();
     params.fee = 1000;
     params.flatFee = true;
