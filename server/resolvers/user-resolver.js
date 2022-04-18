@@ -6,6 +6,9 @@ const PublicProfile=require('../models/PublicProfile')
 const auth=require('../token.js')
 const ObjectId=require('bson-objectid')
 const QRCode=require('qrcode')
+const QRCodeReader=require('qrcode-reader')
+const fs=require('fs')
+const Jimp=require('jimp')
 const algosdk = require('algosdk');
 const company = require('../models/company')
 const baseServer = 'https://testnet-algorand.api.purestake.io/ps2'
@@ -70,6 +73,7 @@ const getUser = async(req, res)=>{
     if(user){
         return res.status(200).json({
             user:{
+                userId:user._id,
                 name:user.name,
                 items_owned:user.items_owned
             }
@@ -197,14 +201,14 @@ const generateProfileQRCode = (req, res)=>{
         const url=`/${userId}/${key}`
         QRCode.toFile(`./qrcodes/profiles/${userId}-${key}.png`, url, {
             color: {
-              dark: '#000000',  // Blue dots
-              light: '#FFFFFF' // Transparent background
+              dark: '#000000',  
+              light: '#FFFFFF'
             }
           }, function (err) {
             if (err) throw err
             console.log('done')
         })
-        return res.sendStatus(200)
+        return res.sendFile()
     }).catch((e)=>{
         console.log("error:", e)
         return res.status(404).json({message:e.message})
@@ -212,6 +216,38 @@ const generateProfileQRCode = (req, res)=>{
 
 }
 
+const keyVerification = (req, res, next)=>{
+    const {id, key}=req.params
+    PublicProfile.findOne({_id:id, key:key}).then(data => {
+        if(!data){
+            return res.status(404).json({message:"ERROR"})
+        }
+        next()
+    }).catch((e) => {
+        return res.status(404).json({message:e})
+    })
+}
+
+const scanQrCode = (req, res)=>{
+    const buffer=req.file.buffer
+    Jimp.read(buffer, function(err, image) {
+        if (err) {
+            console.error(err);
+            // TODO handle error
+        }
+        var qr = new QRCodeReader()
+        qr.callback = function(err, value) {
+            if (err) {
+                console.error(err);
+                // TODO handle error
+            }
+            console.log(value.result);
+            console.log(value);
+            return res.status(200).json({data:value.result})
+        };
+        qr.decode(image.bitmap);
+    });
+}
 module.exports = {
     login,
     register,
@@ -219,5 +255,7 @@ module.exports = {
     getUser,
     createPendingTrade,
     completeTrade,
-    generateProfileQRCode
+    generateProfileQRCode,
+    keyVerification,
+    scanQrCode
 }
