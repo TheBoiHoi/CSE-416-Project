@@ -3,6 +3,10 @@ const bcrypt=require('bcrypt')
 const Item=require('../models/item')
 const QRCode=require('qrcode')
 const algosdk = require('algosdk');
+const user = require('../models/user');
+const token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+const server = "http://localhost";
+const port = 4001;
 const login=async(req, res)=>{
     const {email, password}=req.body
     const company=await Company.findOne({email:email})
@@ -36,6 +40,7 @@ const register = async(req, res)=>{
     console.log( "My passphrase: " + passphrase );
     const company = new Company({name:name, email:email, password:hash, items:[],algoAddr:account.addr,algoPass:passphrase})
     const saved = await company.save()
+
     res.status(200).json({company:{
         _id:saved._id,
         name:saved.name
@@ -57,9 +62,7 @@ const getCompany = async(req, res)=>{
 
 const createItem = async(req,res)=>{
     const{id,name,manu_date,manu_location,manu_owner,serial_number} = req.body
-    const token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-    const server = "http://localhost";
-    const port = 4001;
+
     // Instantiate the algod wrapper
     let algodclient = new algosdk.Algodv2(token, server, port);
     const company=await Company.findOne({_id:id})
@@ -70,38 +73,18 @@ const createItem = async(req,res)=>{
     params.fee = 1000;
     params.flatFee = true;
     console.log(params);
-    let note = undefined; // arbitrary data to be stored in the transaction; here, none is stored
-    // Asset creation specific parameters
-    // The following parameters are asset specific
-    // Throughout the example these will be re-used. 
-    // We will also change the manager later in the example
+    let note = undefined; 
     let addr = companyAcc.addr;
-    // Whether user accounts will need to be unfrozen before transacting    
     let defaultFrozen = false;
-    // integer number of decimals for asset unit calculation
     let decimals = 0;
-    // total number of this asset available for circulation   
     let totalIssuance = 1;
-    // Used to display asset units to user    
     let unitName = "Qrify";
-    // Friendly name of the asset    
     let assetName = "CSE416 QRify testing";
-    // Optional string pointing to a URL relating to the asset
     let assetURL = "http://CSE416";
-    // Optional hash commitment of some sort relating to the asset. 32 character length.
     let assetMetadataHash = "16efaa3924a6fd9d3a4824799a4ac611";
-    // The following parameters are the only ones
-    // that can be changed, and they have to be changed
-    // by the current manager
-    // Specified address can change reserve, freeze, clawback, and manager
     let manager = companyAcc.addr;
-    // Specified address is considered the asset reserve
-    // (it has no special privileges, this is only informational)
     let reserve = companyAcc.addr;
-    // Specified address can freeze or unfreeze user asset holdings 
     let freeze = companyAcc.addr;
-    // Specified address can revoke user asset holdings and send 
-    // them to other addresses    
     let clawback = companyAcc.addr;
 
     // signing and sending "txn" allows "addr" to create an asset
@@ -120,19 +103,49 @@ const createItem = async(req,res)=>{
         assetURL, 
         assetMetadataHash, 
         params);
-
     let rawSignedTxn = txn.signTxn(companyAcc.sk)
     let tx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
-    
-
     let assetID = null;
-    // wait for transaction to be confirmed
     const ptx = await algosdk.waitForConfirmation(algodclient, tx.txId, 4);
-    // Get the new asset's information from the creator account
-    // let ptx = await algodclient.pendingTransactionInformation(tx.txId).do();
     assetID = ptx["asset-index"];
-    //Get the completed Transaction
     console.log("Transaction " + tx.txId + " confirmed in round " + ptx["confirmed-round"]);
+    
+    //opt in
+    sender = companyAcc.addr;
+    recipient = sender;
+    amount = 0;
+    closeRemainderTo = undefined
+    revocationTarget = undefined
+    opttxn = algosdk.makeAssetTransferTxnWithSuggestedParams(
+        sender, 
+        recipient, 
+        closeRemainderTo, 
+        revocationTarget,
+        amount, 
+        note, 
+        assetID, 
+        params);
+    rawSignedTxn = opttxn.signTxn(companyAcc.sk);
+    opttx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
+    confirmedTxn = await algosdk.waitForConfirmation(algodclient, opttx.txId, 4);
+    console.log("Transaction " + opttx.txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
+    console.log("Company = " + companyAcc.addr);
+
+    //get the asset
+    amount = 1;
+    opttxn = algosdk.makeAssetTransferTxnWithSuggestedParams(
+        sender, 
+        recipient, 
+        closeRemainderTo, 
+        revocationTarget,
+        amount, 
+        note, 
+        assetID, 
+        params);
+    rawSignedTxn = opttxn.signTxn(companyAcc.sk);
+    opttx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
+    confirmedTxn = await algosdk.waitForConfirmation(algodclient, opttx.txId, 4);
+
     const newItem=new Item({
         name:name,
         owner:company.name,
@@ -151,6 +164,75 @@ const createItem = async(req,res)=>{
         return res.status(404).json({"message":"yes"})
     }
     return res.status(404).json({"message":"err"})
+}
+
+const sellItem = async(req,res)=>{
+    const {Itemid,companyId,buyerId}=req.body
+    const buyer = await user.findOne({_id:buyerId})
+    const company = await Company.findOne({_id:companyId})
+    const item =  await Item.findOne({_id:Itemid})
+    const buyerAcc = algosdk.mnemonicToSecretKey(buyer.algoPass)
+    const companyAcc = algosdk.mnemonicToSecretKey(company.algoPass)
+
+    //buyer opt in for this assets
+    let algodclient = new algosdk.Algodv2(token, server, port);
+    params = await algodclient.getTransactionParams().do();
+    params.fee = 1000;
+    params.flatFee = true;
+    let note = undefined;
+    let sender = buyerAcc.addr;
+    let recipient = sender;
+    let revocationTarget = undefined;
+    let closeRemainderTo = undefined;
+    assetID = item.asset_id
+    amount = 0;
+    let opttxn = algosdk.makeAssetTransferTxnWithSuggestedParams(
+        sender, 
+        recipient, 
+        closeRemainderTo, 
+        revocationTarget,
+        amount, 
+        note, 
+        assetID, 
+        params);
+    rawSignedTxn = opttxn.signTxn(buyerAcc.sk);
+    let opttx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
+    confirmedTxn = await algosdk.waitForConfirmation(algodclient, opttx.txId, 4);
+
+    //Transfer the asset from company to user
+    params = await algodclient.getTransactionParams().do();
+    sender = companyAcc.addr;
+    recipient = buyerAcc.addr;
+    revocationTarget = undefined;
+    closeRemainderTo = undefined;
+    amount = 1;
+    let xtxn = algosdk.makeAssetTransferTxnWithSuggestedParams(
+        sender, 
+        recipient, 
+        closeRemainderTo, 
+        revocationTarget,
+        amount,  
+        note, 
+        assetID, 
+        params);
+    rawSignedTxn = xtxn.signTxn(companyAcc.sk)
+    let xtx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
+    confirmedTxn = await algosdk.waitForConfirmation(algodclient, xtx.txId, 4);
+
+    //remove the item from company
+    const companyItems= company.items
+    const newCompanyItems = companyItems.filter(item => item!=item.serial_number)
+    await Company.updateOne({_id:companyId}, {items:newCompanyItems})
+    
+    //update item owner
+    await Item.updateOne({_id:Itemid},{owner:buyer.name})
+    
+    //push the item to user
+    const buyerItems=buyer.items_owned
+    buyerItems.push(Itemid)
+    await user.updateOne({_id:buyerId}, {items_owned:buyerItems})
+
+    return res.status(200).json({msg:"OK"})
 }
 
 const addItem = async(req, res)=>{
@@ -201,4 +283,5 @@ module.exports={
     addItem,
     generateItemQRCode,
     createItem,
+    sellItem
 }

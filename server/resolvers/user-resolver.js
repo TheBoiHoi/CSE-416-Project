@@ -11,6 +11,10 @@ const fs=require('fs')
 const Jimp=require('jimp')
 const algosdk = require('algosdk');
 const company = require('../models/company')
+const token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+const server = "http://localhost";
+const port = 4001;
+
 const login = async(req, res)=>{
     try{
         const {email, password} = req.body
@@ -45,7 +49,6 @@ const register = async(req, res)=>{
     const hash = await bcrypt.hash(password, 10)
     const user = new User({name:name, email:email, password:hash,algoAddr:algoAddr,algoPass:algoPass, items_owned:[], pending_trades:[], completed_trades:[]})
     const saved = await user.save()
-
     token=auth.generate(user)
     res.cookie('token', token, {
         httpOnly: true,
@@ -78,11 +81,6 @@ const getUser = async(req, res)=>{
 const createPendingTrade = async(req, res)=>{
     const {sellerId, buyerId, itemId} = req.body
     const seller=await User.findOne({_id:sellerId})
-    if(seller){
-
-    }else{
-        seller=await company.findOne({_id:sellerId})
-    }
     const buyer=await User.findOne({_id:buyerId})
     const newTrade= new PendingTrade({
         buyer_id:buyerId,
@@ -108,30 +106,44 @@ const completeTrade = async(req, res)=>{
     const {buyer_id, seller_id, item_id}=trade
 
     const seller=await User.findOne({_id:seller_id})
-    if(seller){
-
-    }else{
-        seller=await company.findOne({_id:sellerId})
-    }
     const buyer=await User.findOne({_id:buyer_id})
+    const sellerAcc = algosdk.mnemonicToSecretKey(seller.algoPass)
+    const buyerAcc = algosdk.mnemonicToSecretKey(buyer.algoPass)
+    const target_item = await Item.findOne({_id:item_id})
 
-    await Item.updateOne({_id:item_id}, {owner:buyer_id})
-
-    //Start algorand asset transaction
-    const token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-    const server = "http://localhost";
-    const port = 4001;
+    //Buyer opt in
     let algodclient = new algosdk.Algodv2(token, server, port);
     let params = await algodclient.getTransactionParams().do();
-    let sender_acc  = algosdk.mnemonicToSecretKey(seller.algoPass)
-    let reciver_acc = algosdk.mnemonicToSecretKey(buyer.algoPass)
-    let sender = sender_acc.algoAddr
-    let recipient = reciver_acc.algoAddr
-    const target_item = await Item.findOne({_id:item_id})
-    let assetID = target_item.assetID
+    params.fee = 1000;
+    params.flatFee = true;
+    let note = undefined;
+    let sender = buyerAcc.addr;
+    let recipient = sender;
     let revocationTarget = undefined;
     let closeRemainderTo = undefined;
-    let amount = 1;
+    assetID = target_item.asset_id
+    amount = 0;
+    let opttxn = algosdk.makeAssetTransferTxnWithSuggestedParams(
+        sender, 
+        recipient, 
+        closeRemainderTo, 
+        revocationTarget,
+        amount, 
+        note, 
+        assetID, 
+        params);
+    rawSignedTxn = opttxn.signTxn(buyerAcc.sk);
+    let opttx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
+    confirmedTxn = await algosdk.waitForConfirmation(algodclient, opttx.txId, 4);
+
+    //Start algorand asset transaction
+     params = await algodclient.getTransactionParams().do();
+     sender = sellerAcc.addr
+     recipient = buyerAcc.addr
+     assetID = target_item.asset_id
+     revocationTarget = undefined;
+     closeRemainderTo = undefined;
+     amount = 1;
     let xtxn = algosdk.makeAssetTransferTxnWithSuggestedParams(
         sender, 
         recipient, 
@@ -141,39 +153,40 @@ const completeTrade = async(req, res)=>{
         note, 
         assetID, 
         params);
-    // Must be signed by the account sending the asset  
-    rawSignedTxn = xtxn.signTxn(sender_acc.sk)
+    rawSignedTxn = xtxn.signTxn(sellerAcc.sk)
     let xtx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
-    // Wait for confirmation
     confirmedTxn = await algosdk.waitForConfirmation(algodclient, xtx.txId, 4);
-    //Get the completed Transaction
-    console.log("Transaction " + xtx.txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
-    // You should now see the 10 assets listed in the account information
-    console.log("Account 3 = " + reciver_acc.addr);
-    await printAssetHolding(algodclient, reciver_acc.addr, assetID);
+
+    //update the item owner and add the transaction
+    const itemTransactions = target_item.transactions
+    itemTransactions.push(tradeId)
+    await Item.updateOne({_id:item_id}, {owner:buyer.name})
+    await Item.updateOne({_id:item_id}, {transactions:itemTransactions})
 
     //remove item from the seller
     const sellerItems=seller.items_owned
-    sellerItems.filter(item => item!=item_id)
+    const newSellerItems = sellerItems.filter(item => item!=item_id)
+    await User.updateOne({_id:seller_id}, {items_owned:newSellerItems})
     
-
     //remove pending trade from seller, add complete trade to seller
     const sellerPending=seller.pending_trades
-    sellerPending.filter(trade => trade!=tradeId)
+    const newSellerPending = sellerPending.filter(trade => trade!=tradeId)
+    await User.updateOne({_id:seller_id}, {pending_trades:newSellerPending})
     const sellerComplete=seller.completed_trades
     sellerComplete.push(tradeId)
-    await User.updateOne({_id:seller_id}, {items_owned:sellerItems, pending_trades:sellerPending, completed_trades:sellerComplete})
+    await User.updateOne({_id:seller_id},  {completed_trades:sellerComplete})
 
     //push the item to the buyer
     const buyerItems=buyer.items_owned
     buyerItems.push(item_id)
+    await User.updateOne({_id:buyer_id}, {items_owned:buyerItems})
 
     //remove pending trade from buyer, add pending trade to buyer
     const buyerPending=buyer.pending_trades
-    buyerPending.filter(trade => trade!=tradeId)
+    const newBuyerPending = buyerPending.filter(trade => trade!=tradeId)
     const buyerComplete=buyer.completed_trades
     buyerComplete.push(tradeId)
-    await User.updateOne({_id:buyer_id}, {items_owned:buyerItems, pending_trades:buyerPending, completed_trades:buyerComplete})
+    await User.updateOne({_id:buyer_id}, {items_owned:buyerItems, pending_trades:newBuyerPending, completed_trades:buyerComplete})
     return res.status(200).json({msg:"OK"})
 }
 
