@@ -8,6 +8,10 @@ const ObjectId=require('bson-objectid')
 const QRCode=require('qrcode')
 const algosdk = require('algosdk');
 const company = require('../models/company')
+const token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+const server = "http://localhost";
+const port = 4001;
+
 const login = async(req, res)=>{
     try{
         const {email, password} = req.body
@@ -42,7 +46,6 @@ const register = async(req, res)=>{
     const hash = await bcrypt.hash(password, 10)
     const user = new User({name:name, email:email, password:hash,algoAddr:algoAddr,algoPass:algoPass, items_owned:[], pending_trades:[], completed_trades:[]})
     const saved = await user.save()
-
     token=auth.generate(user)
     res.cookie('token', token, {
         httpOnly: true,
@@ -74,11 +77,6 @@ const getUser = async(req, res)=>{
 const createPendingTrade = async(req, res)=>{
     const {sellerId, buyerId, itemId} = req.body
     const seller=await User.findOne({_id:sellerId})
-    if(seller){
-
-    }else{
-        seller=await company.findOne({_id:sellerId})
-    }
     const buyer=await User.findOne({_id:buyerId})
     const newTrade= new PendingTrade({
         buyer_id:buyerId,
@@ -114,9 +112,6 @@ const completeTrade = async(req, res)=>{
     await Item.updateOne({_id:item_id}, {owner:buyer_id})
 
     //Start algorand asset transaction
-    const token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-    const server = "http://localhost";
-    const port = 4001;
     let algodclient = new algosdk.Algodv2(token, server, port);
     let params = await algodclient.getTransactionParams().do();
     let sender_acc  = algosdk.mnemonicToSecretKey(seller.algoPass)
@@ -147,7 +142,7 @@ const completeTrade = async(req, res)=>{
     // You should now see the 10 assets listed in the account information
     console.log("Account 3 = " + reciver_acc.addr);
     await printAssetHolding(algodclient, reciver_acc.addr, assetID);
-
+    
     //remove item from the seller
     const sellerItems=seller.items_owned
     sellerItems.filter(item => item!=item_id)
