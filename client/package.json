@@ -16,6 +16,7 @@
     "buffer": "^6.0.3",
     "mdbreact": "^4.6.1",
     "path": "^0.12.7",
+    "qrcode": "^1.5.0",
     "react": "^17.0.2",
     "react-bootstrap": "^2.2.0",
     "react-card-flip": "^1.1.5",
