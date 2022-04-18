@@ -16,6 +16,7 @@ const port = '';
 const token = {
     'X-API-Key': 'X4SwVT0RbP46NwfrQxmM61U3pqTUoekDLSigOTpb'
 }
+const axios=require('axios')
 const algodclient = new algosdk.Algodv2(token, baseServer, port);
 
 const login = async(req, res)=>{
@@ -248,6 +249,39 @@ const scanQrCode = (req, res)=>{
         qr.decode(image.bitmap);
     });
 }
+
+const getItemInfo=(req, res) => {
+    const {itemId} = req.params
+    Item.findOne({_id:itemId}).then(data => {
+        if(!data){
+            return res.status(404).json({message:"ERROR"})
+        }
+        let item=data
+        let assetId=item.asset_id
+        let transactions=[]
+        axios.get(`https://algoindexer.testnet.algoexplorerapi.io/v2/assets/${assetId}/transactions?limit=10`).then((response) => {
+            let data=response.data
+            let assetTransactions=data.transactions
+            for(let i=0;i<assetTransactions.length;i++){
+                let transaction=assetTransactions[i]
+                if(transaction['asset-config-transaction']){
+                    transactions.push({transactionId:transaction.id, creator:transaction['asset-config-transaction']['params']['creator']})
+                }
+                else if(transaction['asset-transfer-transaction']){
+                    transactions.push({
+                        transactionId:transaction.id,
+                        sender:transaction['sender'],
+                        receiver:transaction['asset-transfer-transaction']['receiver']
+                    })
+                }
+            }
+            return res.status(200).json({item:{name:item.name}, transactions:transactions})
+        }, (error)=>{
+            return res.status(404).json({message:"ERROR"})
+        })
+    })
+    
+}
 module.exports = {
     login,
     register,
@@ -257,5 +291,6 @@ module.exports = {
     completeTrade,
     generateProfileQRCode,
     keyVerification,
-    scanQrCode
+    scanQrCode,
+    getItemInfo
 }
