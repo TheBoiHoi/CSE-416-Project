@@ -221,8 +221,8 @@ const sellItem = async(req,res)=>{
 
     //remove the item from company
     const companyItems= company.items
-    companyItems.filter(item => item!=item.serial_number)
-    await Company.updateOne({_id:companyId}, {items:companyItems})
+    const newCompanyItems = companyItems.filter(item => item!=item.serial_number)
+    await Company.updateOne({_id:companyId}, {items:newCompanyItems})
     
     //update item owner
     await Item.updateOne({_id:Itemid},{owner:buyer.name})
