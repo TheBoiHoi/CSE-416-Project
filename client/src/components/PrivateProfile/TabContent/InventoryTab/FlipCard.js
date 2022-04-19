@@ -18,14 +18,16 @@ export class FlipCard extends React.Component {
   
     render() {
       return (
-        <ReactCardFlip isFlipped={this.state.isFlipped} flipDirection="vertical"> 
-            <div style={{width:'18rem'}} onClick={this.handleClick}> 
-                <InventoryCard  front={true}/>
-            </div>   
-            <div style={{width:'18rem'}} onClick={this.handleClick}>
-                <InventoryCard front={false}/>
-            </div>
-        </ReactCardFlip>
+        <div>
+          <ReactCardFlip isFlipped={this.state.isFlipped} flipDirection="vertical"> 
+              <div style={{width:'18rem'}} onClick={this.handleClick}> 
+                  <InventoryCard  front={true}/>
+              </div>   
+              <div style={{width:'18rem'}} onClick={this.handleClick}>
+                  <InventoryCard front={false}/>
+              </div>
+          </ReactCardFlip>
+        </div>
       )
     }
   }

@@ -51,11 +51,7 @@ const InventoryTab =(props)=>{
                 
             </MDBTable> */}
             <div >
-            <div >
               <FlipCard></FlipCard>
-            </div>
-            
-            
             </div>
         </div>
     );

@@ -26,6 +26,8 @@ export const InventoryCard =(props)=>{
                 </Card.Text>
                 <Card.Text>Serial Number:1234567</Card.Text>
                 <Button onClick={()=>{console.log('Start Trade')}}>Start Trade</Button>
+                <br></br>
+                <Button onClick={()=>{console.log('Start Trade')}}>Item Profile</Button>
                 </Card.Body>
             </Card>
         )
