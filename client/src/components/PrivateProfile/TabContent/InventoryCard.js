@@ -8,26 +8,24 @@ export const InventoryCard =(props)=>{
     })
     if(front){
         return (
-            <Card style={{ height:'10rem',width: '18rem' }}>
-                <Card.Img style={{height:'5rem',width:'6rem'}} variant="top" src={ShoeImg} />
-                <Card.Body>
+            <Card style={{ height:'13rem',width: '13rem' }}>
+                <Card.Img style={{height:'100%',width:'100%'}}  src={ShoeImg} />
                 <Card.Title>Air Mags</Card.Title>
-                </Card.Body>
             </Card>
         )
     }
     else{
         return(
-            <Card style={{ height:'10rem',width: '18rem' }}>
+            <Card style={{ height:'13rem',width: '13rem' }}>
                 <Card.Body>
                 <Card.Title>Air Mags</Card.Title>
                 <Card.Text>
                 Color:Blue
                 </Card.Text>
                 <Card.Text>Serial Number:1234567</Card.Text>
-                <Button onClick={()=>{console.log('Start Trade')}}>Start Trade</Button>
+                <Card.Link href='#'>Start Trade</Card.Link>
                 <br></br>
-                <Button onClick={()=>{console.log('Start Trade')}}>Item Profile</Button>
+                <Card.Link href='#'>Item Profile</Card.Link>
                 </Card.Body>
             </Card>
         )

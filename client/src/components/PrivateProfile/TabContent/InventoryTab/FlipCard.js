@@ -20,10 +20,10 @@ export class FlipCard extends React.Component {
       return (
         <div>
           <ReactCardFlip isFlipped={this.state.isFlipped} flipDirection="vertical"> 
-              <div style={{width:'18rem'}} onClick={this.handleClick}> 
+              <div  onClick={this.handleClick}> 
                   <InventoryCard  front={true}/>
               </div>   
-              <div style={{width:'18rem'}} onClick={this.handleClick}>
+              <div  onClick={this.handleClick}>
                   <InventoryCard front={false}/>
               </div>
           </ReactCardFlip>

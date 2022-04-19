@@ -32,7 +32,7 @@ const InventoryTab =(props)=>{
       };
       
     return(
-        <div class = "container-fluid">
+        <Container>
             {/* <MDBTable maxHeight="450px" borderless scrollY>
                 <MDBTableHead  columns={data.columns} />
                 <MDBTableBody>
@@ -51,9 +51,41 @@ const InventoryTab =(props)=>{
                 
             </MDBTable> */}
             <div >
-              <FlipCard></FlipCard>
+            <Row>
+              <Col>
+                <FlipCard></FlipCard>
+              </Col>
+              <Col>
+                <FlipCard></FlipCard>
+              </Col>
+              <Col>
+                <FlipCard></FlipCard>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <FlipCard></FlipCard>
+              </Col>
+              <Col>
+                <FlipCard></FlipCard>
+              </Col>
+              <Col>
+                <FlipCard></FlipCard>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <FlipCard></FlipCard>
+              </Col>
+              <Col>
+                <FlipCard></FlipCard>
+              </Col>
+              <Col>
+                <FlipCard></FlipCard>
+              </Col>
+            </Row>
             </div>
-        </div>
+        </Container>
     );
 };
 export default InventoryTab
