@@ -31,19 +31,26 @@ function Copyright(props) {
 }
 
 const theme = createTheme();
+const algosdk = require('algosdk');
 
 export default function Register() {
     const navigate = useNavigate()
     const handleSubmit = async (event) => {
         event.preventDefault();
+        let account = algosdk.generateAccount();
+        let passphrase = algosdk.secretKeyToMnemonic(account.sk);
+        console.log( "My address: " + account.addr );
+        console.log( "My passphrase: " + passphrase );
         const data = new FormData(event.currentTarget);
         const payload = {
             name:data.get('name'),
             email:data.get('email'),
-            password:data.get('password')
+            password:data.get('password'),
+            algoAddr:account.addr,
+            algoPass:passphrase
         }
         apis.Register(payload).then(response=>{
-            navigate(`/profile/${response.data.user._id}`)
+            navigate(`/profile/${response.data.userId}`)
         }).catch(error => {
             console.log("error:", error.response)
         })

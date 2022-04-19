@@ -5,6 +5,8 @@ const userSchema = new Schema({
     name:{type:String, required:true},
     email:{type:String, required:true},
     password:{type:String, required:true},
+    algoAddr:{type:String, required:true},
+    algoPass:{type:String, required:true},
     items_owned:{type:[String]},
     pending_trades:{type:[String]},
     completed_trades:{type:[String]}
