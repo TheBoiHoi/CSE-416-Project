@@ -7,16 +7,19 @@ import {InventoryTable} from './components/InventoryTable/MainTable/InventoryTab
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {Navbar} from './components/Navbar';
+import {useState, useEffect} from 'react'
 
 function App() {
+  const [isUser, toggleIsUser]=useState(false)
+  const [userName, setUserName]=useState("")
   return (
     <div>
       <BrowserRouter>
-      <Navbar isCompany ={true}/>
+      <Navbar isUser ={isUser} userName={userName}/>
         <Routes>
           <Route path="/" element={<Welcome/>}/>
           <Route path="/login" element={<Login/>}/>
-          <Route path="/profile/:userId" element={<Profile/>}/>
+          <Route path="/profile/:userId" element={<Profile setUserName={setUserName} toggleIsUser={toggleIsUser}/>}/>
           <Route path="/profile" element={<Profile/>}/>
           <Route path ="/inventory_table" element={<InventoryTable/>}/>
           <Route path="/register" element={<Register/>}/>

@@ -8,6 +8,7 @@ const ObjectId=require('bson-objectid')
 const QRCode=require('qrcode')
 const QRCodeReader=require('qrcode-reader')
 const fs=require('fs')
+const path=require('path')
 const Jimp=require('jimp')
 const algosdk = require('algosdk');
 const company = require('../models/company')
@@ -32,8 +33,8 @@ const login = async(req, res)=>{
             return res.status(404).send('Invalid Password')
         }
         else{
-            token=auth.generate(user)
-            res.cookie('token', token, {
+            userToken=auth.generate(user)
+            res.cookie('token', userToken, {
                 httpOnly: true,
                 secure: true,
                 sameSite: "None"
@@ -70,6 +71,7 @@ const logout = async(req, res)=>{
 }
 
 const getUser = async(req, res)=>{
+    console.log("getting the current user")
     const user = await User.findOne({_id:req.params.id})
     if(user){
         return res.status(200).json({
@@ -193,7 +195,7 @@ const completeTrade = async(req, res)=>{
     return res.status(200).json({msg:"OK"})
 }
 
-const generateProfileQRCode = (req, res)=>{
+const getProfileQRCode = (req, res)=>{
     const {userId} = req.body
     const key=new ObjectId().toString()
     const newProfileCode = new PublicProfile({userId:userId, key:key})
@@ -208,8 +210,11 @@ const generateProfileQRCode = (req, res)=>{
           }, function (err) {
             if (err) throw err
             console.log('done')
+            const filePath=path.resolve(`./qrcodes/profiles/${userId}-${key}.png`)
+            return res.sendFile(filePath, function(err){
+                fs.unlinkSync(filePath)
+            })
         })
-        return res.sendFile()
     }).catch((e)=>{
         console.log("error:", e)
         return res.status(404).json({message:e.message})
@@ -259,22 +264,32 @@ const getItemInfo=(req, res) => {
         let item=data
         let assetId=item.asset_id
         let transactions=[]
-        axios.get(`https://algoindexer.testnet.algoexplorerapi.io/v2/assets/${assetId}/transactions?limit=10`).then((response) => {
+        axios.get(`https://algoindexer.testnet.algoexplorerapi.io/v2/assets/${assetId}/transactions`).then((response) => {
             let data=response.data
             let assetTransactions=data.transactions
             for(let i=0;i<assetTransactions.length;i++){
                 let transaction=assetTransactions[i]
+                const date=transaction['round-time']
+                let id=transaction.id
                 if(transaction['asset-config-transaction']){
-                    transactions.push({transactionId:transaction.id, creator:transaction['asset-config-transaction']['params']['creator']})
+                    transactions.push({
+                        transactionId:id, 
+                        creator:transaction['asset-config-transaction']['params']['creator'],
+                        timestamp:date
+                    })
                 }
                 else if(transaction['asset-transfer-transaction']){
                     transactions.push({
-                        transactionId:transaction.id,
+                        transactionId:id,
                         sender:transaction['sender'],
-                        receiver:transaction['asset-transfer-transaction']['receiver']
+                        receiver:transaction['asset-transfer-transaction']['receiver'],
+                        timestamp:date
                     })
                 }
             }
+            transactions.sort((a, b)=>{
+                return b.timestamp-a.timestamp
+            })
             return res.status(200).json({item:{name:item.name}, transactions:transactions})
         }, (error)=>{
             return res.status(404).json({message:"ERROR"})
@@ -289,7 +304,7 @@ module.exports = {
     getUser,
     createPendingTrade,
     completeTrade,
-    generateProfileQRCode,
+    getProfileQRCode,
     keyVerification,
     scanQrCode,
     getItemInfo

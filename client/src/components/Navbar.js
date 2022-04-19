@@ -38,7 +38,7 @@ export const Navbar = (props) => {
     setAnchorElUser(null);
   };
 
-  const isCompany = props.isCompany; //for testing purposes
+  const isCompany = props.isUser//props.isCompany; //for testing purposes
 
   return (
     <AppBar style={{backgroundColor:'white'}}  position="static">

@@ -10,8 +10,9 @@ export const Profile = (props) => {
     useEffect(() => {
         apis.GetUser(userId).then(response=>{
             setUser(response.data.user)
+            props.toggleIsUser(true)
+            props.setUserName(user.name)
         })
-        
     }, [])
     
     const ScanQRCode=()=>{
@@ -37,7 +38,7 @@ export const Profile = (props) => {
                     <input type="submit" onClick={ScanQRCode}/>
                     <div class="row align-items-center">
                     <div  align="center" class="col">
-                        <ProfileCard name={user.name}/>
+                        <ProfileCard user={user}/>
                     </div>
                     </div>
                     <div class="row align-items-center">
