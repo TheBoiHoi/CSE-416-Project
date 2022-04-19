@@ -14,12 +14,11 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Logo from '../Icons/Logo-removebg-preview.png'
 import {CompanyNavbarFunctions} from './CompanyNavbarFunctions/CompanyNavbarFunctions';
-
+import {useNavigate} from 'react-router-dom'
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-
-
 export const Navbar = (props) => {
+  const navigate=useNavigate()
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -38,7 +37,7 @@ export const Navbar = (props) => {
     setAnchorElUser(null);
   };
 
-  const isCompany = props.isUser//props.isCompany; //for testing purposes
+  const isCompany = props.isCompany; //for testing purposes
 
   return (
     <AppBar style={{backgroundColor:'white'}}  position="static">
@@ -48,7 +47,7 @@ export const Navbar = (props) => {
             component="div"
             align="left"
           >
-            <img style={{width:'15%'}}src= {Logo}/>
+            <img style={{width:'15%', cursor:"pointer"}} src= {Logo} onClick={()=>{navigate('/')}}/>
           </Typography>
 
         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -104,8 +103,6 @@ export const Navbar = (props) => {
                 >
                     Login
                 </Button>
-
-
             </Link>
             <Link class="link-remove-outline" style={{padding:'5px'}}  to="/user_register">
                 <Button
@@ -117,10 +114,6 @@ export const Navbar = (props) => {
         </Box>)}
 
         {isCompany && <CompanyNavbarFunctions/>}
-
-
-
-
           <Box sx={{ flexGrow: 0, padding:'5px' }}>
               {isCompany ? ( <Button
                     title="Open settings"

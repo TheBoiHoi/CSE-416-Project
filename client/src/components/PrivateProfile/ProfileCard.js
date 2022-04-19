@@ -2,10 +2,13 @@ import * as React from 'react';
 import {Card, Button} from 'react-bootstrap'; 
 import Duckpfp from '../../Icons/duckpfp.png'
 import api from '../../api'
+import {useState} from 'react'
+import {Buffer} from 'buffer'
 const ProfileCard = (props) =>{
+    const[code, setCode] = useState(null)
     const generateQRCode=()=>{
         api.generateProfileQRCode(props.user.userId).then(response=>{
-            console.log(response.data)
+            setCode(Buffer.from(response.data).toString('base64'))
         })
     }
     return (
@@ -23,7 +26,7 @@ const ProfileCard = (props) =>{
                 <Button style={{margin:"auto"}} variant="primary" onClick={generateQRCode}>Generate QR Code</Button>
             </div>
         </Card.Body>
-        {props.user&&<img src={`http://localhost:3000/qrcode/profile/${props.user.userId}`}/>}
+        {code&&<img src={`data:image/png;base64, ${code}`}/>}
         </Card>
         
     );

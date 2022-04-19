@@ -15,7 +15,7 @@ function App() {
   return (
     <div>
       <BrowserRouter>
-      <Navbar isUser ={isUser} userName={userName}/>
+      <Navbar isUser ={isUser} isCompany={true} userName={userName}/>
         <Routes>
           <Route path="/" element={<Welcome/>}/>
           <Route path="/login" element={<Login/>}/>
