@@ -4,11 +4,18 @@ import {Link} from "react-router-dom"
 import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';
 import IconButton from '@mui/material/IconButton';
-import {PhotoCamera,Add,Search,NotificationAddRounded} from '@mui/icons-material';
+import {Add,Search,NotificationAddRounded} from '@mui/icons-material';
 import { TextField } from '@mui/material';
+import {TableModal} from '../InventoryTable/TableModal/TableModal';
+import {CompanyAddModal} from '../CompanyAddModal/CompanyAddModal';
+
+import {useState,useEffect} from 'react';
 
 export const CompanyNavbarFunctions = () =>{
+  const [showModal,setShowModal] = useState(false);
+
   return(
+    <>
     <Box   sx={{  flexDirection: 'row-reverse', flexGrow: 1, display: { xs: 'none', md: 'flex' } }} className ="company_nav_container">
 
         <div className='company_nav_search_bar'>
@@ -20,23 +27,19 @@ export const CompanyNavbarFunctions = () =>{
           
 
           <div className ="company_notification">
-          <Link class="link-remove-outline" style={{padding:'5px'}}  to="/user_register">
             <IconButton>
             <NotificationAddRounded/>
             </IconButton>
-            </Link>
           </div>
           
 
           <div className ="company_add">
-          <Link class="link-remove-outline" style={{padding:'5px'}}  to="/user_register">
-            <IconButton>
+            <IconButton onClick={()=>setShowModal(true)}>
             <Add/>
             </IconButton>
-            </Link>
           </div>
-           
-
         </Box>
+        <CompanyAddModal showModal={showModal} toggleModal={setShowModal}/>
+        </>
   )
 }

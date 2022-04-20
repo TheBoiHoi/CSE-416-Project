@@ -69,6 +69,15 @@ const createItem = async(req,res)=>{
     // Instantiate the algod wrapper
     const company=await Company.findOne({_id:id})
     const companyAcc = algosdk.mnemonicToSecretKey(company.algoPass)
+    let accountInfo = await algodclient.accountInformation(companyAcc.addr).do();
+    let accountAmount = accountInfo.amount
+    let itemOwned = company.items.length
+    console.log("Account balance: %d microAlgos", accountAmount);
+    let neededAmount = (itemOwned*1000 + 3000)
+    console.log("Min amount needed: %d microAlgos", neededAmount);
+    if(accountAmount < neededAmount){
+        return res.status(404).json({"message":"Not enough Algo"})
+    }
     //Algo stuff
     let params = await algodclient.getTransactionParams().do();
     //comment out the next two lines to use suggested fee
@@ -175,6 +184,26 @@ const sellItem = async(req,res)=>{
     const item =  await Item.findOne({_id:Itemid})
     const buyerAcc = algosdk.mnemonicToSecretKey(buyer.algoPass)
     const companyAcc = algosdk.mnemonicToSecretKey(company.algoPass)
+
+    let accountInfo = await algodclient.accountInformation(companyAcc.addr).do();
+    let accountAmount = accountInfo.amount
+    let itemOwned = company.items.length
+    console.log("Company balance: %d microAlgos", accountAmount);
+    let neededAmount = ((itemOwned-1)*1000 + 1000)
+    console.log("Min amount needed: %d microAlgos", neededAmount);
+    if(accountAmount < neededAmount){
+        return res.status(404).json({"message":"Not enough Algo for company"})
+    }
+
+    let buyerInfo = await algodclient.accountInformation(buyerAcc.addr).do();
+    accountAmount = buyerInfo.amount
+    itemOwned = buyer.items_owned.length
+    console.log("Buyer balance: %d microAlgos", accountAmount);
+    neededAmount = ((itemOwned+1)*1000 + 2000)
+    console.log("Min amount needed: %d microAlgos", neededAmount);
+    if(accountAmount < neededAmount){
+        return res.status(404).json({"message":"Not enough Algo from buyer"})
+    }
 
     //buyer opt in for this assets
     params = await algodclient.getTransactionParams().do();

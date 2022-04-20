@@ -1,13 +1,14 @@
 const User=require('../models/user')
 const bcrypt=require('bcrypt')
 const Item = require('../models/item')
-const PendingTrade=require('../models/pendingTrade')
+const Trade=require('../models/trade')
 const PublicProfile=require('../models/PublicProfile')
 const auth=require('../token.js')
 const ObjectId=require('bson-objectid')
 const QRCode=require('qrcode')
 const QRCodeReader=require('qrcode-reader')
 const fs=require('fs')
+const path=require('path')
 const Jimp=require('jimp')
 const algosdk = require('algosdk');
 const company = require('../models/company')
@@ -32,13 +33,17 @@ const login = async(req, res)=>{
             return res.status(404).send('Invalid Password')
         }
         else{
-            token=auth.generate(user)
-            res.cookie('token', token, {
+            userToken=auth.generate(user)
+            res.cookie('token', userToken, {
                 httpOnly: true,
                 secure: true,
                 sameSite: "None"
             })
-            return res.status(200).json({userId:user._id}).send()
+            return res.status(200).json({user:{
+                userId:user._id,
+                name:user.name,
+                items:user.items_owned
+            }})
         }
     }
     catch(e){
@@ -69,44 +74,64 @@ const logout = async(req, res)=>{
     res.status(200).send()
 }
 
-const getUser = async(req, res)=>{
-    const user = await User.findOne({_id:req.params.id})
-    if(user){
+const getCurrentUser = (req, res)=>{
+    const userId=req.userId
+    if(!userId){
+        return res.status(404).json({msg:"No user id"})
+    }
+    const user=User.findOne({_id:userId}).then(data=>{
+        if(!data){
+            return res.status(404).json({msg:"User not found"})
+        }
         return res.status(200).json({
             user:{
-                userId:user._id,
-                name:user.name,
-                items_owned:user.items_owned
+                userId:data._id,
+                name:data.name,
+                items:data.items_owned
             }
         })
-    }
+    })
 }
+// const getUser = async(req, res)=>{
+//     console.log("getting the current user")
+//     const user = await User.findOne({_id:req.params.id})
+//     if(user){
+//         return res.status(200).json({
+//             user:{
+//                 userId:user._id,
+//                 name:user.name,
+//                 items_owned:user.items_owned
+//             }
+//         })
+//     }
+// }
 
 const createPendingTrade = async(req, res)=>{
     const {sellerId, buyerId, itemId} = req.body
     const seller=await User.findOne({_id:sellerId})
     const buyer=await User.findOne({_id:buyerId})
-    const newTrade= new PendingTrade({
+    const newTrade= new Trade({
         buyer_id:buyerId,
         seller_id:sellerId,
         buyer_status:false,
         seller_status:false,
-        item_id:itemId
+        item_id:itemId,
+        isPending:true
     })
-    seller.pending_trades.push(newTrade._id)
-    buyer.pending_trades.push(newTrade._id)
-    await User.updateOne({_id:sellerId}, {pending_trades:seller.pending_trades})
-    await User.updateOne({_id:buyerId}, {pending_trades:buyer.pending_trades})
     const saved=await newTrade.save()
-    if(saved){
-        return res.status(200).json({msg:"OK", tradeId:newTrade._id})
+    seller.pending_trades.push(saved._id)
+    buyer.pending_trades.push(saved._id)
+    const sellerUpdate=await User.updateOne({_id:sellerId}, {pending_trades:seller.pending_trades})
+    const buyerUpdate=await User.updateOne({_id:buyerId}, {pending_trades:buyer.pending_trades})
+    if(!sellerUpdate || !buyerUpdate){
+        return res.status(404).json({msg:"ERROR"})
     }
-    return res.status(404).json({msg:"ERROR"})
+    return res.status(200).json({msg:"OK"})
 }
 
 const completeTrade = async(req, res)=>{
     const {tradeId}=req.body
-    const trade=await PendingTrade.findOne({_id:tradeId})
+    const trade=await Trade.findOne({_id:tradeId})
     const {buyer_id, seller_id, item_id}=trade
 
     const seller=await User.findOne({_id:seller_id})
@@ -161,39 +186,43 @@ const completeTrade = async(req, res)=>{
     confirmedTxn = await algosdk.waitForConfirmation(algodclient, xtx.txId, 4);
 
     //update the item owner and add the transaction
-    const itemTransactions = target_item.transactions
-    itemTransactions.push(tradeId)
+    // const itemTransactions = target_item.transactions
+    // itemTransactions.push(tradeId)
     await Item.updateOne({_id:item_id}, {owner:buyer.name})
-    await Item.updateOne({_id:item_id}, {transactions:itemTransactions})
+    //await Item.updateOne({_id:item_id}, {transactions:itemTransactions})
 
     //remove item from the seller
     const sellerItems=seller.items_owned
     const newSellerItems = sellerItems.filter(item => item!=item_id)
-    await User.updateOne({_id:seller_id}, {items_owned:newSellerItems})
+    //await User.updateOne({_id:seller_id}, {items_owned:newSellerItems})
     
     //remove pending trade from seller, add complete trade to seller
     const sellerPending=seller.pending_trades
     const newSellerPending = sellerPending.filter(trade => trade!=tradeId)
-    await User.updateOne({_id:seller_id}, {pending_trades:newSellerPending})
     const sellerComplete=seller.completed_trades
     sellerComplete.push(tradeId)
-    await User.updateOne({_id:seller_id},  {completed_trades:sellerComplete})
+    //update seller account
+    await User.updateOne({_id:seller_id},  {items_owned:newSellerItems, pending_trades:newSellerPending, completed_trades:sellerComplete})
 
     //push the item to the buyer
     const buyerItems=buyer.items_owned
     buyerItems.push(item_id)
-    await User.updateOne({_id:buyer_id}, {items_owned:buyerItems})
+    //await User.updateOne({_id:buyer_id}, {items_owned:buyerItems})
 
     //remove pending trade from buyer, add pending trade to buyer
     const buyerPending=buyer.pending_trades
     const newBuyerPending = buyerPending.filter(trade => trade!=tradeId)
     const buyerComplete=buyer.completed_trades
     buyerComplete.push(tradeId)
+    //update buyer account
     await User.updateOne({_id:buyer_id}, {items_owned:buyerItems, pending_trades:newBuyerPending, completed_trades:buyerComplete})
+
+    //update pending status for trade
+    await Trade.updateOne({_id:tradeId}, {pendingStatus:false})
     return res.status(200).json({msg:"OK"})
 }
 
-const generateProfileQRCode = (req, res)=>{
+const getProfileQRCode = (req, res)=>{
     const {userId} = req.body
     const key=new ObjectId().toString()
     const newProfileCode = new PublicProfile({userId:userId, key:key})
@@ -208,8 +237,11 @@ const generateProfileQRCode = (req, res)=>{
           }, function (err) {
             if (err) throw err
             console.log('done')
+            const filePath=path.resolve(`./qrcodes/profiles/${userId}-${key}.png`)
+            return res.sendFile(filePath, function(err){
+                fs.unlinkSync(filePath)
+            })
         })
-        return res.sendFile()
     }).catch((e)=>{
         console.log("error:", e)
         return res.status(404).json({message:e.message})
@@ -259,22 +291,32 @@ const getItemInfo=(req, res) => {
         let item=data
         let assetId=item.asset_id
         let transactions=[]
-        axios.get(`https://algoindexer.testnet.algoexplorerapi.io/v2/assets/${assetId}/transactions?limit=10`).then((response) => {
+        axios.get(`https://algoindexer.testnet.algoexplorerapi.io/v2/assets/${assetId}/transactions`).then((response) => {
             let data=response.data
             let assetTransactions=data.transactions
             for(let i=0;i<assetTransactions.length;i++){
                 let transaction=assetTransactions[i]
+                const date=transaction['round-time']
+                let id=transaction.id
                 if(transaction['asset-config-transaction']){
-                    transactions.push({transactionId:transaction.id, creator:transaction['asset-config-transaction']['params']['creator']})
+                    transactions.push({
+                        transactionId:id, 
+                        creator:transaction['asset-config-transaction']['params']['creator'],
+                        timestamp:date
+                    })
                 }
                 else if(transaction['asset-transfer-transaction']){
                     transactions.push({
-                        transactionId:transaction.id,
+                        transactionId:id,
                         sender:transaction['sender'],
-                        receiver:transaction['asset-transfer-transaction']['receiver']
+                        receiver:transaction['asset-transfer-transaction']['receiver'],
+                        timestamp:date
                     })
                 }
             }
+            transactions.sort((a, b)=>{
+                return b.timestamp-a.timestamp
+            })
             return res.status(200).json({item:{name:item.name}, transactions:transactions})
         }, (error)=>{
             return res.status(404).json({message:"ERROR"})
@@ -286,10 +328,10 @@ module.exports = {
     login,
     register,
     logout,
-    getUser,
+    getCurrentUser,
     createPendingTrade,
     completeTrade,
-    generateProfileQRCode,
+    getProfileQRCode,
     keyVerification,
     scanQrCode,
     getItemInfo
