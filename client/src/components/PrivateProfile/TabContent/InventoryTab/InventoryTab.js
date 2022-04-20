@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Table} from 'react-bootstrap';
+import {Table,Row,Col,Container} from 'react-bootstrap';
 import {FlipCard} from './FlipCard'
 import { MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
 import './InventoryTab.css';
@@ -32,7 +32,7 @@ const InventoryTab =(props)=>{
       };
       
     return(
-        <div class = "container-fluid">
+        <Container>
             {/* <MDBTable maxHeight="450px" borderless scrollY>
                 <MDBTableHead  columns={data.columns} />
                 <MDBTableBody>
@@ -50,14 +50,42 @@ const InventoryTab =(props)=>{
                 </MDBTableBody>
                 
             </MDBTable> */}
-            <div class="row align-items-start">
-            <div  class="col ">
-              <FlipCard></FlipCard>
+            <div >
+            <Row>
+              <Col>
+                <FlipCard></FlipCard>
+              </Col>
+              <Col>
+                <FlipCard></FlipCard>
+              </Col>
+              <Col>
+                <FlipCard></FlipCard>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <FlipCard></FlipCard>
+              </Col>
+              <Col>
+                <FlipCard></FlipCard>
+              </Col>
+              <Col>
+                <FlipCard></FlipCard>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <FlipCard></FlipCard>
+              </Col>
+              <Col>
+                <FlipCard></FlipCard>
+              </Col>
+              <Col>
+                <FlipCard></FlipCard>
+              </Col>
+            </Row>
             </div>
-            
-            
-            </div>
-        </div>
+        </Container>
     );
 };
 export default InventoryTab
