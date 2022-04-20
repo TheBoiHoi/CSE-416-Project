@@ -4,14 +4,16 @@ const api=axios.create({
     baseURL:'http://localhost:3000'
 })
 
-const Login = (payload)=>api.post('/user_login', payload)
-const Register = (payload) => api.post('/user_register', payload)
+const Login = (payload)=>api.post('/user/login', payload)
+const Register = (payload) => api.post('/user/register', payload)
 
-const GetUser = (id) => api.get(`/user_profile/${id}`)
+const GetCurrentUser = () => api.get(`/user`)
+const generateProfileQRCode = (id) => api.get(`/qrcode/profile/${id}`, {responseType:'arraybuffer'})
 const apis = {
     Login,
     Register,
-    GetUser
+    GetCurrentUser,
+    generateProfileQRCode
 }
 
 export default apis

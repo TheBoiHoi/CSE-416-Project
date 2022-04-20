@@ -8,12 +8,23 @@ import {InventoryTable} from './components/InventoryTable/MainTable/InventoryTab
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {Navbar} from './components/Navbar';
-
+import {useState, useEffect} from "react"
+import apis from './api'
 function App() {
+  const [user, setUser]=useState(null)
+  useEffect(() => {
+    apis.GetCurrentUser().then(response=>{
+      if(response.data.user){
+        setUser(response.data.user)
+      }
+    }).catch(e => {
+      console.log(e.response)
+    })
+}, [])
   return (
     <div>
       <BrowserRouter>
-      <Navbar isCompany ={true}/>
+      <Navbar user={user} isCompany={true}/>
         <Routes>
           <Route path="/" element={<Welcome/>}/>
           <Route path="/login" element={<Login/>}/>
