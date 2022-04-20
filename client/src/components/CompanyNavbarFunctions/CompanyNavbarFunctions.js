@@ -34,7 +34,6 @@ export const CompanyNavbarFunctions = () =>{
           
 
           <div className ="company_add">
-
             <IconButton onClick={()=>setShowModal(true)}>
             <Add/>
             </IconButton>
