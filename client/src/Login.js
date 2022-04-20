@@ -40,9 +40,9 @@ const Login = (props) =>  {
     // eslint-disable-next-line no-console
     
     apis.Login({email:data.get('email'), password:data.get('password')}).then(response=>{
-      console.log("response:", response.data.user)
-      const userId = response.data.userId
-      navigate(`/profile/${userId}`)
+      //const userId = response.data.userId
+      props.setUser(response.data.user)
+      navigate(`/profile`)
     }).catch(error => {
       console.log("error:", error.response)
     })

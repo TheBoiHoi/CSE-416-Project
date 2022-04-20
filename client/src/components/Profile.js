@@ -5,15 +5,15 @@ import ProfileCard from './PrivateProfile/ProfileCard'
 import PrivateTabs from './PrivateProfile/PrivateTabs'
 
 export const Profile = (props) => {
-    const {userId} = useParams()
-    const [user, setUser] = useState(null)
-    useEffect(() => {
-        apis.GetUser(userId).then(response=>{
-            setUser(response.data.user)
-            props.toggleIsUser(true)
-            props.setUserName(user.name)
-        })
-    }, [])
+    // const {userId} = useParams()
+    // const [user, setUser] = useState(null)
+    // useEffect(() => {
+    //     apis.GetUser(userId).then(response=>{
+    //         setUser(response.data.user)
+    //         props.toggleIsUser(true)
+    //         props.setUserName(user.name)
+    //     })
+    // }, [])
     
     const ScanQRCode=()=>{
         let file=document.getElementById("myFile").files[0]
@@ -25,11 +25,11 @@ export const Profile = (props) => {
             body:formData
         })
     }
-    if(user){
+    if(props.user){
         return(
             <div>
                 <div>
-                    Hello, {user.name}! You have successfully logged in
+                    Hello, {props.user.name}! You have successfully logged in
                     <div style={{}} class="row align-items-center">
                         <br></br>
                     </div>
@@ -38,7 +38,7 @@ export const Profile = (props) => {
                     <input type="submit" onClick={ScanQRCode}/>
                     <div class="row align-items-center">
                     <div  align="center" class="col">
-                        <ProfileCard user={user}/>
+                        <ProfileCard user={props.user}/>
                     </div>
                     </div>
                     <div class="row align-items-center">

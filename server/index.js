@@ -23,21 +23,23 @@ app.use(function(req, res, next){
 })
 app.use(cookieParser())
 app.use(express.json())
-app.post('/user_register', user.register)
-app.post('/user_login', user.login)
-app.post('/user_logout', auth.verify, user.logout)
-app.get(`/user_profile/:id`, auth.verify, user.getUser)
 
-app.get('user/profile/public/:id/:key', user.keyVerification, user.getUser)
+app.get(`/user`, auth.verify, user.getCurrentUser)
+app.post('/user/register', user.register)
+app.post('/user/login', user.login)
+app.post('/user/logout', auth.verify, user.logout)
+
+
+app.get('user/profile/public/:id/:key', user.keyVerification, user.getCurrentUser)
 app.get('/get/item/:itemId', user.getItemInfo)
-app.post('/create_trade',auth.verify, user.createPendingTrade)
-app.post('/complete_trade', auth.verify, user.completeTrade)
+app.post('/trade/create',auth.verify, user.createPendingTrade)
+app.post('/trade/complete', auth.verify, user.completeTrade)
 
 app.post('/company_register', company.register)
 app.post('/company_login', company.login)
 app.get(`/inventory/:id`, auth.verify, company.getCompany)
-app.post('/company_createItem', company.createItem)
-app.post('/company_sellItem', company.sellItem)
+app.post('/company/createItem', company.createItem)
+app.post('/company/sellItem', company.sellItem)
 app.post('/company_addItem', auth.verify, company.addItem)
 app.post('/generate/qrcode/item', company.generateItemQRCode)
 app.get('/qrcode/item/:itemId', (req, res)=>{

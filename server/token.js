@@ -6,7 +6,7 @@ const verify = (req, res, next) =>{
     try{
         const token=req.cookies.token;
         if(!token){
-            return res.status(401).json({"msg":"ERROR"})
+            return res.status(404).json({"msg":"ERROR, no token"})
         }
         
         const verified=jwt.verify(token, JWT_SECRET)
@@ -16,7 +16,7 @@ const verify = (req, res, next) =>{
 
     catch(err){
         console.log(err)
-        return res.status(401).json({msg:"ERROR"})
+        return res.status(404).json({msg:"ERROR"})
     }
 }
 

@@ -7,20 +7,28 @@ import {InventoryTable} from './components/InventoryTable/MainTable/InventoryTab
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {Navbar} from './components/Navbar';
-import {useState, useEffect} from 'react'
-
+import {useState, useEffect} from "react"
+import apis from './api'
 function App() {
-  const [isUser, toggleIsUser]=useState(false)
-  const [userName, setUserName]=useState("")
+  const [user, setUser]=useState(null)
+  useEffect(() => {
+    apis.GetCurrentUser().then(response=>{
+      if(response.data.user){
+        setUser(response.data.user)
+      }
+    }).catch(e => {
+      console.log(e.response)
+    })
+}, [])
   return (
     <div>
       <BrowserRouter>
-      <Navbar isUser ={isUser} isCompany={true} userName={userName}/>
+      <Navbar user={user} isCompany={true}/>
         <Routes>
-          <Route path="/" element={<Welcome/>}/>
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/profile/:userId" element={<Profile setUserName={setUserName} toggleIsUser={toggleIsUser}/>}/>
-          <Route path="/profile" element={<Profile/>}/>
+          <Route path="/" element={user?<Profile user={user}/>:<Welcome/>}/>
+          <Route path="/login" element={<Login setUser={setUser}/>}/>
+          <Route path="/profile/:userId" element={<Profile user={user}/>}/>
+          <Route path="/profile" element={<Profile user={user}/>}/>
           <Route path ="/inventory_table" element={<InventoryTable/>}/>
           <Route path="/register" element={<Register/>}/>
         </Routes>
