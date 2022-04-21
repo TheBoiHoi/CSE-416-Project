@@ -12,6 +12,7 @@ const ItemProfile =(props)=>{
                 <ItemCard name="testuser"/>
             </div>
             </div>
+            <br></br>
             <div class="row align-items-center">
             <div  align="center" class="col">
                 <ItemExchanges/>
