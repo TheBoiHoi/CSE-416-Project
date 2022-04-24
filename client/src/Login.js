@@ -38,14 +38,32 @@ const Login = (props) =>  {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
-    
-    apis.Login({email:data.get('email'), password:data.get('password')}).then(response=>{
-      //const userId = response.data.userId
-      props.setUser(response.data.user)
-      navigate(`/profile`)
-    }).catch(error => {
-      console.log("error:", error.response)
-    })
+    if(document.getElementById('user_checkbox').checked){
+      console.log("user logging in")
+      const response = apis.Login({email:data.get('email'), password:data.get('password')}).then(response=>{
+        console.log("response:", response.data.user)
+        const userId = response.data.userId
+        navigate(`/profile/${userId}`)
+      }).catch(error => {
+        console.log("error:", error.response)
+      })
+    }else if(document.getElementById('user_checkbox').checked){
+      // console.log("company logging in")
+      // const response = apis.CompanyLogin({email:data.get('email'), password:data.get('password')}).then(response=>{
+      // console.log("response:", response.data.user)
+      // const company_id = response.data.userId
+      //   navigate(`/inventory_table`)
+      // }).catch(error => {
+      //   console.log("error:", error.response)
+      // })
+    }   
+    // apis.Login({email:data.get('email'), password:data.get('password')}).then(response=>{
+    //   //const userId = response.data.userId
+    //   props.setUser(response.data.user)
+    //   navigate(`/profile`)
+    // }).catch(error => {
+    //   console.log("error:", error.response)
+    // })
   };
 
   return (
@@ -66,7 +84,12 @@ const Login = (props) =>  {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box sx={{mt:2}}>User Company</Box>
+          <Box sx={{mt:2}}>
+          <input class="form-check-input" type="radio" name="flexRadioDefault" id="user_checkbox" checked></input>
+          User
+          <input class="form-check-input" type="radio" name="flexRadioDefault" id="company_checkbox" checked></input>
+          Company
+          </Box>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"

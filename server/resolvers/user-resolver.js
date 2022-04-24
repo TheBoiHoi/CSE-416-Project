@@ -14,11 +14,11 @@ const algosdk = require('algosdk');
 const company = require('../models/company')
 const baseServer = 'https://testnet-algorand.api.purestake.io/ps2'
 const port = '';
-const token = {
+const apitoken = {
     'X-API-Key': 'X4SwVT0RbP46NwfrQxmM61U3pqTUoekDLSigOTpb'
 }
 const axios=require('axios')
-const algodclient = new algosdk.Algodv2(token, baseServer, port);
+const algodclient = new algosdk.Algodv2(apitoken, baseServer, port);
 
 const login = async(req, res)=>{
     try{

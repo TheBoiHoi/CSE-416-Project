@@ -9,11 +9,15 @@ const Register = (payload) => api.post('/user/register', payload)
 
 const GetCurrentUser = () => api.get(`/user`)
 const generateProfileQRCode = (id) => api.get(`/qrcode/profile/${id}`, {responseType:'arraybuffer'})
+
+const CompanyLogin = (payload) => api.post('/company/login', payload)
+
 const apis = {
     Login,
     Register,
     GetCurrentUser,
-    generateProfileQRCode
+    generateProfileQRCode,
+    CompanyLogin
 }
 
 export default apis
