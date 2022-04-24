@@ -29,7 +29,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Welcome/>}/>
           <Route path="/login" element={<Login setUser={setUser}/>}/>
-          <Route path="/profile" element={<Profile user={user}/>}/>
+          <Route path="/profile" element={<Profile setUser={setUser} user={user}/>}/>
           <Route path="/public/profile" element={<PublicProfile/>}/>
           <Route path="/item/profile" element={<ItemProfile/>}/>
           <Route path ="/inventory_table" element={<InventoryTable/>}/>

@@ -26,6 +26,7 @@ const FlipCard = (props)=>{
       <div>
         <ReactCardFlip isFlipped={isFlipped} flipDirection="vertical"> 
             <div  onClick={handleClick}> 
+                {props.item}
                 <InventoryCard  front={true}/>
             </div>   
             <div  onClick={handleClick}>

@@ -344,6 +344,25 @@ const getCompletedTrades=(req, res)=>{
         if(!data){
             return res.status(404).json({message:"ERROR; user is not found"})
         }
+
+        const algoAddr=data.algoAddr
+        axios.get(`https://algoindexer.testnet.algoexplorerapi.io/v2/${algoAddr}/transactions`).then((response)=>{
+            let data=response.data
+            let transactions=data.transactions
+            let ret=[]
+            for(let i=0;i<transactions.length;i++){
+                let transaction=transactions[i]
+                if(transaction['asset-transfer-transaction']){
+                    ret.push({
+                        receiver:transaction['asset-transfer-transaction']['receiver'],
+                        sender:transaction['sender'],
+                        item:transaction['asset-transfer-transaction']['asset-id'],
+                        timestamp:transaction['round-time']
+                    })
+                }
+            }
+            return res.status(200).json({transactions:ret})
+        })
     })
 }
 module.exports = {
@@ -357,5 +376,6 @@ module.exports = {
     keyVerification,
     scanQrCode,
     getItemInfo,
-    getPendingTrades
+    getPendingTrades,
+    getCompletedTrades
 }
