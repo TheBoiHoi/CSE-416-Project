@@ -21,7 +21,7 @@ const Welcome = (props) => {
   
   return (
     <div>
-      <div style={{padding:'30px'}}class="section first-section">
+      <div style={{padding:'30px'}} class="section first-section">
         <div class="container-fluid">
           <div style={{}} class="row align-items-center">
             <div class="col-1"></div>

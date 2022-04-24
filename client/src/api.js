@@ -8,7 +8,7 @@ const Login = (payload)=>api.post('/user/login', payload)
 const Register = (payload) => api.post('/user/register', payload)
 
 const GetCurrentUser = () => api.get(`/user`)
-const generateProfileQRCode = (id) => api.get(`/qrcode/profile/${id}`, {responseType:'arraybuffer'})
+const generateProfileQRCode = () => api.get(`/qrcode/profile`, {responseType:'arraybuffer'})
 const apis = {
     Login,
     Register,

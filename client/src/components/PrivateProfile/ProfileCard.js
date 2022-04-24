@@ -7,7 +7,7 @@ import {Buffer} from 'buffer'
 const ProfileCard = (props) =>{
     const[code, setCode] = useState(null)
     const generateQRCode=()=>{
-        api.generateProfileQRCode(props.user.userId).then(response=>{
+        api.generateProfileQRCode().then(response=>{
             setCode(Buffer.from(response.data).toString('base64'))
         })
     }
