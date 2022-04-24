@@ -5,23 +5,24 @@ import {FlipCard} from './FlipCard'
 import { MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
 import './InventoryTab.css';
 const InventoryTab =(props)=>{
-  const [inventoryList,setInventoryList]=useState([])
+  //const [inventoryList,setInventoryList]=useState([])
   const [publicProfile,setPublicProfile]=useState(false)
-  let templist =[]
   useEffect(()=>{
     console.log("printing props.user")
     console.log(props.user)
     if(props.public===true){
       setPublicProfile(true)
     }
-    console.log(props.user.items)
-    templist=props.user.items
-    console.log(templist)
     //setInventoryList(props.user.items)
-    //console.log(inventoryList)
   },[]);
-
-
+  let templist=[]
+  for(let i=0;i<props.user.items.length;i++){
+    templist.push(props.user.items[i])
+  }
+  let newInventoryList=[]
+  while(templist.length){
+    newInventoryList.push(templist.splice(0,3))
+  }
 
   // const data = {
   //     columns: [
@@ -49,6 +50,8 @@ const InventoryTab =(props)=>{
   //       },
   //     ]
   //   };
+
+  
   if(publicProfile){
     return(
         <Container >
@@ -70,22 +73,22 @@ const InventoryTab =(props)=>{
                 
             </MDBTable> */}
             <div style={{height:'500px',overflow:'scroll'}} >
-            {templist.map((inv,i)=>
-            (i+1)%3===0? (
-              <Row>
-                {" "}
-                <></>
-                {Array(3).fill().map((el,index)=>{
-                  return <Col>
-                    <FlipCard item={el} public={true}></FlipCard>
-                  </Col>
-                })}
-                {" "}
-              </Row>
-            ): (
-              <></>
-            )
-            )}
+            {
+              newInventoryList.map((row,i)=>
+                <Row>
+                  {" "}
+                  <></>
+                  {
+                    row.map((col,i)=>{
+                      return <Col>
+                        <FlipCard index={i} item={col}></FlipCard>
+                      </Col>
+                    })
+                  }
+                  {" "}
+                </Row>
+              )
+            }
             </div>
         </Container>
     )
@@ -111,14 +114,30 @@ const InventoryTab =(props)=>{
                 
             </MDBTable> */}
             <div style={{height:'500px',overflow:'scroll'}} >
-            {templist.map((inv,i)=>
+            {
+              newInventoryList.map((row,i)=>
+                <Row>
+                  {" "}
+                  <></>
+                  {
+                    row.map((col,i)=>{
+                      return <Col>
+                        <FlipCard index={i} item={col}></FlipCard>
+                      </Col>
+                    })
+                  }
+                  {" "}
+                </Row>
+              )
+            }
+            {/* {templist.map((inv,i)=>
             (i+1)%3===0? (
               <Row>
                 {" "}
                 <></>
                 {Array(3).fill().map((el,index)=>{
                   return <Col>
-                    <FlipCard item={el}></FlipCard>
+                    <FlipCard index={i} item={inv}></FlipCard>
                   </Col>
                 })}
                 {" "}
@@ -126,7 +145,7 @@ const InventoryTab =(props)=>{
             ): (
               <></>
             )
-            )}
+            )} */}
             </div>
         </Container>
     )
