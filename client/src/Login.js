@@ -40,6 +40,7 @@ const Login = (props) =>  {
     // eslint-disable-next-line no-console
     if(document.getElementById('user_checkbox').checked){
       apis.Login({email:data.get('email'), password:data.get('password')}).then(response=>{
+        props.setUser(response.data.user)
         navigate('/profile')
       }).catch(error => {
         console.log("error:", error.response)

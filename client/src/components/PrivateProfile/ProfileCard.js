@@ -4,12 +4,16 @@ import Duckpfp from '../../Icons/duckpfp.png'
 import api from '../../api'
 import {useState} from 'react'
 import {Buffer} from 'buffer'
+import QrModal from './QrModal'
 const ProfileCard = (props) =>{
     const[code, setCode] = useState(null)
+    const[show, setShow]=useState(false)
     const generateQRCode=()=>{
         api.generateProfileQRCode().then(response=>{
             setCode(Buffer.from(response.data).toString('base64'))
+            setShow(true)
         })
+        
     }
     return (
         <Card style={{ width: '18rem' }}>
@@ -26,7 +30,7 @@ const ProfileCard = (props) =>{
                 <Button style={{margin:"auto"}} variant="primary" onClick={generateQRCode}>Generate QR Code</Button>
             </div>
         </Card.Body>
-        {code&&<img src={`data:image/png;base64, ${code}`}/>}
+        {show&&<QrModal code={code} setShow={setShow}/>}
         </Card>
         
     );
