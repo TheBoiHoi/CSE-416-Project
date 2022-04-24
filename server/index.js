@@ -32,6 +32,7 @@ app.post('/user/logout', auth.verify, user.logout)
 
 app.get('user/profile/public/:id/:key', user.keyVerification, user.getCurrentUser)
 app.get('/get/item/:itemId', user.getItemInfo)
+app.get('/trade/get', user.getPendingTrades)
 app.post('/trade/create',auth.verify, user.createPendingTrade)
 app.post('/trade/complete', auth.verify, user.completeTrade)
 

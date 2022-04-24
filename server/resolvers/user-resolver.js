@@ -282,6 +282,19 @@ const scanQrCode = (req, res)=>{
     });
 }
 
+const getPendingTrades = (req, res) => {
+    const {userId} = req.params;
+    Trade.find({$or: [
+        { buyer_id: userId },
+        { seller_id: userId }
+    ]}).and({isPending: true}).exec((err, results) => {
+        if(err){
+            return res.status(404).json({message: "ERROR"});
+        }
+        return results;
+    });
+}
+
 const getItemInfo=(req, res) => {
     const {itemId} = req.params
     Item.findOne({_id:itemId}).then(data => {
@@ -343,5 +356,6 @@ module.exports = {
     getProfileQRCode,
     keyVerification,
     scanQrCode,
-    getItemInfo
+    getItemInfo,
+    getPendingTrades
 }

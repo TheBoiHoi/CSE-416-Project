@@ -23,7 +23,11 @@ export const InventoryCard =(props)=>{
                 Color:Blue
                 </Card.Text>
                 <Card.Text>Serial Number:1234567</Card.Text>
-                <Card.Link href='#'>Start Trade</Card.Link>
+                {props.public?
+                    <Card.Link href='#'>Start Trade</Card.Link>
+                    :
+                    <></>
+                }
                 <br></br>
                 <Card.Link href='#'>Item Profile</Card.Link>
                 </Card.Body>

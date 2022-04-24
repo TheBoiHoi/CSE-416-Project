@@ -1,7 +1,9 @@
 import ReactCardFlip from 'react-card-flip';
 import * as React from 'react'
 import {InventoryCard} from '../InventoryCard'
-export class FlipCard extends React.Component {
+import {useState} from 'react'
+const FlipCard = (props)=>{
+  const [isFlipped, toggleIsFlipped]=useState(false)
     constructor() {
       super();
         this.state = {
@@ -12,8 +14,9 @@ export class FlipCard extends React.Component {
   
     handleClick(e) {
       e.preventDefault();
-      console.log('hello')
-      this.setState(prevState => ({ isFlipped: !prevState.isFlipped }));
+      //console.log('hello')
+      toggleIsFlipped(!isFlipped)
+      //this.setState(prevState => ({ isFlipped: !prevState.isFlipped }));
     }
   
     render() {
@@ -24,10 +27,12 @@ export class FlipCard extends React.Component {
                   <InventoryCard  front={true}/>
               </div>   
               <div  onClick={this.handleClick}>
-                  <InventoryCard front={false}/>
+                  <InventoryCard public={this.props.public} front={false}/>
               </div>
           </ReactCardFlip>
         </div>
       )
     }
   }
+
+export default FlipCard

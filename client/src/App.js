@@ -3,6 +3,8 @@ import Login from './Login'
 import Welcome from './components/Welcome'
 import Register from './components/Register'
 import {Profile} from './components/Profile'
+import {PublicProfile} from './components/PublicProfile'
+import ItemProfile from './components/ItemProfile/ItemProfile'
 import {InventoryTable} from './components/InventoryTable/MainTable/InventoryTable';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
@@ -25,10 +27,11 @@ function App() {
       <BrowserRouter>
       <Navbar user={user} isCompany={true}/>
         <Routes>
-          <Route path="/" element={user?<Profile user={user}/>:<Welcome/>}/>
+          <Route path="/" element={<Welcome/>}/>
           <Route path="/login" element={<Login setUser={setUser}/>}/>
-          <Route path="/profile/:userId" element={<Profile user={user}/>}/>
           <Route path="/profile" element={<Profile user={user}/>}/>
+          <Route path="/public/profile" element={<PublicProfile/>}/>
+          <Route path="/item/profile" element={<ItemProfile/>}/>
           <Route path ="/inventory_table" element={<InventoryTable/>}/>
           <Route path="/register" element={<Register/>}/>
         </Routes>

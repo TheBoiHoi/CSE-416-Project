@@ -1,0 +1,16 @@
+.pendingTrade {
+    display: flex;
+    background-color: pink;
+}
+
+.box {
+    width: 25%;
+}
+
+.tradeInitiated {
+    background-color: royalblue;
+}
+
+.itemName {
+    background-color: aquamarine;
+}
