@@ -346,7 +346,8 @@ const getCompletedTrades=(req, res)=>{
         }
 
         const algoAddr=data.algoAddr
-        axios.get(`https://algoindexer.testnet.algoexplorerapi.io/v2/${algoAddr}/transactions`).then((response)=>{
+        console.log("addr:", algoAddr)
+        axios.get(`https://algoindexer.testnet.algoexplorerapi.io/v2/accounts/${algoAddr}/transactions`).then((response)=>{
             let data=response.data
             let transactions=data.transactions
             let ret=[]
@@ -354,6 +355,7 @@ const getCompletedTrades=(req, res)=>{
                 let transaction=transactions[i]
                 if(transaction['asset-transfer-transaction']){
                     ret.push({
+                        id:transaction['id'],
                         receiver:transaction['asset-transfer-transaction']['receiver'],
                         sender:transaction['sender'],
                         item:transaction['asset-transfer-transaction']['asset-id'],
@@ -362,6 +364,8 @@ const getCompletedTrades=(req, res)=>{
                 }
             }
             return res.status(200).json({transactions:ret})
+        }).catch((e)=>{
+            console.log("ERROR:")
         })
     })
 }
