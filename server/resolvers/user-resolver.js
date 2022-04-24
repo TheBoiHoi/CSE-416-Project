@@ -223,7 +223,7 @@ const completeTrade = async(req, res)=>{
 }
 
 const getProfileQRCode = (req, res)=>{
-    const {userId} = req.body
+    const userId=req.userId
     const key=new ObjectId().toString()
     const newProfileCode = new PublicProfile({userId:userId, key:key})
     
@@ -336,6 +336,15 @@ const getItemInfo=(req, res) => {
         })
     })
     
+}
+
+const getCompletedTrades=(req, res)=>{
+    const userId=req.userId
+    User.findOne({_id:userId}).then(data => {
+        if(!data){
+            return res.status(404).json({message:"ERROR; user is not found"})
+        }
+    })
 }
 module.exports = {
     login,
