@@ -33,7 +33,7 @@ function App() {
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/public_profile" element={<PublicProfile/>}/>
           <Route path="/item_profile" element={<ItemProfile/>}/>
-          <Route path ="/inventory_table" element={<InventoryTable/>}/>
+          <Route path ="/inventory_table/:companyId" element={<InventoryTable/>}/>
           <Route path="/register" element={<Register/>}/>
         </Routes>
       </BrowserRouter>
