@@ -3,6 +3,7 @@ const bcrypt=require('bcrypt')
 const Item=require('../models/item')
 const QRCode=require('qrcode')
 const algosdk = require('algosdk');
+const auth=require('../token.js')
 const user = require('../models/user');
 const baseServer = 'https://testnet-algorand.api.purestake.io/ps2'
 const port = '';
