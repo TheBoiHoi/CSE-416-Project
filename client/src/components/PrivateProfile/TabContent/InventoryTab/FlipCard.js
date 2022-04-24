@@ -24,7 +24,7 @@ export class FlipCard extends React.Component {
                   <InventoryCard  front={true}/>
               </div>   
               <div  onClick={this.handleClick}>
-                  <InventoryCard front={false}/>
+                  <InventoryCard public={this.props.public} front={false}/>
               </div>
           </ReactCardFlip>
         </div>

@@ -3,6 +3,7 @@ import Login from './Login'
 import Welcome from './components/Welcome'
 import Register from './components/Register'
 import {Profile} from './components/Profile'
+import {PublicProfile} from './components/PublicProfile'
 import ItemProfile from './components/ItemProfile/ItemProfile'
 import {InventoryTable} from './components/InventoryTable/MainTable/InventoryTable';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -30,6 +31,7 @@ function App() {
           <Route path="/login" element={<Login/>}/>
           <Route path="/profile/:userId" element={<Profile/>}/>
           <Route path="/profile" element={<Profile/>}/>
+          <Route path="/public_profile" element={<PublicProfile/>}/>
           <Route path="/item_profile" element={<ItemProfile/>}/>
           <Route path ="/inventory_table" element={<InventoryTable/>}/>
           <Route path="/register" element={<Register/>}/>
