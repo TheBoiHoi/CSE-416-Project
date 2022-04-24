@@ -14,7 +14,6 @@ export const Profile = (props) => {
     //         props.setUserName(user.name)
     //     })
     // }, [])
-
     const ScanQRCode=()=>{
         let file=document.getElementById("myFile").files[0]
         var formData=new FormData()
@@ -50,24 +49,25 @@ export const Profile = (props) => {
             </div>
         )
     }
-    else{
-        return(
-        <div>
-            <div style={{}} class="row align-items-center">
-                <br></br>
-            </div>
-            <div class="row align-items-center">
-            <div  align="center" class="col">
-                <ProfileCard name="testuser"/>
-            </div>
-            </div>
-            <div class="row align-items-center">
-            <div   align="center" class="col">
-                <PrivateTabs></PrivateTabs>
-            </div>
-            </div>
-        </div>
-        )
-    }
+    return null
+    // else{
+    //     return(
+    //     <div>
+    //         <div style={{}} class="row align-items-center">
+    //             <br></br>
+    //         </div>
+    //         <div class="row align-items-center">
+    //         <div  align="center" class="col">
+    //             <ProfileCard name="testuser"/>
+    //         </div>
+    //         </div>
+    //         <div class="row align-items-center">
+    //         <div   align="center" class="col">
+    //             <PrivateTabs></PrivateTabs>
+    //         </div>
+    //         </div>
+    //     </div>
+    //     )
+    // }
     
 }
