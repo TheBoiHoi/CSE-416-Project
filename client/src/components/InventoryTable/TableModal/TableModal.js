@@ -2,8 +2,12 @@ import {Modal,Button,Row,Col,Carousel} from 'react-bootstrap';
 import Image from 'react-bootstrap/Image'
 import air_mags2 from '../../../img/airmags2.jpg';
 import './TableModal.css';
+import {TransferOwnerShipModal} from '../TransferOwnershipModal/TransferOwnershipModal';
+
+import {useState} from 'react';
 
 export const TableModal =(props)=>{
+  const [showModal,setShowModal] = useState(false);
   return (
     <>
       <Modal
@@ -57,10 +61,14 @@ export const TableModal =(props)=>{
          
         </Modal.Body>
         <Modal.Footer>
+        <Button variant="warning" onClick={()=>{setShowModal(true)}}>
+            Transfer Ownership
+          </Button>
           <Button variant="secondary" onClick={()=>props.toggleModal(!props.showModal)}>
             Close
           </Button>
           <Button variant="primary"  onClick={()=>props.toggleModal(!props.showModal)}>Understood</Button>
+          <TransferOwnerShipModal showModal={showModal} toggleModal ={setShowModal}/>
         </Modal.Footer>
       </Modal>
     </>

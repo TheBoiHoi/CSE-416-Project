@@ -11,12 +11,13 @@ const FlipCard = (props)=>{
       };
       this.handleClick = this.handleClick.bind(this);
     }
-  
+    
+    
     handleClick(e) {
       e.preventDefault();
-      //console.log('hello')
-      toggleIsFlipped(!isFlipped)
-      //this.setState(prevState => ({ isFlipped: !prevState.isFlipped }));
+      console.log("printing item id")
+      console.log(this.props.item)
+      this.setState(prevState => ({ isFlipped: !prevState.isFlipped }));
     }
   
     render() {

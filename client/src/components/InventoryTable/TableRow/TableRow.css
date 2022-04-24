@@ -19,16 +19,17 @@
 
 .date,
 .serial_number,
-.locaton {
+.location, .transfer_button {
   text-align: center;
 }
 .location {
-  padding-left: 7rem;
+  padding-left: 3.5rem;
 }
 
 .serial_number {
-  padding-left: 3rem;
+  padding-left: 4rem;
 }
+
 
 .seperator {
   border-bottom: 0.1rem;

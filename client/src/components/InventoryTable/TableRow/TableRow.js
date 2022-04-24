@@ -1,6 +1,7 @@
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
 import {ItemNameComponent} from "./ItemNameComponent/ItemNameComponent";
 import "./TableRow.css";
 import {useEffect, useState} from 'react';
@@ -11,6 +12,8 @@ export const TableRow = () =>{
   const [background,setBackground] = useState("table_row_container");
 
   const [showModal,setShowModal] = useState(false);
+
+  const [transferOwnerShip, setTransferOwnership] = useState(false);
 
   // const toggleModal =() =>{
   //   setShowModal(!showModal);

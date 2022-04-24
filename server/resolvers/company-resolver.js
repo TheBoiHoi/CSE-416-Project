@@ -6,10 +6,10 @@ const algosdk = require('algosdk');
 const user = require('../models/user');
 const baseServer = 'https://testnet-algorand.api.purestake.io/ps2'
 const port = '';
-const token = {
+const apitoken = {
     'X-API-Key': 'X4SwVT0RbP46NwfrQxmM61U3pqTUoekDLSigOTpb'
 }
-const algodclient = new algosdk.Algodv2(token, baseServer, port);
+const algodclient = new algosdk.Algodv2(apitoken, baseServer, port);
 const login=async(req, res)=>{
     const {email, password}=req.body
     const company=await Company.findOne({email:email})

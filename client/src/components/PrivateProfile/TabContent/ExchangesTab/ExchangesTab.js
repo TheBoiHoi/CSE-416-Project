@@ -3,6 +3,7 @@ import {Table} from 'react-bootstrap'
 import ShoeImg from '../../../../img/airmags.jpg'
 import { MDBTable, MDBTableBody, MDBTableHead,MDBDataTable } from 'mdbreact';
 const ExchangesTab=(props)=>{
+    
     const data = {
         columns: [
           {
