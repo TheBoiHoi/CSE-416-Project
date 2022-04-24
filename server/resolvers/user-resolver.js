@@ -346,7 +346,6 @@ const getCompletedTrades=(req, res)=>{
         }
 
         const algoAddr=data.algoAddr
-        console.log("addr:", algoAddr)
         axios.get(`https://algoindexer.testnet.algoexplorerapi.io/v2/accounts/${algoAddr}/transactions`).then((response)=>{
             let data=response.data
             let transactions=data.transactions

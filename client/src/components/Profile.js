@@ -5,15 +5,6 @@ import ProfileCard from './PrivateProfile/ProfileCard'
 import PrivateTabs from './PrivateProfile/PrivateTabs'
 
 export const Profile = (props) => {
-    // const {userId} = useParams()
-    // const [user, setUser] = useState(null)
-    // useEffect(() => {
-    //     apis.GetUser(userId).then(response=>{
-    //         setUser(response.data.user)
-    //         props.toggleIsUser(true)
-    //         props.setUserName(user.name)
-    //     })
-    // }, [])
     const ScanQRCode=()=>{
         let file=document.getElementById("myFile").files[0]
         var formData=new FormData()
