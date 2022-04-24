@@ -14,7 +14,7 @@ export const Profile = (props) => {
     //         props.setUserName(user.name)
     //     })
     // }, [])
-    
+
     const ScanQRCode=()=>{
         let file=document.getElementById("myFile").files[0]
         var formData=new FormData()
@@ -43,7 +43,7 @@ export const Profile = (props) => {
                     </div>
                     <div class="row align-items-center">
                     <div   align="center" class="col">
-                        <PrivateTabs></PrivateTabs>
+                        <PrivateTabs user={props.user}></PrivateTabs>
                     </div>
                     </div>
                 </div>

@@ -42,6 +42,7 @@ const Login = (props) =>  {
     apis.Login({email:data.get('email'), password:data.get('password')}).then(response=>{
       //const userId = response.data.userId
       props.setUser(response.data.user)
+      console.log("LOGGING IN")
       navigate(`/profile`)
     }).catch(error => {
       console.log("error:", error.response)

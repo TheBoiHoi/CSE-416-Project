@@ -9,10 +9,12 @@ export class FlipCard extends React.Component {
       };
       this.handleClick = this.handleClick.bind(this);
     }
-  
+    
+    
     handleClick(e) {
       e.preventDefault();
-      console.log('hello')
+      console.log("printing item id")
+      console.log(this.props.item)
       this.setState(prevState => ({ isFlipped: !prevState.isFlipped }));
     }
   

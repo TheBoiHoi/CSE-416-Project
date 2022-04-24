@@ -7,44 +7,21 @@ import './InventoryTab.css';
 const InventoryTab =(props)=>{
   const [inventoryList,setInventoryList]=useState([])
   const [publicProfile,setPublicProfile]=useState(false)
+  let templist =[]
   useEffect(()=>{
+    console.log("printing props.user")
+    console.log(props.user)
     if(props.public===true){
       setPublicProfile(true)
     }
-  });
+    console.log(props.user.items)
+    templist=props.user.items
+    console.log(templist)
+    //setInventoryList(props.user.items)
+    //console.log(inventoryList)
+  },[]);
 
-  let templist=[
-    {
-      name:"Air mags",
-      color:"blue",
-      serial:"1234567"
-    },
-    {
-      name:"Air mags",
-      color:"blue",
-      serial:"1234567"
-    },
-    {
-      name:"Air mags",
-      color:"blue",
-      serial:"1234567"
-    },
-    {
-      name:"Air mags",
-      color:"blue",
-      serial:"1234567"
-    },
-    {
-      name:"Air mags",
-      color:"blue",
-      serial:"1234567"
-    },
-    {
-      name:"Air mags",
-      color:"blue",
-      serial:"1234567"
-    },
-  ]
+
 
   // const data = {
   //     columns: [
@@ -100,7 +77,7 @@ const InventoryTab =(props)=>{
                 <></>
                 {Array(3).fill().map((el,index)=>{
                   return <Col>
-                    <FlipCard public={true}></FlipCard>
+                    <FlipCard item={el} public={true}></FlipCard>
                   </Col>
                 })}
                 {" "}
@@ -141,7 +118,7 @@ const InventoryTab =(props)=>{
                 <></>
                 {Array(3).fill().map((el,index)=>{
                   return <Col>
-                    <FlipCard></FlipCard>
+                    <FlipCard item={el}></FlipCard>
                   </Col>
                 })}
                 {" "}

@@ -28,9 +28,8 @@ function App() {
       <Navbar user={user} isCompany={true}/>
         <Routes>
           <Route path="/" element={<Welcome/>}/>
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/profile/:userId" element={<Profile/>}/>
-          <Route path="/profile" element={<Profile/>}/>
+          <Route path="/login" element={<Login setUser={setUser}/>}/>
+          <Route path="/profile" element={<Profile user={user}/>}/>
           <Route path="/public_profile" element={<PublicProfile/>}/>
           <Route path="/item_profile" element={<ItemProfile/>}/>
           <Route path ="/inventory_table" element={<InventoryTable/>}/>
