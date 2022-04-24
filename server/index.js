@@ -35,6 +35,7 @@ app.get('/get/item/:itemId', user.getItemInfo)
 app.get('/trade/get', user.getPendingTrades)
 app.post('/trade/create',auth.verify, user.createPendingTrade)
 app.post('/trade/complete', auth.verify, user.completeTrade)
+app.get('/trade/complete/get', auth.verify, user.getCompletedTrades)
 
 app.post('/company/register', company.register)
 app.post('/company/login', company.login)
