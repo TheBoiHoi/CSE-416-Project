@@ -1,7 +1,7 @@
 import {useState,createElement,useEffect} from 'react';
 import ReactDOM from 'react-dom'
 import {Table,Row,Col,Container} from 'react-bootstrap';
-import {FlipCard} from './FlipCard'
+import FlipCard from './FlipCard'
 import { MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
 import './InventoryTab.css';
 const InventoryTab =(props)=>{
@@ -96,56 +96,20 @@ const InventoryTab =(props)=>{
   else{
     return(
         <Container >
-            {/* <MDBTable maxHeight="450px" borderless scrollY>
-                <MDBTableHead  columns={data.columns} />
-                <MDBTableBody>
-                {data.rows.map((data)=>{
-                    return(
-                    <tr onClick={()=>{
-                        console.log(data.id)
-                    }}>
-                        <td>{data.id}</td>
-                        <td>{data.item}</td>
-                        <td>{data.color}</td>
-                    </tr>
-                    )
-                })}
-                </MDBTableBody>
-                
-            </MDBTable> */}
             <div style={{height:'500px',overflow:'scroll'}} >
             {
-              newInventoryList.map((row,i)=>
+              newInventoryList.map((row)=>
                 <Row>
-                  {" "}
-                  <></>
                   {
                     row.map((col,i)=>{
                       return <Col>
-                        <FlipCard index={i} item={col}></FlipCard>
+                        <FlipCard public={false} index={i} item={col}></FlipCard>
                       </Col>
                     })
                   }
-                  {" "}
                 </Row>
               )
             }
-            {/* {templist.map((inv,i)=>
-            (i+1)%3===0? (
-              <Row>
-                {" "}
-                <></>
-                {Array(3).fill().map((el,index)=>{
-                  return <Col>
-                    <FlipCard index={i} item={inv}></FlipCard>
-                  </Col>
-                })}
-                {" "}
-              </Row>
-            ): (
-              <></>
-            )
-            )} */}
             </div>
         </Container>
     )

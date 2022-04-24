@@ -26,11 +26,7 @@ const PrivateTabs=(props)=>{
             <ExchangesTab  user={props.user}></ExchangesTab>
         </Tab>
         <Tab style={{width:"50%",boxShadow: "1px 1px 1px #9E9E9E"}} eventKey="Inventory" title="Inventory">
-<<<<<<< HEAD
-            <InventoryTab items={props.user.items}></InventoryTab>
-=======
             <InventoryTab user={props.user}></InventoryTab>
->>>>>>> e2c6a74a7b6f3922dd23bae095d2d12eb9e4aa8e
         </Tab>
         <Tab style={{width:"50%",boxShadow: "1px 1px 1px #9E9E9E"}} eventKey="Pending" title="Pending" >
             <PendingTab handleShowModal={showModal}></PendingTab>

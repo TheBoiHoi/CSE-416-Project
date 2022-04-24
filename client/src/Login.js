@@ -39,11 +39,8 @@ const Login = (props) =>  {
     const data = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
     if(document.getElementById('user_checkbox').checked){
-      console.log("user logging in")
-      const response = apis.Login({email:data.get('email'), password:data.get('password')}).then(response=>{
-        console.log("response:", response.data.user)
-        const userId = response.data.userId
-        navigate(`/profile/${userId}`)
+      apis.Login({email:data.get('email'), password:data.get('password')}).then(response=>{
+        navigate('/profile')
       }).catch(error => {
         console.log("error:", error.response)
       })
@@ -85,9 +82,9 @@ const Login = (props) =>  {
             Sign in
           </Typography>
           <Box sx={{mt:2}}>
-          <input class="form-check-input" type="radio" name="flexRadioDefault" id="user_checkbox" checked></input>
+          <input class="form-check-input" type="radio" name="flexRadioDefault" id="user_checkbox" defaultChecked></input>
           User
-          <input class="form-check-input" type="radio" name="flexRadioDefault" id="company_checkbox" checked></input>
+          <input class="form-check-input" type="radio" name="flexRadioDefault" id="company_checkbox"></input>
           Company
           </Box>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
