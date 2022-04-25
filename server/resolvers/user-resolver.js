@@ -92,6 +92,24 @@ const getCurrentUser = (req, res)=>{
         })
     })
 }
+
+const getUserById=(req, res)=>{
+    
+    const userId=req.params.userId
+    console.log("getting user by id, the id is:", userId )
+    User.findOne({_id:userId}).then(data=>{
+        if(!data){
+            return res.status(404).json({msg:"User not found"})
+        }
+        return res.status(200).json({
+            user:{
+                userId:data._id,
+                name:data.name,
+                items:data.items_owned
+            }
+        })
+    })
+}
 // const getUser = async(req, res)=>{
 //     console.log("getting the current user")
 //     const user = await User.findOne({_id:req.params.id})
@@ -225,7 +243,7 @@ const completeTrade = async(req, res)=>{
 const getProfileQRCode = (req, res)=>{
     const userId=req.userId
     const key=new ObjectId().toString()
-    const newProfileCode = new PublicProfile({userId:userId, key:key})
+    const newProfileCode = new PublicProfile({userId:userId, key:key, expireAt:Date.now()})
     
     newProfileCode.save().then(()=>{
         const url=`/${userId}/${key}`
@@ -250,11 +268,12 @@ const getProfileQRCode = (req, res)=>{
 }
 
 const keyVerification = (req, res, next)=>{
-    const {id, key}=req.params
-    PublicProfile.findOne({_id:id, key:key}).then(data => {
+    const {userId, key}=req.params
+    PublicProfile.findOne({userId:userId, key:key}).then(data => {
         if(!data){
             return res.status(404).json({message:"ERROR"})
         }
+        req.userId=userId
         next()
     }).catch((e) => {
         return res.status(404).json({message:e})
@@ -380,5 +399,6 @@ module.exports = {
     scanQrCode,
     getItemInfo,
     getPendingTrades,
-    getCompletedTrades
+    getCompletedTrades,
+    getUserById
 }
