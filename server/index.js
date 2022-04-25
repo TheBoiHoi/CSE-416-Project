@@ -30,12 +30,13 @@ app.post('/user/login', user.login)
 app.post('/user/logout', auth.verify, user.logout)
 
 
-app.get('user/profile/public/:id/:key', user.keyVerification, user.getCurrentUser)
+app.get('/user/get/:userId/:key', user.keyVerification, user.getUserById)
 app.get('/get/item/:itemId', user.getItemInfo)
 app.get('/trade/get', user.getPendingTrades)
 app.post('/trade/create',auth.verify, user.createPendingTrade)
 app.post('/trade/complete', auth.verify, user.completeTrade)
 app.get('/trade/complete/get', auth.verify, user.getCompletedTrades)
+app.get('/trade/complete/get/:userId/:key', user.keyVerification, user.getCompletedTrades)
 
 app.post('/company/register', company.register)
 app.post('/company/login', company.login)

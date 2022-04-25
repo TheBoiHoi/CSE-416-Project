@@ -14,7 +14,6 @@ export const ItemNameComponent = () =>{
             <Row>Nike Air Mags</Row>
             <Row>Updated 1 day ago</Row>
           </Col>
-
         </Row>
   )
 }

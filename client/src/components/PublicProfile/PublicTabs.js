@@ -7,10 +7,10 @@ const PublicTabs=(props)=>{
     return(
     <Tabs style={{width:"50%"}} defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
         <Tab style={{width:"50%",boxShadow: "1px 1px 1px #9E9E9E"}} eventKey="Exchanges" title="Exchanges">
-            <ExchangesTab></ExchangesTab>
+            <ExchangesTab public={true} keyValue={props.keyValue} user={props.user}></ExchangesTab>
         </Tab>
         <Tab style={{width:"50%",boxShadow: "1px 1px 1px #9E9E9E"}} eventKey="Inventory" title="Inventory">
-            <InventoryTab public={true}></InventoryTab>
+            <InventoryTab user={props.user} public={true}></InventoryTab>
         </Tab>
     </Tabs>
     )
