@@ -30,7 +30,12 @@ const login=async(req, res)=>{
                 secure: true,
                 sameSite: "None"
             })
-            return res.status(200).json({companyId:company._id}).send()
+            return res.status(200).json({company:{
+                companyId:company._id,
+                name:company.name,
+                items:company.items
+            }
+            }).send()
     }
 }
 
@@ -52,16 +57,22 @@ const register = async(req, res)=>{
 }
 
 const getCompany = async(req, res)=>{
-    const company = await Company.findOne({_id:req.params.id})
-    if(company){
+    const companyId=req.companyId
+    if(!companyId){
+        return res.status(404).json({msg:"No company id"})
+    }
+    Company.findOne({_id:companyId}).then(data=>{
+        if(!data){
+            return res.status(404).json({msg:"company not found"})
+        }
         return res.status(200).json({
             company:{
-                name:company.name,
-                items:company.items
+                companyId:data._id,
+                name:data.name,
+                items:data.items
             }
         })
-    }
-    
+    })
 }
 
 const createItem = async(req,res)=>{

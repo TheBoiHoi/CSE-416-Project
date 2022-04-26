@@ -40,18 +40,18 @@ const Login = (props) =>  {
     // eslint-disable-next-line no-console
     if(document.getElementById('user_checkbox').checked){
       console.log("user logging in")
-      const response = apis.Login({email:data.get('email'), password:data.get('password')}).then(response=>{
-        console.log("response:", response.data.user)
-        const userId = response.data.userId
-        navigate(`/profile/${userId}`)
+      apis.Login({email:data.get('email'), password:data.get('password')}).then(response=>{
+      props.setUser(response.data.user)
+      navigate('/profile')
       }).catch(error => {
         console.log("error:", error.response)
       })
     }else if(document.getElementById('company_checkbox').checked){
       console.log("company logging in")
-      const response = apis.CompanyLogin({email:data.get('email'), password:data.get('password')}).then(response=>{
-        const companyId = response.data.companyId
-        navigate(`/inventory_table/${companyId}`)
+      apis.CompanyLogin({email:data.get('email'), password:data.get('password')}).then(response=>{
+      console.log(response.data.company.companyId)
+      props.setCompany(response.data.company)
+      navigate(`/inventory_table/`)
       }).catch(error => {
         console.log("error:", error.response)
       })

@@ -38,6 +38,7 @@ app.post('/trade/complete', auth.verify, user.completeTrade)
 
 app.post('/company_register', company.register)
 app.post('/company_login', company.login)
+app.get(`/company`, auth.verify, company.getCompany)
 app.get(`/inventory/:id`, auth.verify, company.getCompany)
 app.post('/company/createItem', company.createItem)
 app.post('/company/sellItem', company.sellItem)
