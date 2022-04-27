@@ -316,6 +316,7 @@ const getPendingTrades = (req, res) => {
 
 const getItemInfo=(req, res) => {
     const {itemId} = req.params
+    console.log("id:", itemId)
     Item.findOne({_id:itemId}).then(data => {
         if(!data){
             return res.status(404).json({message:"ERROR"})
@@ -349,7 +350,7 @@ const getItemInfo=(req, res) => {
             transactions.sort((a, b)=>{
                 return b.timestamp-a.timestamp
             })
-            return res.status(200).json({item:{name:item.name}, transactions:transactions})
+            return res.status(200).json({item:{name:item.name, serialNumber:item.serial_number}, transactions:transactions})
         }, (error)=>{
             return res.status(404).json({message:"ERROR"})
         })

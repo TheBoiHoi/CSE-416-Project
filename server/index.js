@@ -24,19 +24,19 @@ app.use(function(req, res, next){
 app.use(cookieParser())
 app.use(express.json())
 
-app.get(`/user`, auth.verify, user.getCurrentUser)
+app.get(`/user/get`, auth.verify, user.getCurrentUser)
 app.post('/user/register', user.register)
 app.post('/user/login', user.login)
 app.post('/user/logout', auth.verify, user.logout)
 
 
 app.get('/user/get/:userId/:key', user.keyVerification, user.getUserById)
-app.get('/get/item/:itemId', user.getItemInfo)
-app.get('/trade/get', user.getPendingTrades)
-app.post('/trade/create',auth.verify, user.createPendingTrade)
-app.post('/trade/complete', auth.verify, user.completeTrade)
-app.get('/trade/complete/get', auth.verify, user.getCompletedTrades)
-app.get('/trade/complete/get/:userId/:key', user.keyVerification, user.getCompletedTrades)
+app.get('/user/item/get/:itemId', user.getItemInfo)
+app.get('/user/pending-trade/get', user.getPendingTrades)
+app.post('/user/trade/create',auth.verify, user.createPendingTrade)
+app.post('/user/trade/complete', auth.verify, user.completeTrade)
+app.get('/user/completed-trade/get', auth.verify, user.getCompletedTrades)
+app.get('/user/completed-trade/get/:userId/:key', user.keyVerification, user.getCompletedTrades)
 
 app.post('/company/register', company.register)
 app.post('/company/login', company.login)
