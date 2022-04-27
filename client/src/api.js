@@ -12,13 +12,16 @@ const generateProfileQRCode = (id) => api.get(`/qrcode/profile/${id}`, {response
 
 const CompanyLogin = (payload) => api.post('/company_login', payload)
 const GetCompany = () => api.get(`/company`)
+const CreateItem = (payload) => api.post('/company/createItem',payload)
+
 const apis = {
     Login,
     Register,
     GetCurrentUser,
     generateProfileQRCode,
     CompanyLogin,
-    GetCompany
+    GetCompany,
+    CreateItem
 }
 
 export default apis
