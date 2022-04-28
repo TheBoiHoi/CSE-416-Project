@@ -7,9 +7,10 @@ const QrModal=(props)=> {
       <>
         <Modal centered show={true} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
+            <Modal.Title>QR Code</Modal.Title>  
           </Modal.Header>
           <Modal.Body>{props.code&&<img src={`data:image/png;base64, ${props.code}`}/>}</Modal.Body>
+          <Modal.Body>This Code Will Expire After Today</Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
               Close
