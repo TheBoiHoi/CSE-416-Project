@@ -7,7 +7,7 @@ const api=axios.create({
 const Login = (payload)=>api.post('/user/login', payload)
 const Register = (payload) => api.post('/user/register', payload)
 
-const GetCurrentUser = () => api.get(`/user`)
+const GetCurrentUser = () => api.get(`/user/get`)
 const generateProfileQRCode = () => api.get(`/qrcode/profile`, {responseType:'arraybuffer'})
 const CompanyLogin = (payload) => api.post('/company/login', payload)
 const apis = {

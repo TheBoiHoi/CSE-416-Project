@@ -79,7 +79,7 @@ const InventoryTab =(props)=>{
                   {
                     row.map((col,i)=>{
                       return <Col>
-                        <FlipCard key={i} index={i} item={col}></FlipCard>
+                        <FlipCard key={col} index={i} item={col}></FlipCard>
                       </Col>
                     })
                   }
@@ -100,7 +100,7 @@ const InventoryTab =(props)=>{
                   {
                     row.map((col,i)=>{
                       return <Col>
-                        <FlipCard public={false} index={i} item={col}></FlipCard>
+                        <FlipCard key={col} public={false} index={i} item={col}></FlipCard>
                       </Col>
                     })
                   }
