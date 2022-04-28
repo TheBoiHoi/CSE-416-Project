@@ -350,7 +350,7 @@ const getItemInfo=(req, res) => {
             transactions.sort((a, b)=>{
                 return b.timestamp-a.timestamp
             })
-            return res.status(200).json({item:{name:item.name, serialNumber:item.serial_number}, transactions:transactions})
+            return res.status(200).json({item:{itemId:item._id, name:item.name, serialNumber:item.serial_number}, transactions:transactions})
         }, (error)=>{
             return res.status(404).json({message:"ERROR"})
         })

@@ -1,9 +1,11 @@
 import ReactCardFlip from 'react-card-flip';
 import * as React from 'react'
 import {InventoryCard} from '../InventoryCard'
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
+import axios from 'axios'
 const FlipCard = (props)=>{
   const [isFlipped, toggleIsFlipped]=useState(false)
+  const [item, setItem]=useState(false)
     // constructor() {
     //   super();
     //     this.state = {
@@ -11,8 +13,13 @@ const FlipCard = (props)=>{
     //   };
     //   this.handleClick = this.handleClick.bind(this);
     // }
-    
-    
+  
+    useEffect(()=>{
+      axios.get(`http://localhost:3000/item/get/${props.item}`).then(response=>{
+            let item=response.data.item
+            setItem(item)
+        })
+    },[])
     const handleClick=(e)=>{
       e.preventDefault();
       console.log("printing item id")
@@ -25,12 +32,11 @@ const FlipCard = (props)=>{
     return (
       <div>
         <ReactCardFlip isFlipped={isFlipped} flipDirection="vertical"> 
-            <div onClick={handleClick}> 
-                {props.item}
-                <InventoryCard  front={true}/>
+            <div onClick={handleClick}>
+                <InventoryCard  item={item} front={true}/>
             </div>   
             <div  onClick={handleClick}>
-                <InventoryCard public={props.public} front={false}/>
+                <InventoryCard item={item} public={props.public} front={false}/>
             </div>
         </ReactCardFlip>
       </div>

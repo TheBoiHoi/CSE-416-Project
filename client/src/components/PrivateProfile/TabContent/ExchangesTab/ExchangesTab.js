@@ -8,14 +8,14 @@ const ExchangesTab=(props)=>{
   const [trade, setTrade]=useState([])
   useEffect(()=>{
     if(!props.public){
-      axios.get("http://localhost:3000/trade/complete/get").then(response=>{
+      axios.get("http://localhost:3000/completed-trade/get").then(response=>{
         setTrade(response.data.transactions)
         //console.log("response transactions:", response.data.transactions)
         data.rows=response.data.transactions
       }).catch((e)=>{console.log("ERROR:", e)})
     }
     else{
-      axios.get(`http://localhost:3000/trade/complete/get/${props.user.userId}/${props.keyValue}`).then(response=>{
+      axios.get(`http://localhost:3000/completed-trade/get/${props.user.userId}/${props.keyValue}`).then(response=>{
         setTrade(response.data.transactions)
         //console.log("response transactions:", response.data.transactions)
         data.rows=response.data.transactions
@@ -159,10 +159,9 @@ const ExchangesTab=(props)=>{
             <MDBTable  maxHeight="450px" borderless scrollY hover paging>
                 <MDBTableHead  columns={data.columns} />
                 <MDBTableBody>
-                {trade.map((data)=>{
-                  console.log("transaction:", data)
+                {trade.map((data, i)=>{
                     return(
-                    <tr onClick={()=>{
+                    <tr key={i} onClick={()=>{
                         console.log(data.id)
                     }}>
                         <td>{data.id}</td>
