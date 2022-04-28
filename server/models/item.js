@@ -9,7 +9,8 @@ const itemSchema=new Schema({
     
     manu_date:{type:String, required:true},
     manu_location:{type:String, required:true},
-    manu_owner:{type:String, required:true}
+    manu_owner:{type:String, required:true},
+    profilePic:{type:String}
 })
 
 module.exports=mongoose.model('Item', itemSchema)

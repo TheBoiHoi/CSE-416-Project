@@ -247,7 +247,7 @@ const getProfileQRCode = (req, res)=>{
     
     newProfileCode.save().then(()=>{
         const url=`/${userId}/${key}`
-        QRCode.toFile(`./qrcodes/profiles/${userId}-${key}.png`, url, {
+        QRCode.toFile(`./images/${userId}-${key}.png`, url, {
             color: {
               dark: '#000000',  
               light: '#FFFFFF'
@@ -255,7 +255,7 @@ const getProfileQRCode = (req, res)=>{
           }, function (err) {
             if (err) throw err
             console.log('done')
-            const filePath=path.resolve(`./qrcodes/profiles/${userId}-${key}.png`)
+            const filePath=path.resolve(`./images/${userId}-${key}.png`)
             return res.sendFile(filePath, function(err){
                 fs.unlinkSync(filePath)
             })
@@ -355,7 +355,6 @@ const getItemInfo=(req, res) => {
             return res.status(404).json({message:"ERROR"})
         })
     })
-    
 }
 
 const getCompletedTrades=(req, res)=>{
@@ -388,6 +387,32 @@ const getCompletedTrades=(req, res)=>{
         })
     })
 }
+
+//upload the profile pic of an item to the server
+const uploadProfilePic=(req, res)=>{
+    const {itemId}=req.params
+    const file=req.file
+    const image=req.file.buffer
+    fs.writeFile(`./images/profile-pics/${file.originalname}`, image, 'base64', function(err){
+        if (err) throw err
+        console.log('File saved.')
+    })
+    Item.updateOne({_id:itemId}, {profilePic:file.originalname}).then(data=>{
+        return res.status(200).json({message:"OK", newPath:file.originalname})
+    })
+}
+
+//get the profile pic of an item
+const getProfilePic=(req, res)=>{
+    const {itemId}=req.params
+    Item.findOne({_id:itemId}).then(data=>{
+        let imagePath=path.resolve(`./images/profile-pics/${data.profilePic}`)
+        console.log()
+        return res.sendFile(imagePath)
+    }).catch((e)=>{
+        return res.status(404).json({message:"ERROR"})
+    })
+}
 module.exports = {
     login,
     register,
@@ -401,5 +426,7 @@ module.exports = {
     getItemInfo,
     getPendingTrades,
     getCompletedTrades,
-    getUserById
+    getUserById,
+    uploadProfilePic,
+    getProfilePic
 }
