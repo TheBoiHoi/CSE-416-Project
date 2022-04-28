@@ -28,15 +28,16 @@ app.get(`/user/get`, auth.verify, user.getCurrentUser)
 app.post('/user/register', user.register)
 app.post('/user/login', user.login)
 app.post('/user/logout', auth.verify, user.logout)
-
-
 app.get('/user/get/:userId/:key', user.keyVerification, user.getUserById)
-app.get('/user/item/get/:itemId', user.getItemInfo)
-app.get('/user/pending-trade/get', user.getPendingTrades)
-app.post('/user/trade/create',auth.verify, user.createPendingTrade)
-app.post('/user/trade/complete', auth.verify, user.completeTrade)
-app.get('/user/completed-trade/get', auth.verify, user.getCompletedTrades)
-app.get('/user/completed-trade/get/:userId/:key', user.keyVerification, user.getCompletedTrades)
+
+app.get('/item/get/:itemId', user.getItemInfo)
+app.get('/pending-trade/get', user.getPendingTrades)
+app.post('/trade/create',auth.verify, user.createPendingTrade)
+app.post('/trade/complete', auth.verify, user.completeTrade)
+app.get('/completed-trade/get', auth.verify, user.getCompletedTrades)
+app.get('/completed-trade/get/:userId/:key', user.keyVerification, user.getCompletedTrades)
+app.post('/profile-pic/upload/:itemId', multer().single('file'), user.uploadProfilePic)
+app.get('/profile-pic/get/:itemId', user.getProfilePic)
 
 app.post('/company/register', company.register)
 app.post('/company/login', company.login)
@@ -49,6 +50,7 @@ app.get('/qrcode/item/:itemId', (req, res)=>{
     const itemId=req.params.itemId
     return res.sendFile(__dirname+`/qrcodes/${itemId}.png`)
 })
+
 app.get('/qrcode/profile', auth.verify, user.getProfileQRCode)
 app.post('/qrcode/scan', multer().single('file'), user.scanQrCode)
 app.listen(PORT, ()=>{console.log(`app is listening in ${PORT}`)})
