@@ -8,13 +8,15 @@ import QrModal from './QrModal'
 const ProfileCard = (props) =>{
     const[code, setCode] = useState(null)
     const[show, setShow]=useState(false)
+    const[operation, setOperation]=useState("")
     const generateQRCode=()=>{
         api.generateProfileQRCode().then(response=>{
             setCode(Buffer.from(response.data).toString('base64'))
-            setShow(true)
+            setOperation('generating-qrcode')
         })
         
     }
+
     return (
         <Card style={{ width: '18rem' }}>
         <Card.Img style={{width:"50%",margin:"auto"}} variant="top" src={Duckpfp} />
@@ -28,9 +30,10 @@ const ProfileCard = (props) =>{
             </Card.Text>
             <div class="col-md-12 text-center">
                 <Button style={{margin:"auto"}} variant="primary" onClick={generateQRCode}>Generate QR Code</Button>
+                <Button style={{marginLeft:"20px"}} onClick={()=>{setOperation('scanning-qrcode')}}>S</Button>
             </div>
         </Card.Body>
-        {show&&<QrModal code={code} setShow={setShow}/>}
+        {operation&&<QrModal code={code} setOperation={setOperation}/>}
         </Card>
         
     );
