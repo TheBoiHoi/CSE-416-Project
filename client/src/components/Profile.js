@@ -5,16 +5,7 @@ import ProfileCard from './PrivateProfile/ProfileCard'
 import PrivateTabs from './PrivateProfile/PrivateTabs'
 
 export const Profile = (props) => {
-    const ScanQRCode=()=>{
-        let file=document.getElementById("myFile").files[0]
-        var formData=new FormData()
-        formData.append('file', file, file.name)
-        console.log("form data:", formData)
-        fetch("http://localhost:3000/qrcode/scan", {
-            method:'POST',
-            body:formData
-        })
-    }
+    
     if(props.user){
         return(
             <div>
@@ -23,9 +14,6 @@ export const Profile = (props) => {
                     <div style={{}} class="row align-items-center">
                         <br></br>
                     </div>
-                    <button>Scan QR Code</button>
-                    <input type="file" id="myFile" name="file" accept="image/*"/>
-                    <input type="submit" onClick={ScanQRCode}/>
                     <div class="row align-items-center">
                     <div  align="center" class="col">
                         <ProfileCard user={props.user}/>
