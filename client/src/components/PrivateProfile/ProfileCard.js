@@ -33,7 +33,7 @@ const ProfileCard = (props) =>{
                 <Button style={{marginLeft:"20px"}} onClick={()=>{setOperation('scanning-qrcode')}}>S</Button>
             </div>
         </Card.Body>
-        {operation&&<QrModal code={code} setOperation={setOperation}/>}
+        {operation&&<QrModal operation={operation} code={code} setOperation={setOperation}/>}
         </Card>
         
     );

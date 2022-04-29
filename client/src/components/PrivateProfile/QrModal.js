@@ -1,19 +1,25 @@
 import {useState,useEffect} from 'react'
 import {Modal,Button} from 'react-bootstrap'
+import axios from 'axios'
 const QrModal=(props)=> {
-  
+    const [scanningImage, setScanningImage]=useState(null)//the qrcode that is ready to be scanned
+    const[url, setUrl]=useState("")//url for the scanned qrcode
 
     const handleClose = () => props.setOperation("");
 
     const scanQRCode=()=>{
-      let file=document.getElementById("myFile").files[0]
+      let file=document.getElementById("qrcode-upload").files[0]
       var formData=new FormData()
       formData.append('file', file, file.name)
       console.log("form data:", formData)
-      fetch("http://localhost:3000/qrcode/scan", {
-          method:'POST',
-          body:formData
+      axios.post("http://localhost:3000/qrcode/scan", formData).then(response=>{
+        setUrl(response.data.data)
       })
+    }
+
+    const uploadQRCode=()=>{
+      let file=document.getElementById('qrcode-upload').files[0]
+      setScanningImage(URL.createObjectURL(file))
     }
     if(props.operation=='generating-qrcode'){
       return (
@@ -46,13 +52,18 @@ const QrModal=(props)=> {
               <Modal.Title>Modal heading</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <button onClick={scanQRCode}>Scan QR Code</button>
-              <input type="file" id="myFile" name="file" accept="image/*"/>
+              <input onChange={uploadQRCode} type="file" id="qrcode-upload" name="file" accept="image/*"/>
+              {scanningImage&&<img src={`${scanningImage}`}/>}
+              <span>{url}</span>
             </Modal.Body>
             <Modal.Footer>
+            <Button variant="primary" onClick={scanQRCode}>
+                Scan
+              </Button>
               <Button variant="secondary" onClick={handleClose}>
                 Close
               </Button>
+
             </Modal.Footer>
           </Modal>
         </>
