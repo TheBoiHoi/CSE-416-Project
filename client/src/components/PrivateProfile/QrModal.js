@@ -2,6 +2,7 @@ import {useState,useEffect} from 'react'
 import {Modal,Button} from 'react-bootstrap'
 const QrModal=(props)=> {
   
+
     const handleClose = () => props.setOperation("");
 
     const scanQRCode=()=>{
@@ -25,6 +26,7 @@ const QrModal=(props)=> {
             <Modal.Footer>
               <Button variant="secondary" onClick={handleClose}>
                 Close
+
               </Button>
               <a href={`data:image/png;base64, ${props.code}`} download>
                 <Button variant="primary">
