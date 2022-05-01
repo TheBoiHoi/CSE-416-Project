@@ -5,8 +5,7 @@ import ProfileCard from './PrivateProfile/ProfileCard'
 import PrivateTabs from './PrivateProfile/PrivateTabs'
 
 export const Profile = (props) => {
-    
-    if(props.user){
+    if(props.user && !props.user.isCompany){
         return(
             <div>
                 <div>

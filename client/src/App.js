@@ -20,6 +20,9 @@ function App() {
       if(response.data.user){
         setUser(response.data.user)
       }
+      else if(response.data.company){
+        setUser(response.data.company)
+      }
     }).catch(e => {
       console.log(e.response)
     })
@@ -34,7 +37,7 @@ function App() {
         <Route path="/profile" element={<Profile setUser={setUser} user={user}/>}/>
         <Route path="/public/profile/:userId/:key" element={<PublicProfile/>}/>
         <Route path="/item/profile" element={<ItemProfile/>}/>
-        <Route path ="/inventory_table" element={<InventoryTable company={user}/>}/>
+        <Route path ="/inventory-table" element={<InventoryTable company={user}/>}/>
         <Route path="/register" element={<Register/>}/>
       </Routes>
     </BrowserRouter>
