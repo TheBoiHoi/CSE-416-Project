@@ -7,8 +7,8 @@ import "./TableRow.css";
 import {useEffect, useState} from 'react';
 import {TableModal} from '../TableModal/TableModal';
 
-export const TableRow = () =>{
-
+export const TableRow = (props) =>{
+  const name = props.name;
   const [background,setBackground] = useState("table_row_container");
 
   const [showModal,setShowModal] = useState(false);
@@ -37,7 +37,7 @@ export const TableRow = () =>{
         </Col>
         <Col className="m-auto date">05/25/2022</Col>
         <Col className ="m-auto">
-<div className="serial_number">5yd75E4WW7zEZndm</div></Col>
+<div className="serial_number">{props.serial}</div></Col>
         <Col className="m-auto"><div className="location">Putian, China</div></Col>
       </Row>
       <div className="seperator"></div>
