@@ -2,12 +2,21 @@ const express=require('express')
 const cors=require('cors')
 const mongoose=require('mongoose')
 const user =require('./resolvers/user-resolver')
+const UserSchema=require('./models/user')
+const CompanySchema=require('./models/company')
 const company=require('./resolvers/company-resolver')
 const auth=require('./token.js')
 const cookieParser = require('cookie-parser')
 const multer=require('multer')
+require('dotenv').config()
+const {MONGO_URI}=process.env
 PORT=3000
-mongoose.connect('mongodb+srv://deeznut:arminarlert@cluster0.sxhpz.mongodb.net/cse416?retryWrites=true&w=majority')
+mongoose.connect(MONGO_URI).then(()=>{
+    console.log("sucessfully connect to db")
+})
+.catch(e => {
+    console.error('Connection error', e.message)
+})
 
 const app=express()
 app.use(express.urlencoded({extended:true}))
@@ -24,15 +33,58 @@ app.use(function(req, res, next){
 app.use(cookieParser())
 app.use(express.json())
 
-app.get(`/user`, auth.verify, user.getCurrentUser)
+app.get(`/user/get`, auth.verify, (req, res)=>{
+    const userId=req.userId
+    const isCompany=req.isCompany
+    if(!userId){
+        return res.status(404).json({msg:"No user id"})
+    }
+    
+    //check if the logged in user is a regular user, yes, do this block
+    if(!isCompany){
+        UserSchema.findOne({_id:userId}).then(data=>{
+            if(!data){
+                return res.status(404).json({msg:"User not found"})
+            }
+            return res.status(200).json({
+                user:{
+                    userId:data._id,
+                    name:data.name,
+                    items:data.items_owned,
+                    isCompany:false
+                }
+            })
+        })
+    }
+
+    else{//no? do this block
+        CompanySchema.findOne({_id:userId}).then((data)=>{
+            if(!data){
+                return res.status(404).json({msg:"Company not found"})
+            }
+
+            return res.status(200).json({
+                company:{
+                    companyId:data._id,
+                    name:data.name,
+                    items:data.items,
+                    isCompany:true
+                }
+            })
+        })
+            
+    }
+    
+})
+
 app.post('/user/register', user.register)
 app.post('/user/login', user.login)
 app.post('/user/logout', auth.verify, user.logout)
 
+app.get('/item/get/:itemId', user.getItemInfo)
+app.get('/item-transaction/get/:itemId', user.getItemTransactions)
+app.get('/pending-trade/get', user.getPendingTrades)
 
-app.get('user/profile/public/:id/:key', user.keyVerification, user.getCurrentUser)
-app.get('/get/item/:itemId', user.getItemInfo)
-app.get('/trade/get', user.getPendingTrades)
 app.post('/trade/create',auth.verify, user.createPendingTrade)
 app.post('/trade/complete', auth.verify, user.completeTrade)
 

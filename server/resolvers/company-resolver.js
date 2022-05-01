@@ -5,12 +5,17 @@ const QRCode=require('qrcode')
 const algosdk = require('algosdk');
 const auth=require('../token.js')
 const user = require('../models/user');
+require('dotenv').config()
+//const { default: AlgodClient } = require('algosdk/dist/types/src/client/v2/algod/algod');
 const baseServer = 'https://testnet-algorand.api.purestake.io/ps2'
 const port = '';
+
+const {TOKEN}=process.env
 const apitoken = {
-    'X-API-Key': 'X4SwVT0RbP46NwfrQxmM61U3pqTUoekDLSigOTpb'
+    'X-API-key':TOKEN
 }
 const algodclient = new algosdk.Algodv2(apitoken, baseServer, port);
+
 const login=async(req, res)=>{
     const {email, password}=req.body
     const company=await Company.findOne({email:email})
@@ -24,18 +29,14 @@ const login=async(req, res)=>{
         return res.status(404).send('Invalid Password')
     }
     else{
-        token=auth.generate(company)
-            res.cookie('token', token, {
-                httpOnly: true,
-                secure: true,
-                sameSite: "None"
-            })
-            return res.status(200).json({company:{
-                companyId:company._id,
-                name:company.name,
-                items:company.items
-            }
-            }).send()
+        token=auth.generate(company, true)
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "None",
+            maxAge: 1000 * 60 * 60 * 24 * 7
+        })
+        return res.status(200).json({companyId:company._id}).send()
     }
 }
 
@@ -74,6 +75,7 @@ const getCompany = async(req, res)=>{
         })
     })
 }
+
 
 const createItem = async(req,res)=>{
     const{id,name,manu_date,manu_location,manu_owner,serial_number} = req.body
