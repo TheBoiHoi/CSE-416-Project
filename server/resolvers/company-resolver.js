@@ -179,8 +179,8 @@ const createItem = async(req,res)=>{
         manu_location:manu_location,
         manu_owner:manu_owner
     })
-    company.items.push(newItem.serial_number)
-    console.log("new item serial number", newItem.serial_number)
+    company.items.push(newItem._id)
+    console.log("new item id number", newItem._id)
     await newItem.save()
     const saved=await Company.updateOne({_id:id}, {items:company.items})
     if(saved){

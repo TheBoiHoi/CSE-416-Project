@@ -3,22 +3,24 @@ import Image from 'react-bootstrap/Image'
 import air_mags2 from '../../img/airmags2.jpg';
 import './CompanyAddModal.css';
 import apis from '../../api'
+import { Navigate } from 'react-router-dom';
 
   const handleSubmit = async (event) => {
     const tempCompanyId = "625f8233d1137b6e964ccac9"
     const tempOwner = "Debugging"
-    const data = new FormData(event.currentTarget)
-    const name = data.get("formItemName")
-    const date = data.get("formDateManufactured")
-    const location = data.get("formLocation")
-    const serial = data.get("formSerialNumber")
+
+    const name = document.getElementById("formItemName")
+    const date = document.getElementById("formDateManufactured")
+    const location = document.getElementById("formLocation")
+    const serial = document.getElementById("formSerialNumber")
     apis.CreateItem({
       id:tempCompanyId,
       name:"connect",
       manu_date:"4/26/2022",
       manu_location:"stonybrook",
       manu_owner:tempOwner,
-      serial_number:"123321456654789987"})
+      serial_number:"123"})
+    console.log("Finished creating an item")
   };
 
 export const CompanyAddModal =(props)=>{

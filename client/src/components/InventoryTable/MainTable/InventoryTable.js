@@ -1,8 +1,7 @@
-
 import {TableHead} from "../TableHead/TableHead";
 import {TableRow} from "../TableRow/TableRow";
 import "./InventoryTable.css";
-
+import jwt from 'jwt-decode'
 
 export const InventoryTable = (props) => {
   if(props.company){
@@ -17,13 +16,16 @@ export const InventoryTable = (props) => {
       <TableHead/>
       <div className="table_head_seperator"></div>
       <div className="inventory_rows" >
-        {items.map((serial)=>{
-          return <TableRow serial = {serial}/>;
+        {items.map((id)=>{
+          return <TableRow serial = {id}/>;
         })}
       </div>
     </div>
     
   )
+  }else{
+    return null
   }
+  
   
 }

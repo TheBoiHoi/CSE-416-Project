@@ -51,7 +51,7 @@ const Login = (props) =>  {
       apis.CompanyLogin({email:data.get('email'), password:data.get('password')}).then(response=>{
       console.log(response.data.company.companyId)
       props.setCompany(response.data.company)
-      navigate(`/inventory_table/`)
+      navigate(`/inventory_table`)
       }).catch(error => {
         console.log("error:", error.response)
       })
