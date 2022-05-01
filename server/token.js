@@ -10,7 +10,9 @@ const verify = (req, res, next) =>{
         }
         
         const verified=jwt.verify(token, JWT_SECRET)
-        req.userId=verified.userId;
+        console.log("verified:", verified)
+        req.userId=verified.acctId;//userId here can be company id or regular user id
+        req.isCompany=verified.isCompany//does this account belong to a company or a regular user
         next()
     }
 
@@ -20,8 +22,8 @@ const verify = (req, res, next) =>{
     }
 }
 
-const generate = (user) => {
-    const ret=jwt.sign({userId:user._id}, JWT_SECRET)
+const generate = (acct, isCompany) => {
+    const ret=jwt.sign({acctId:acct._id, isCompany:isCompany}, JWT_SECRET)
     return ret
 }
 module.exports = {verify, generate}

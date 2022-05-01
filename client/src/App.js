@@ -11,38 +11,33 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {Navbar} from './components/Navbar';
 import {useState, useEffect} from "react"
 import apis from './api'
+
 function App() {
-  const [user, setUser]=useState(null)
-  const [company,setCompany]= useState(null)
+  const [user, setUser]=useState(null)//user here can be regular user or a company
+  //const [company,setCompany]= useState(null)
   useEffect(() => {
     apis.GetCurrentUser().then(response=>{
       if(response.data.user){
         setUser(response.data.user)
       }
+      else if(response.data.company){
+        setUser(response.data.company)
+      }
     }).catch(e => {
       console.log(e.response)
     })
 }, [])
-useEffect(()=>{
-  apis.GetCompany().then(response=>{
-    if(response.data.company){
-      setCompany(response.data.company)
-    }
-  }).catch(e => {
-    console.log(e.response)
-  })
-},[])
   return (
     <div>
     <BrowserRouter>
     <Navbar user={user} isCompany={true}/>
       <Routes>
         <Route path="/" element={<Welcome/>}/>
-        <Route path="/login" element={<Login setUser={setUser} setCompany={setCompany}/>}/>
+        <Route path="/login" element={<Login setUser={setUser}/>}/>
         <Route path="/profile" element={<Profile setUser={setUser} user={user}/>}/>
         <Route path="/public/profile/:userId/:key" element={<PublicProfile/>}/>
         <Route path="/item/profile" element={<ItemProfile/>}/>
-        <Route path ="/inventory_table" element={<InventoryTable setCompany={setCompany} company={company}/>}/>
+        <Route path ="/inventory-table" element={<InventoryTable company={user}/>}/>
         <Route path="/register" element={<Register/>}/>
       </Routes>
     </BrowserRouter>
