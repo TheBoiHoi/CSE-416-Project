@@ -11,7 +11,6 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {Navbar} from './components/Navbar';
 import {useState, useEffect} from "react"
 import apis from './api'
-import { useCookies } from 'react-cookie';
 function App() {
   const [user, setUser]=useState(null)
   const [company,setCompany]= useState(null)

@@ -1,7 +1,6 @@
 import {TableHead} from "../TableHead/TableHead";
 import {TableRow} from "../TableRow/TableRow";
 import "./InventoryTable.css";
-import jwt from 'jwt-decode'
 
 export const InventoryTable = (props) => {
   if(props.company){
