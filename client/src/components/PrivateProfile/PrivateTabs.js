@@ -32,9 +32,6 @@ const PrivateTabs=(props)=>{
             <PendingTab handleShowModal={showModal}></PendingTab>
             <PendingModal show={show} trade={trade} hide={hideModal} disabled={trade.buyer_status}/>
         </Tab>
-        <div>
-            hello
-        </div>
     </Tabs>
     )
 };

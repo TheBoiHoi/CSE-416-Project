@@ -14,8 +14,11 @@ const algosdk = require('algosdk');
 const company = require('../models/company')
 const baseServer = 'https://testnet-algorand.api.purestake.io/ps2'
 const port = '';
+
+require('dotenv').config()
+const {TOKEN}=process.env
 const apitoken = {
-    'X-API-Key': 'X4SwVT0RbP46NwfrQxmM61U3pqTUoekDLSigOTpb'
+    'X-API-Key': TOKEN
 }
 const axios=require('axios')
 const algodclient = new algosdk.Algodv2(apitoken, baseServer, port);
@@ -33,7 +36,7 @@ const login = async(req, res)=>{
             return res.status(404).send('Invalid Password')
         }
         else{
-            userToken=auth.generate(user)
+            userToken=auth.generate(user, false)
             res.cookie('token', userToken, {
                 httpOnly: true,
                 secure: true,
@@ -79,7 +82,7 @@ const getCurrentUser = (req, res)=>{
     if(!userId){
         return res.status(404).json({msg:"No user id"})
     }
-    const user=User.findOne({_id:userId}).then(data=>{
+    User.findOne({_id:userId}).then(data=>{
         if(!data){
             return res.status(404).json({msg:"User not found"})
         }
@@ -322,6 +325,19 @@ const getItemInfo=(req, res) => {
             return res.status(404).json({message:"ERROR"})
         }
         let item=data
+        return res.status(200).json({item:{itemId:item._id, name:item.name, serialNumber:item.serial_number}})
+        
+    })
+}
+
+const getItemTransactions=(req, res)=>{
+    const {itemId} = req.params
+    console.log("id:", itemId)
+    Item.findOne({_id:itemId}).then(data => {
+        if(!data){
+            return res.status(404).json({message:"ERROR"})
+        }
+        let item=data
         let assetId=item.asset_id
         let transactions=[]
         axios.get(`https://algoindexer.testnet.algoexplorerapi.io/v2/assets/${assetId}/transactions`).then((response) => {
@@ -350,7 +366,7 @@ const getItemInfo=(req, res) => {
             transactions.sort((a, b)=>{
                 return b.timestamp-a.timestamp
             })
-            return res.status(200).json({item:{itemId:item._id, name:item.name, serialNumber:item.serial_number}, transactions:transactions})
+            return res.status(200).json({transactions:transactions})
         }, (error)=>{
             return res.status(404).json({message:"ERROR"})
         })
@@ -428,5 +444,6 @@ module.exports = {
     getCompletedTrades,
     getUserById,
     uploadProfilePic,
-    getProfilePic
+    getProfilePic,
+    getItemTransactions
 }
