@@ -1,50 +1,28 @@
 import {useState,createElement,useEffect} from 'react';
 import ReactDOM from 'react-dom'
 import {Table,Row,Col,Container} from 'react-bootstrap';
-import {FlipCard} from './FlipCard'
+import FlipCard from './FlipCard'
 import { MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
 import './InventoryTab.css';
 const InventoryTab =(props)=>{
-  const [inventoryList,setInventoryList]=useState([])
+  //const [inventoryList,setInventoryList]=useState([])
   const [publicProfile,setPublicProfile]=useState(false)
   useEffect(()=>{
+    console.log("printing props.user")
+    console.log(props.user)
     if(props.public===true){
       setPublicProfile(true)
     }
-  });
-
-  let templist=[
-    {
-      name:"Air mags",
-      color:"blue",
-      serial:"1234567"
-    },
-    {
-      name:"Air mags",
-      color:"blue",
-      serial:"1234567"
-    },
-    {
-      name:"Air mags",
-      color:"blue",
-      serial:"1234567"
-    },
-    {
-      name:"Air mags",
-      color:"blue",
-      serial:"1234567"
-    },
-    {
-      name:"Air mags",
-      color:"blue",
-      serial:"1234567"
-    },
-    {
-      name:"Air mags",
-      color:"blue",
-      serial:"1234567"
-    },
-  ]
+    //setInventoryList(props.user.items)
+  },[]);
+  let templist=[]
+  for(let i=0;i<props.user.items.length;i++){
+    templist.push(props.user.items[i])
+  }
+  let newInventoryList=[]
+  while(templist.length){
+    newInventoryList.push(templist.splice(0,3))
+  }
 
   // const data = {
   //     columns: [
@@ -72,6 +50,8 @@ const InventoryTab =(props)=>{
   //       },
   //     ]
   //   };
+
+  
   if(publicProfile){
     return(
         <Container >
@@ -93,22 +73,19 @@ const InventoryTab =(props)=>{
                 
             </MDBTable> */}
             <div style={{height:'500px',overflow:'scroll'}} >
-            {templist.map((inv,i)=>
-            (i+1)%3===0? (
-              <Row>
-                {" "}
-                <></>
-                {Array(3).fill().map((el,index)=>{
-                  return <Col>
-                    <FlipCard public={true}></FlipCard>
-                  </Col>
-                })}
-                {" "}
-              </Row>
-            ): (
-              <></>
-            )
-            )}
+            {
+              newInventoryList.map((row,i)=>
+                <Row>
+                  {
+                    row.map((col,i)=>{
+                      return <Col>
+                        <FlipCard key={col} index={i} item={col}></FlipCard>
+                      </Col>
+                    })
+                  }
+                </Row>
+              )
+            }
             </div>
         </Container>
     )
@@ -116,40 +93,20 @@ const InventoryTab =(props)=>{
   else{
     return(
         <Container >
-            {/* <MDBTable maxHeight="450px" borderless scrollY>
-                <MDBTableHead  columns={data.columns} />
-                <MDBTableBody>
-                {data.rows.map((data)=>{
-                    return(
-                    <tr onClick={()=>{
-                        console.log(data.id)
-                    }}>
-                        <td>{data.id}</td>
-                        <td>{data.item}</td>
-                        <td>{data.color}</td>
-                    </tr>
-                    )
-                })}
-                </MDBTableBody>
-                
-            </MDBTable> */}
             <div style={{height:'500px',overflow:'scroll'}} >
-            {templist.map((inv,i)=>
-            (i+1)%3===0? (
-              <Row>
-                {" "}
-                <></>
-                {Array(3).fill().map((el,index)=>{
-                  return <Col>
-                    <FlipCard></FlipCard>
-                  </Col>
-                })}
-                {" "}
-              </Row>
-            ): (
-              <></>
-            )
-            )}
+            {
+              newInventoryList.map((row)=>
+                <Row>
+                  {
+                    row.map((col,i)=>{
+                      return <Col>
+                        <FlipCard key={col} public={false} index={i} item={col}></FlipCard>
+                      </Col>
+                    })
+                  }
+                </Row>
+              )
+            }
             </div>
         </Container>
     )

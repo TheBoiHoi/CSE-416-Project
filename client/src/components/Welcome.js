@@ -9,6 +9,7 @@ import confirmPNG from '../img/LandingPageSteps/confirm_trade.png'
 const Welcome = (props) => {
   
   return (
+
     <div style={{overflow:'auto'}}>
       <div style={{padding:'30px',overflow:'auto'}} class="section first-section">
         <div class="container-fluid">

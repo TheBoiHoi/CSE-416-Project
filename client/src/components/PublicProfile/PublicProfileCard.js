@@ -11,7 +11,7 @@ const PublicProfileCard = (props) =>{
         <Card.Body>
             {props.user&&<Card.Title style={{textAlign:"center"}}>{props.user.name}</Card.Title>}
             <Card.Text style={{textAlign:"center"}}>
-            1dxads091r11rk
+            {props.user.userId}
             </Card.Text>
             <Card.Text style={{textAlign:"center"}}>
             Joined 02/22/2022

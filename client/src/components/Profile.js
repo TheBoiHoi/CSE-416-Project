@@ -5,26 +5,7 @@ import ProfileCard from './PrivateProfile/ProfileCard'
 import PrivateTabs from './PrivateProfile/PrivateTabs'
 
 export const Profile = (props) => {
-    // const {userId} = useParams()
-    // const [user, setUser] = useState(null)
-    // useEffect(() => {
-    //     apis.GetUser(userId).then(response=>{
-    //         setUser(response.data.user)
-    //         props.toggleIsUser(true)
-    //         props.setUserName(user.name)
-    //     })
-    // }, [])
     
-    const ScanQRCode=()=>{
-        let file=document.getElementById("myFile").files[0]
-        var formData=new FormData()
-        formData.append('file', file, file.name)
-        console.log("form data:", formData)
-        fetch("http://localhost:3000/qrcode/scan", {
-            method:'POST',
-            body:formData
-        })
-    }
     if(props.user){
         return(
             <div>
@@ -33,9 +14,6 @@ export const Profile = (props) => {
                     <div style={{}} class="row align-items-center">
                         <br></br>
                     </div>
-                    <button>Scan QR Code</button>
-                    <input type="file" id="myFile" name="file" accept="image/*"/>
-                    <input type="submit" onClick={ScanQRCode}/>
                     <div class="row align-items-center">
                     <div  align="center" class="col">
                         <ProfileCard user={props.user}/>
@@ -43,31 +21,32 @@ export const Profile = (props) => {
                     </div>
                     <div class="row align-items-center">
                     <div   align="center" class="col">
-                        <PrivateTabs></PrivateTabs>
+                        <PrivateTabs user={props.user}></PrivateTabs>
                     </div>
                     </div>
                 </div>
             </div>
         )
     }
-    else{
-        return(
-        <div>
-            <div style={{}} class="row align-items-center">
-                <br></br>
-            </div>
-            <div class="row align-items-center">
-            <div  align="center" class="col">
-                <ProfileCard name="testuser"/>
-            </div>
-            </div>
-            <div class="row align-items-center">
-            <div   align="center" class="col">
-                <PrivateTabs></PrivateTabs>
-            </div>
-            </div>
-        </div>
-        )
-    }
+    return null
+    // else{
+    //     return(
+    //     <div>
+    //         <div style={{}} class="row align-items-center">
+    //             <br></br>
+    //         </div>
+    //         <div class="row align-items-center">
+    //         <div  align="center" class="col">
+    //             <ProfileCard name="testuser"/>
+    //         </div>
+    //         </div>
+    //         <div class="row align-items-center">
+    //         <div   align="center" class="col">
+    //             <PrivateTabs></PrivateTabs>
+    //         </div>
+    //         </div>
+    //     </div>
+    //     )
+    // }
     
 }

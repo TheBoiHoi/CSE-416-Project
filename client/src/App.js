@@ -22,32 +22,22 @@ function App() {
       console.log(e.response)
     })
 }, [])
-const [company,setCompany]= useState(null)
-useEffect(()=>{
-  apis.GetCompany().then(response=>{
-    if(response.data.company){
-      setCompany(response.data.company)
-    }
-  }).catch(e => {
-    console.log(e.response)
-  })
-},[])
   return (
     <div>
-    <BrowserRouter>
-    <Navbar user={user} isCompany={true}/>
-      <Routes>
-        <Route path="/" element={<Welcome/>}/>
-        <Route path="/login" element={<Login setUser={setUser} setCompany={setCompany}/>}/>
-        <Route path="/profile" element={<Profile setUser={setUser} user={user}/>}/>
-        <Route path="/public/profile/:userId/:key" element={<PublicProfile/>}/>
-        <Route path="/item/profile" element={<ItemProfile/>}/>
-        <Route path ="/inventory_table/" element={<InventoryTable setCompany={setCompany} company={company}/>}/>
-        <Route path="/register" element={<Register/>}/>
-      </Routes>
-    </BrowserRouter>
-    
-  </div>
+      <BrowserRouter>
+      <Navbar user={user} isCompany={true}/>
+        <Routes>
+          <Route path="/" element={<Welcome/>}/>
+          <Route path="/login" element={<Login setUser={setUser}/>}/>
+          <Route path="/profile" element={<Profile setUser={setUser} user={user}/>}/>
+          <Route path="/public/profile/:userId/:key" element={<PublicProfile/>}/>
+          <Route path="/item/profile" element={<ItemProfile/>}/>
+          <Route path ="/inventory_table" element={<InventoryTable/>}/>
+          <Route path="/register" element={<Register/>}/>
+        </Routes>
+      </BrowserRouter>
+      
+    </div>
     
   );
 }

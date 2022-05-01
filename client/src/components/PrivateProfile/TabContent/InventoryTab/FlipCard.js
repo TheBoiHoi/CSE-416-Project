@@ -1,33 +1,47 @@
 import ReactCardFlip from 'react-card-flip';
 import * as React from 'react'
 import {InventoryCard} from '../InventoryCard'
-export class FlipCard extends React.Component {
-    constructor() {
-      super();
-        this.state = {
-        isFlipped: false
-      };
-      this.handleClick = this.handleClick.bind(this);
-    }
+import {useState, useEffect} from 'react'
+import axios from 'axios'
+const FlipCard = (props)=>{
+  const [isFlipped, toggleIsFlipped]=useState(false)
+  const [item, setItem]=useState(false)
+    // constructor() {
+    //   super();
+    //     this.state = {
+    //     isFlipped: false
+    //   };
+    //   this.handleClick = this.handleClick.bind(this);
+    // }
   
-    handleClick(e) {
+    useEffect(()=>{
+      axios.get(`http://localhost:3000/item/get/${props.item}`).then(response=>{
+            let item=response.data.item
+            setItem(item)
+        })
+    },[])
+    const handleClick=(e)=>{
       e.preventDefault();
-      console.log('hello')
-      this.setState(prevState => ({ isFlipped: !prevState.isFlipped }));
+      console.log("printing item id")
+      console.log(props.item)
+      //this.setState(prevState => ({ isFlipped: !prevState.isFlipped }));
+      toggleIsFlipped(!isFlipped)
     }
   
-    render() {
-      return (
-        <div>
-          <ReactCardFlip isFlipped={this.state.isFlipped} flipDirection="vertical"> 
-              <div  onClick={this.handleClick}> 
-                  <InventoryCard  front={true}/>
-              </div>   
-              <div  onClick={this.handleClick}>
-                  <InventoryCard public={this.props.public} front={false}/>
-              </div>
-          </ReactCardFlip>
-        </div>
-      )
-    }
+    //render() {
+    return (
+      <div>
+        <ReactCardFlip isFlipped={isFlipped} flipDirection="vertical"> 
+            <div onClick={handleClick}>
+                <InventoryCard  item={item} front={true}/>
+            </div>   
+            <div  onClick={handleClick}>
+                <InventoryCard item={item} public={props.public} front={false}/>
+            </div>
+        </ReactCardFlip>
+      </div>
+    )
+    //}
   }
+
+export default FlipCard

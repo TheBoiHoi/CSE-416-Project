@@ -92,6 +92,24 @@ const getCurrentUser = (req, res)=>{
         })
     })
 }
+
+const getUserById=(req, res)=>{
+    
+    const userId=req.params.userId
+    console.log("getting user by id, the id is:", userId )
+    User.findOne({_id:userId}).then(data=>{
+        if(!data){
+            return res.status(404).json({msg:"User not found"})
+        }
+        return res.status(200).json({
+            user:{
+                userId:data._id,
+                name:data.name,
+                items:data.items_owned
+            }
+        })
+    })
+}
 // const getUser = async(req, res)=>{
 //     console.log("getting the current user")
 //     const user = await User.findOne({_id:req.params.id})
@@ -223,13 +241,13 @@ const completeTrade = async(req, res)=>{
 }
 
 const getProfileQRCode = (req, res)=>{
-    const {userId} = req.body
+    const userId=req.userId
     const key=new ObjectId().toString()
-    const newProfileCode = new PublicProfile({userId:userId, key:key})
+    const newProfileCode = new PublicProfile({userId:userId, key:key, expireAt:Date.now()})
     
     newProfileCode.save().then(()=>{
         const url=`/${userId}/${key}`
-        QRCode.toFile(`./qrcodes/profiles/${userId}-${key}.png`, url, {
+        QRCode.toFile(`./images/${userId}-${key}.png`, url, {
             color: {
               dark: '#000000',  
               light: '#FFFFFF'
@@ -237,7 +255,7 @@ const getProfileQRCode = (req, res)=>{
           }, function (err) {
             if (err) throw err
             console.log('done')
-            const filePath=path.resolve(`./qrcodes/profiles/${userId}-${key}.png`)
+            const filePath=path.resolve(`./images/${userId}-${key}.png`)
             return res.sendFile(filePath, function(err){
                 fs.unlinkSync(filePath)
             })
@@ -250,11 +268,12 @@ const getProfileQRCode = (req, res)=>{
 }
 
 const keyVerification = (req, res, next)=>{
-    const {id, key}=req.params
-    PublicProfile.findOne({_id:id, key:key}).then(data => {
+    const {userId, key}=req.params
+    PublicProfile.findOne({userId:userId, key:key}).then(data => {
         if(!data){
             return res.status(404).json({message:"ERROR"})
         }
+        req.userId=userId
         next()
     }).catch((e) => {
         return res.status(404).json({message:e})
@@ -297,6 +316,7 @@ const getPendingTrades = (req, res) => {
 
 const getItemInfo=(req, res) => {
     const {itemId} = req.params
+    console.log("id:", itemId)
     Item.findOne({_id:itemId}).then(data => {
         if(!data){
             return res.status(404).json({message:"ERROR"})
@@ -330,12 +350,68 @@ const getItemInfo=(req, res) => {
             transactions.sort((a, b)=>{
                 return b.timestamp-a.timestamp
             })
-            return res.status(200).json({item:{name:item.name}, transactions:transactions})
+            return res.status(200).json({item:{itemId:item._id, name:item.name, serialNumber:item.serial_number}, transactions:transactions})
         }, (error)=>{
             return res.status(404).json({message:"ERROR"})
         })
     })
-    
+}
+
+const getCompletedTrades=(req, res)=>{
+    const userId=req.userId
+    User.findOne({_id:userId}).then(data => {
+        if(!data){
+            return res.status(404).json({message:"ERROR; user is not found"})
+        }
+
+        const algoAddr=data.algoAddr
+        axios.get(`https://algoindexer.testnet.algoexplorerapi.io/v2/accounts/${algoAddr}/transactions`).then((response)=>{
+            let data=response.data
+            let transactions=data.transactions
+            let ret=[]
+            for(let i=0;i<transactions.length;i++){
+                let transaction=transactions[i]
+                if(transaction['asset-transfer-transaction']){
+                    ret.push({
+                        id:transaction['id'],
+                        receiver:transaction['asset-transfer-transaction']['receiver'],
+                        sender:transaction['sender'],
+                        item:transaction['asset-transfer-transaction']['asset-id'],
+                        timestamp:transaction['round-time']
+                    })
+                }
+            }
+            return res.status(200).json({transactions:ret})
+        }).catch((e)=>{
+            console.log("ERROR:")
+        })
+    })
+}
+
+//upload the profile pic of an item to the server
+const uploadProfilePic=(req, res)=>{
+    const {itemId}=req.params
+    const file=req.file
+    const image=req.file.buffer
+    fs.writeFile(`./images/profile-pics/${file.originalname}`, image, 'base64', function(err){
+        if (err) throw err
+        console.log('File saved.')
+    })
+    Item.updateOne({_id:itemId}, {profilePic:file.originalname}).then(data=>{
+        return res.status(200).json({message:"OK", newPath:file.originalname})
+    })
+}
+
+//get the profile pic of an item
+const getProfilePic=(req, res)=>{
+    const {itemId}=req.params
+    Item.findOne({_id:itemId}).then(data=>{
+        let imagePath=path.resolve(`./images/profile-pics/${data.profilePic}`)
+        console.log()
+        return res.sendFile(imagePath)
+    }).catch((e)=>{
+        return res.status(404).json({message:"ERROR"})
+    })
 }
 module.exports = {
     login,
@@ -348,5 +424,9 @@ module.exports = {
     keyVerification,
     scanQrCode,
     getItemInfo,
-    getPendingTrades
+    getPendingTrades,
+    getCompletedTrades,
+    getUserById,
+    uploadProfilePic,
+    getProfilePic
 }
