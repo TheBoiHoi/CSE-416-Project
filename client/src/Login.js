@@ -49,9 +49,9 @@ const Login = (props) =>  {
     }else if(document.getElementById('company_checkbox').checked){
       console.log("company logging in")
       apis.CompanyLogin({email:data.get('email'), password:data.get('password')}).then(response=>{
-      console.log(response.data.company.companyId)
-      props.setCompany(response.data.company)
-      navigate(`/inventory_table`)
+        console.log("response company:", response.data.company)
+        props.setUser(response.data.company)
+        navigate(`/inventory_table`)
       }).catch(error => {
         console.log("error:", error.response)
       })
