@@ -3,6 +3,7 @@ const bcrypt=require('bcrypt')
 const Item=require('../models/item')
 const QRCode=require('qrcode')
 const algosdk = require('algosdk');
+const auth=require('../token.js')
 const user = require('../models/user');
 const baseServer = 'https://testnet-algorand.api.purestake.io/ps2'
 const port = '';
@@ -29,7 +30,12 @@ const login=async(req, res)=>{
                 secure: true,
                 sameSite: "None"
             })
-            return res.status(200).json({companyId:company._id}).send()
+            return res.status(200).json({company:{
+                companyId:company._id,
+                name:company.name,
+                items:company.items
+            }
+            }).send()
     }
 }
 
@@ -51,16 +57,22 @@ const register = async(req, res)=>{
 }
 
 const getCompany = async(req, res)=>{
-    const company = await Company.findOne({_id:req.params.id})
-    if(company){
+    const companyId=req.companyId
+    if(!companyId){
+        return res.status(404).json({msg:"No company id"})
+    }
+    Company.findOne({_id:companyId}).then(data=>{
+        if(!data){
+            return res.status(404).json({msg:"company not found"})
+        }
         return res.status(200).json({
             company:{
-                name:company.name,
-                items:company.items
+                companyId:data._id,
+                name:data.name,
+                items:data.items
             }
         })
-    }
-    
+    })
 }
 
 const createItem = async(req,res)=>{
@@ -167,8 +179,8 @@ const createItem = async(req,res)=>{
         manu_location:manu_location,
         manu_owner:manu_owner
     })
-    company.items.push(newItem.serial_number)
-    console.log("new item serial number", newItem.serial_number)
+    company.items.push(newItem._id)
+    console.log("new item id number", newItem._id)
     await newItem.save()
     const saved=await Company.updateOne({_id:id}, {items:company.items})
     if(saved){
