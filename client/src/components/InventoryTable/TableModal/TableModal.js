@@ -7,6 +7,7 @@ import {TransferOwnerShipModal} from '../TransferOwnershipModal/TransferOwnershi
 import {useState} from 'react';
 
 export const TableModal =(props)=>{
+
   const [showModal,setShowModal] = useState(false);
   return (
     <>
@@ -20,7 +21,7 @@ export const TableModal =(props)=>{
         size='lg'
       >
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">Nike Air Mags</Modal.Title>
+          <Modal.Title id="contained-modal-title-vcenter">{props.item.name}</Modal.Title>
         </Modal.Header>
         <Modal.Body >
           <Row className='modal-row-one-content-stuff'>
@@ -40,23 +41,21 @@ export const TableModal =(props)=>{
             </Col>
             <Col>
             <h6>Item Name:</h6>
-            <p>Nike Air Mags</p>
+            <p>{props.item.name}</p>
           <h6>Date Created:</h6>
-          <p>05/25/2022</p>
+          <p>{props.item.manu_date}</p>
           <h6>Serial Number:</h6>
-          <p>5yd75E4WW7zEZndm</p>
+          <p>{props.item.serial_number}</p>
           <h6>Location:</h6>
-          <p>Putian, China</p>
-          <h6>Transaction ID: </h6>
-          <p>819334e3268badjkfh</p>
-          <h6>Blockchain ID:</h6>
-          <p>lkanfakjb7qrbabf9nqw</p>
+          <p>{props.item.manu_location}</p>
+          <h6>Asset ID:</h6>
+          <p>{props.item.asset_id}</p>
             </Col>
           </Row>
-          <Row>
+          {/* <Row>
             <h6>Description</h6>
             <p>The Nike MAG is a limited-edition shoe created by Nike Inc.[1] It is a replica of a shoe featured in the film Back to the Future Part II. The Nike Mag was originally released for sale in 2011 and again in 2016. Both launches were in limited quantities. The 2011 release was limited to 1,510 pairs, while the 2016 release was limited to 89 pairs.</p>
-          </Row>
+          </Row> */}
           
          
         </Modal.Body>
@@ -64,9 +63,9 @@ export const TableModal =(props)=>{
         <Button variant="warning" onClick={()=>{setShowModal(true)}}>
             Transfer Ownership
           </Button>
-          <Button variant="secondary" onClick={()=>props.toggleModal(!props.showModal)}>
+          {/* <Button variant="secondary" onClick={()=>props.toggleModal(!props.showModal)}>
             Close
-          </Button>
+          </Button> */}
           <Button variant="primary"  onClick={()=>props.toggleModal(!props.showModal)}>Understood</Button>
           <TransferOwnerShipModal showModal={showModal} toggleModal ={setShowModal}/>
         </Modal.Footer>

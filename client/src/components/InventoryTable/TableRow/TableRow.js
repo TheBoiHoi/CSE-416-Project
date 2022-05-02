@@ -6,9 +6,12 @@ import {ItemNameComponent} from "./ItemNameComponent/ItemNameComponent";
 import "./TableRow.css";
 import {useEffect, useState} from 'react';
 import {TableModal} from '../TableModal/TableModal';
+import axios from 'axios'
+
 
 export const TableRow = (props) =>{
-  const name = props.name;
+  const company = props.company;  
+ 
   const [background,setBackground] = useState("table_row_container");
 
   const [showModal,setShowModal] = useState(false);
@@ -33,16 +36,16 @@ export const TableRow = (props) =>{
     >
       <Row>
         <Col>
-        <ItemNameComponent/>
+        <ItemNameComponent name = {props.item.name}/>
         </Col>
-        <Col className="m-auto date">05/25/2022</Col>
+        <Col className="m-auto date">{props.item.manu_date}</Col>
         <Col className ="m-auto">
-<div className="serial_number">{props.serial}</div></Col>
-        <Col className="m-auto"><div className="location">Putian, China</div></Col>
+        <div className="serial_number">{props.item.serial_number}</div></Col>
+        <Col className="m-auto"><div className="location">{props.item.manu_location}</div></Col>
       </Row>
       <div className="seperator"></div>
     </Container>
-    <TableModal showModal={showModal} toggleModal={setShowModal}/>
+    <TableModal item = {props.item} showModal={showModal} toggleModal={setShowModal}/>
     </>
   )
 }
