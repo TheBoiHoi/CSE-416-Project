@@ -80,13 +80,18 @@ app.get(`/user/get`, auth.verify, (req, res)=>{
 app.post('/user/register', user.register)
 app.post('/user/login', user.login)
 app.post('/user/logout', auth.verify, user.logout)
+app.get('/user/get/:userId/:key', user.keyVerification, user.getUserById)
+
 
 app.get('/item/get/:itemId', user.getItemInfo)
 app.get('/item-transaction/get/:itemId', user.getItemTransactions)
 app.get('/pending-trade/get', user.getPendingTrades)
-
 app.post('/trade/create',auth.verify, user.createPendingTrade)
 app.post('/trade/complete', auth.verify, user.completeTrade)
+app.get('/completed-trade/get', auth.verify, user.getCompletedTrades)
+app.get('/completed-trade/get/:userId/:key', user.keyVerification, user.getCompletedTrades)
+app.post('/profile-pic/upload/:itemId', multer().single('file'), user.uploadProfilePic)
+app.get('/profile-pic/get/:itemId', user.getProfilePic)
 
 app.post('/company_register', company.register)
 app.post('/company_login', company.login)
