@@ -28,7 +28,6 @@ const setUp = async(promise)=>{
     })
 }
 export const TableRow = (props) =>{
-  const company = props.company;  
   const promise = props.item;
 
   setUp(promise)
@@ -75,7 +74,7 @@ export const TableRow = (props) =>{
       </Row>
       <div className="seperator"></div>
     </Container>
-    <TableModal item = {currItem} showModal={showModal} toggleModal={setShowModal}/>
+    <TableModal company = {props.company} item = {currItem} showModal={showModal} toggleModal={setShowModal}/>
     </>
   )
 }

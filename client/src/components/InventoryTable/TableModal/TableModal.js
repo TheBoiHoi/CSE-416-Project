@@ -3,8 +3,9 @@ import Image from 'react-bootstrap/Image'
 import air_mags2 from '../../../img/airmags2.jpg';
 import './TableModal.css';
 import {TransferOwnerShipModal} from '../TransferOwnershipModal/TransferOwnershipModal';
-
 import {useState} from 'react';
+
+import axios from 'axios';
 
 export const TableModal =(props)=>{
 
