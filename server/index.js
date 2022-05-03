@@ -96,9 +96,11 @@ app.get('/profile-pic/get/:itemId', user.getProfilePic)
 app.post('/company_register', company.register)
 app.post('/company_login', company.login)
 app.get(`/company`, auth.verify, company.getCompany)
+app.get('/company/getItem/:id', auth.verify, company.getItem)
 app.get(`/inventory/:id`, auth.verify, company.getCompany)
-app.post('/company/createItem', company.createItem)
-app.post('/company/sellItem', company.sellItem)
+app.post('/company/createItem',auth.verify, company.createItem)
+
+app.post('/company/sellItem',auth.verify, company.sellItem)
 app.post('/company_addItem', auth.verify, company.addItem)
 app.post('/generate/qrcode/item', company.generateItemQRCode)
 app.get('/qrcode/item/:itemId', (req, res)=>{

@@ -1,6 +1,32 @@
 import {Modal,Button,Form} from 'react-bootstrap';
-
+import axios from 'axios';
+let userId
+let companyId
+let itemId
+const handleSubmit = async (event)=>{
+  console.log("transfer ownership")
+  console.log("company :"+companyId)
+  console.log("user : "+userId)
+  console.log("item : "+itemId)
+  event.preventDefault()
+  try {
+    await axios.post(`http://localhost:3000/company/sellItem`, {
+    Itemid:itemId,
+    companyId:companyId,
+    buyerId:userId,
+  }).then(()=>{
+    alert("done")
+  })
+  
+  } catch (error) {
+    console.log(error)
+  }
+    
+  
+}
 export const TransferOwnerShipModal =(props)=>{
+  itemId = props.itemId
+  companyId = props.company.companyId
   return (
     <>
       <Modal
@@ -15,10 +41,13 @@ export const TransferOwnerShipModal =(props)=>{
           <Modal.Title id="contained-modal-title-vcenter">Transfer Ownership Of Item</Modal.Title>
         </Modal.Header>
         <Modal.Body >
-        <Form>
-          <Form.Group className="mb-3" controlId="formSerialNumber">
+        <Form onSubmit={handleSubmit}> 
+          <Form.Group className="mb-3" controlId="formUserId" >
             <Form.Label>User ID</Form.Label>
-            <Form.Control type="text" placeholder="Enter the user id of the person you want to transfer ownership to" />
+            <Form.Control type="text" 
+                          placeholder="Enter the user id of the person you want to transfer ownership to" 
+                          onChange={e => userId= e.target.value}
+                          required/>
           </Form.Group>
           <Button variant="primary" type="submit">
             Submit
