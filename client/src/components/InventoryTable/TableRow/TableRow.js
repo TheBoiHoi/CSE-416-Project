@@ -6,7 +6,6 @@ import {ItemNameComponent} from "./ItemNameComponent/ItemNameComponent";
 import "./TableRow.css";
 import {useEffect, useState} from 'react';
 import {TableModal} from '../TableModal/TableModal';
-import axios from 'axios'
 
 let asset_id 
 let manu_date 
@@ -18,7 +17,6 @@ let serial_number
 
 const setUp = async(promise)=>{  
   await promise.then((val)=>{
-      asset_id = val.asset_id
       manu_date = val.manu_date
       manu_location = val.manu_location
       manu_owner = val.manu_owner
@@ -28,6 +26,7 @@ const setUp = async(promise)=>{
     })
 }
 export const TableRow = (props) =>{
+
   const promise = props.item;
 
   setUp(promise)
@@ -74,7 +73,7 @@ export const TableRow = (props) =>{
       </Row>
       <div className="seperator"></div>
     </Container>
-    <TableModal company = {props.company} item = {currItem} showModal={showModal} toggleModal={setShowModal}/>
+    <TableModal itemId={props.itemId} company = {props.company} item = {currItem} showModal={showModal} toggleModal={setShowModal}/>
     </>
   )
 }

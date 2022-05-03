@@ -15,14 +15,14 @@ let serial = " "
     console.log(date)
     console.log(location)
     console.log(serial)
-    apis.CreateItem({
+    event.preventDefault()
+    await apis.CreateItem({
       id:tempCompanyId,
       name:name,
       manu_date:date,
       manu_location:location,
       manu_owner:tempOwner,
       serial_number:serial})
-    console.log("Finished creating an item")
   };
 
 export const CompanyAddModal =(props)=>{

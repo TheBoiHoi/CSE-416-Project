@@ -265,7 +265,7 @@ const sellItem = async(req,res)=>{
 
     //remove the item from company
     const companyItems= company.items
-    const newCompanyItems = companyItems.filter(item => item!=item.serial_number)
+    const newCompanyItems = companyItems.filter(item => item!=Itemid)
     await Company.updateOne({_id:companyId}, {items:newCompanyItems})
     
     //update item owner
@@ -275,7 +275,7 @@ const sellItem = async(req,res)=>{
     const buyerItems=buyer.items_owned
     buyerItems.push(Itemid)
     await user.updateOne({_id:buyerId}, {items_owned:buyerItems})
-
+    console.log("done")
     return res.status(200).json({msg:"OK"})
 }
 
@@ -294,8 +294,8 @@ const addItem = async(req, res)=>{
         manu_location:item.manu_location,
         manu_owner:item.manu_owner
     })
-    items.push(newItem.serial_number)
-    console.log("new item serial number", newItem.serial_number)
+    items.push(newItem._id)
+    console.log("new item id", newItem._id)
     await newItem.save()
     const saved=await Company.updateOne({_id:id}, {items:items})
     if(saved){

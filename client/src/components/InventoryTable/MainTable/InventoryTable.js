@@ -12,21 +12,20 @@ export  const InventoryTable  = (props) => {
     console.log(props.company.name)
     const items = props.company.items
 
-    let test = new Array()
+    let itemId = new Array()
     let itemList = items.map( async (id)=>{
+      itemId.push(id)
       const response = await axios.get(`http://localhost:3000/company/getItem/${id}`)
       return structuredClone(response.data.item)
     })
-    console.log(itemList)
-    console.log(test)
+
     return(
       <div className="inventory_table">
         <TableHead/>
         <div className="table_head_seperator"></div>
         <div className="inventory_rows" >
-          {itemList.map((index)=>{
-            console.log("row")
-            return <TableRow item = {index} company = {props.company}/>;
+          {itemList.map((element,index)=>{
+            return <TableRow itemId={itemId[index]}item = {element} company = {props.company}/>;
             
           })}
         </div>
