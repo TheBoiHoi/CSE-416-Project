@@ -18,6 +18,7 @@ import {useNavigate} from 'react-router-dom'
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 export const Navbar = (props) => {
+  console.log(props)
   const navigate=useNavigate()
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -38,7 +39,7 @@ export const Navbar = (props) => {
   };
 
   const isCompany = props.isCompany; //for testing purposes
-
+  const isUser = props.isUser;
   return (
     <AppBar style={{backgroundColor:'white'}}  position="static">
       <Container  maxWidth="xl">
@@ -80,14 +81,14 @@ export const Navbar = (props) => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-                <Link class="link-remove-outline" to="/user_login">
+                <Link class="link-remove-outline" to="/login">
                     <MenuItem >
                         <Typography style={{color:'black'}} textAlign="center">Login</Typography>
                     </MenuItem>
                 </Link>
                 
                 
-                <Link class="link-remove-outline" to="/user_register">
+                <Link class="link-remove-outline" to="/register">
                     <MenuItem >
                         <Typography style={{color:'black'}} textAlign="center">Register</Typography>
                     </MenuItem>
@@ -104,7 +105,7 @@ export const Navbar = (props) => {
                     Login
                 </Button>
             </Link>
-            <Link class="link-remove-outline" style={{padding:'5px'}}  to="/user_register">
+            <Link class="link-remove-outline" style={{padding:'5px'}}  to="/register">
                 <Button
                     sx={{ my: 2, color: 'black', display: 'block' }}
                 >
