@@ -38,7 +38,7 @@ export const Navbar = (props) => {
     setAnchorElUser(null);
   };
 
-  const isCompany = props.isCompany; //for testing purposes
+  const isCompany = props.isCompany;
   const isUser = props.isUser;
   return (
     <AppBar style={{backgroundColor:'white'}}  position="static">
@@ -121,7 +121,7 @@ export const Navbar = (props) => {
                     sx={{ my: 2, color: 'black', display: 'block' ,backgroundColor:'white'}}
                     onClick ={handleOpenUserMenu}
                 >
-                    Nike Corp.
+                    {props.user.name}
                 </Button>) : ( <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />

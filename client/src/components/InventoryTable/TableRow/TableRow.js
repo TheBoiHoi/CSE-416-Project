@@ -17,6 +17,7 @@ let serial_number
 
 const setUp = async(promise)=>{  
   await promise.then((val)=>{
+      asset_id = val.asset_id
       manu_date = val.manu_date
       manu_location = val.manu_location
       manu_owner = val.manu_owner

@@ -8,10 +8,16 @@ import {Add,Search,NotificationAddRounded} from '@mui/icons-material';
 import { TextField } from '@mui/material';
 import {TableModal} from '../InventoryTable/TableModal/TableModal';
 import {CompanyAddModal} from '../CompanyAddModal/CompanyAddModal';
-
+import {useNavigate} from 'react-router-dom'
 import {useState,useEffect} from 'react';
 
 export const CompanyNavbarFunctions = () =>{
+  const navigate=useNavigate()
+  const handleAddItem = () =>{
+    console.log("test")
+    navigate(`/inventory-table`)
+    setShowModal(true)
+  }
   const [showModal,setShowModal] = useState(false);
 
   return(
@@ -24,17 +30,9 @@ export const CompanyNavbarFunctions = () =>{
               <TextField id="input-with-sx" label="With sx" variant="standard" />
           </Box>
         </div>
-          
-
-          <div className ="company_notification">
-            <IconButton>
-            <NotificationAddRounded/>
-            </IconButton>
-          </div>
-          
 
           <div className ="company_add">
-            <IconButton onClick={()=>setShowModal(true)}>
+            <IconButton onClick={handleAddItem}>
             <Add/>
             </IconButton>
           </div>

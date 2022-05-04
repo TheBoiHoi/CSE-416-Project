@@ -14,19 +14,17 @@ import apis from './api'
 
 function App() {
   const [user, setUser]=useState(null)//user here can be regular user or a company
-  const [isUser,setIsUser]=useState()
-  const [isCompany,setIsCompany]=useState()
-  //const [company,setCompany]= useState(null)
+  const [isUser,setIsUser]=useState(false)
+  const [isCompany,setIsCompany]=useState(false)
   useEffect(() => {
     apis.GetCurrentUser().then(response=>{
       if(response.data.user){
-        setIsUser(true)
         setUser(response.data.user)
+        setIsUser(true)
       }
       else if(response.data.company){
-        setIsCompany(true)
         setUser(response.data.company)
-        
+        setIsCompany(true)
       }
     }).catch(e => {
       console.log(e.response)
