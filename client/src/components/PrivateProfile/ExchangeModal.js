@@ -1,20 +1,16 @@
 import {useState,useEffect} from 'react'
 import {Modal,Button} from 'react-bootstrap'
 const ExchangeModal=(props)=> {
-    const [show, setShow] = useState(false);
-  
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-  
+    //make request to get transaction info 
+    const handleClose=()=>{
+      props.setShow(false)
+    }
     return (
       <>
-        <Button variant="primary" onClick={handleShow}>
-          Launch demo modal
-        </Button>
   
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={props.show} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
+            <Modal.Title style={{fontSize:'13px'}}>Exchange # {props.transid}</Modal.Title>
           </Modal.Header>
           <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
           <Modal.Footer>

@@ -16,7 +16,7 @@ const ProfileCard = (props) =>{
         })
         
     }
-
+    
     return (
         <Card style={{ width: '18rem' }}>
         <Card.Img style={{width:"50%",margin:"auto"}} variant="top" src={Duckpfp} />

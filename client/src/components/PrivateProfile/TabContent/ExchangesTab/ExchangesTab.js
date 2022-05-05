@@ -4,8 +4,11 @@ import ShoeImg from '../../../../img/airmags.jpg'
 import { MDBTable, MDBTableBody, MDBTableHead,MDBDataTable } from 'mdbreact';
 import {useEffect, useState} from 'react'
 import axios from 'axios'
+import ExchangeModal from '../../ExchangeModal';
 const ExchangesTab=(props)=>{
   const [trade, setTrade]=useState([])
+  const [selectedExchange,setSelectedExchange]=useState('')
+  const [showExchangeModal,setShowExchangeModal]=useState(false)
   useEffect(()=>{
     if(!props.public){
       axios.get("http://localhost:3000/completed-trade/get").then(response=>{
@@ -153,6 +156,10 @@ const ExchangesTab=(props)=>{
       //   },
       // ]
   };
+    const openModal=(id)=>{
+      setSelectedExchange(id)
+      setShowExchangeModal(true)
+    }
     console.log("transactions:", data)
     return(
         <div >
@@ -162,7 +169,7 @@ const ExchangesTab=(props)=>{
                 {trade.map((data, i)=>{
                     return(
                     <tr key={i} onClick={()=>{
-                        console.log(data.id)
+                        openModal(data.id)
                     }}>
                         <td>{data.id}</td>
                         <td>{data.item}</td>
@@ -174,6 +181,8 @@ const ExchangesTab=(props)=>{
                 })}
                 </MDBTableBody>
             </MDBTable>
+            {showExchangeModal}
+            <ExchangeModal setShow={setShowExchangeModal} show={showExchangeModal} transid={selectedExchange}></ExchangeModal>
         </div>
     );
 };
