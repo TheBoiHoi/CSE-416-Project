@@ -8,33 +8,37 @@ import {Add,Search,NotificationAddRounded} from '@mui/icons-material';
 import { TextField } from '@mui/material';
 import {TableModal} from '../InventoryTable/TableModal/TableModal';
 import {CompanyAddModal} from '../CompanyAddModal/CompanyAddModal';
-
+import {useNavigate} from 'react-router-dom'
 import {useState,useEffect} from 'react';
 
 export const CompanyNavbarFunctions = () =>{
+  
+  const navigate=useNavigate()
+  const handleAddItem = () =>{
+    console.log("test")
+    navigate(`/inventory-table`)
+    setShowModal(true)
+  }
+
+  // const handleSerch = (name) =>{
+  //   console.log("serach: "+name)
+  //   navigate(`/inventory-table`,{filter:name})
+  // }
   const [showModal,setShowModal] = useState(false);
 
   return(
     <>
     <Box   sx={{  flexDirection: 'row-reverse', flexGrow: 1, display: { xs: 'none', md: 'flex' } }} className ="company_nav_container">
 
-        <div className='company_nav_search_bar'>
+        {/* <div className='company_nav_search_bar'>
           <Box sx={{ display: 'flex', alignItems: 'flex-end', }}>
               <Search sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-              <TextField id="input-with-sx" label="With sx" variant="standard" />
+              <TextField id="input-with-sx" label="With sx" variant="standard" onBlur={e => handleSerch(e.target.value)}/>
           </Box>
-        </div>
-          
-
-          <div className ="company_notification">
-            <IconButton>
-            <NotificationAddRounded/>
-            </IconButton>
-          </div>
-          
+        </div> */}
 
           <div className ="company_add">
-            <IconButton onClick={()=>setShowModal(true)}>
+            <IconButton onClick={handleAddItem}>
             <Add/>
             </IconButton>
           </div>

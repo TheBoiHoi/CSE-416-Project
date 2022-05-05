@@ -11,11 +11,6 @@ let serial = " "
   const handleSubmit = async (event) => {
     const tempCompanyId = "625f8233d1137b6e964ccac9"
     const tempOwner = "Debugging"
-    console.log(name)
-    console.log(date)
-    console.log(location)
-    console.log(serial)
-    event.preventDefault()
     await apis.CreateItem({
       id:tempCompanyId,
       name:name,
@@ -23,7 +18,8 @@ let serial = " "
       manu_location:location,
       manu_owner:tempOwner,
       serial_number:serial})
-  };
+    console.log("Done creating item")
+    };
 
 export const CompanyAddModal =(props)=>{
   return (
