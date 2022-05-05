@@ -6,10 +6,9 @@ import axios from 'axios'
 
 
 export  const InventoryTable  = (props) => {
-  
-  console.log("company:", props.company)
+  console.log("filter:" + props.filter)
+  // console.log("company:", props.company)
   if(props.company){
-    console.log(props.company.name)
     const items = props.company.items
 
     let itemId = new Array()

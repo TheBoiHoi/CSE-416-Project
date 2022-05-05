@@ -40,7 +40,7 @@ function App() {
         <Route path="/profile" element={<Profile setUser={setUser} user={user}/>}/>
         <Route path="/public/profile/:userId/:key" element={<PublicProfile/>}/>
         <Route path="/item/profile" element={<ItemProfile/>}/>
-        <Route path ="/inventory-table" element={<InventoryTable company={user}/>}/>
+        <Route path ="/inventory-table" element={<InventoryTable company={user} filter={"none"}/>}/>
         <Route path="/register" element={<Register/>}/>
       </Routes>
     </BrowserRouter>

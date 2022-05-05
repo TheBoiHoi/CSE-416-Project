@@ -15,10 +15,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Logo from '../Icons/Logo-removebg-preview.png'
 import {CompanyNavbarFunctions} from './CompanyNavbarFunctions/CompanyNavbarFunctions';
 import {useNavigate} from 'react-router-dom'
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-
+let settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 export const Navbar = (props) => {
-  console.log(props)
   const navigate=useNavigate()
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -30,6 +28,11 @@ export const Navbar = (props) => {
     setAnchorElUser(event.currentTarget);
   };
 
+  const handleOpenCompanyMenu = (event) => {
+    settings = ['Inventory Table', 'Logout']
+    setAnchorElUser(event.currentTarget);
+  };
+
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
@@ -38,8 +41,12 @@ export const Navbar = (props) => {
     setAnchorElUser(null);
   };
 
+  const handleMenuClick =  (event) =>{
+
+  }
   const isCompany = props.isCompany;
   const isUser = props.isUser;
+
   return (
     <AppBar style={{backgroundColor:'white'}}  position="static">
       <Container  maxWidth="xl">
@@ -50,7 +57,7 @@ export const Navbar = (props) => {
           >
             <img style={{width:'15%', cursor:"pointer"}} src= {Logo} onClick={()=>{navigate('/')}}/>
           </Typography>
-
+{/* 
         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -81,6 +88,8 @@ export const Navbar = (props) => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
+             
+              
                 <Link class="link-remove-outline" to="/login">
                     <MenuItem >
                         <Typography style={{color:'black'}} textAlign="center">Login</Typography>
@@ -94,9 +103,9 @@ export const Navbar = (props) => {
                     </MenuItem>
                 </Link>
             </Menu>
-        </Box>
+        </Box> */}
         
-        {!isCompany && (<Box   sx={{  flexDirection: 'row-reverse', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+        {!isCompany && !isUser && (<Box   sx={{  flexDirection: 'row-reverse', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
           
             <Link class="link-remove-outline" style={{padding:'5px'}} to="/login">
                 <Button
@@ -115,16 +124,18 @@ export const Navbar = (props) => {
         </Box>)}
 
         {isCompany && <CompanyNavbarFunctions/>}
-          <Box sx={{ flexGrow: 0, padding:'5px' }}>
+
+        {(isUser || isCompany) && 
+        <Box sx={{ flexGrow: 0, padding:'5px' }}>
               {isCompany ? ( <Button
                     title="Open settings"
                     sx={{ my: 2, color: 'black', display: 'block' ,backgroundColor:'white'}}
-                    onClick ={handleOpenUserMenu}
+                    onClick ={handleOpenCompanyMenu}
                 >
                     {props.user.name}
                 </Button>) : ( <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt= {props.user.name} src="/static/images/avatar/2.jpg" />
               </IconButton>
               
             </Tooltip> )}
@@ -146,13 +157,15 @@ export const Navbar = (props) => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+              {
+                settings.map((setting) => (
+                <MenuItem key={setting} onClick={handleMenuClick}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>
-          </Box>
+          </Box>}
+          
         </Toolbar>
       </Container>
     </AppBar>
