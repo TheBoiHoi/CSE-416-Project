@@ -35,7 +35,7 @@ function App() {
     <BrowserRouter>
     <Navbar user={user} isUser = {isUser} isCompany={isCompany}/>
       <Routes>
-        <Route path="/" element={<Welcome/>}/>
+        <Route path="/" element={<Welcome user={user}/>}/>
         <Route path="/login" element={<Login setUser={setUser}/>}/>
         <Route path="/profile" element={<Profile setUser={setUser} user={user}/>}/>
         <Route path="/public/profile/:userId/:key" element={<PublicProfile/>}/>
