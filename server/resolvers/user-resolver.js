@@ -300,61 +300,6 @@ const getPendingTrades = (req, res) => {
     });
 }
 
-const getItemInfo=(req, res) => {
-    const {itemId} = req.params
-    console.log("id:", itemId)
-    Item.findOne({_id:itemId}).then(data => {
-        if(!data){
-            return res.status(404).json({message:"ERROR"})
-        }
-        let item=data
-        return res.status(200).json({item:{owner:item.owner, itemId:item._id, name:item.name, serialNumber:item.serial_number}})
-        
-    })
-}
-
-const getItemTransactions=(req, res)=>{
-    const {itemId} = req.params
-    console.log("get item transactions id:", itemId)
-    Item.findOne({_id:itemId}).then(data => {
-        if(!data){
-            return res.status(404).json({message:"ERROR; item not found"})
-        }
-        let item=data
-        let assetId=item.asset_id
-        let transactions=[]
-        axios.get(`https://algoindexer.testnet.algoexplorerapi.io/v2/assets/${assetId}/transactions`).then((response) => {
-            let data=response.data
-            let assetTransactions=data.transactions
-            for(let i=0;i<assetTransactions.length;i++){
-                let transaction=assetTransactions[i]
-                const date=transaction['round-time']
-                let id=transaction.id
-                if(transaction['asset-config-transaction']){
-                    transactions.push({
-                        transactionId:id, 
-                        creator:transaction['asset-config-transaction']['params']['creator'],
-                        timestamp:date
-                    })
-                }
-                else if(transaction['asset-transfer-transaction']){
-                    transactions.push({
-                        transactionId:id,
-                        sender:transaction['sender'],
-                        receiver:transaction['asset-transfer-transaction']['receiver'],
-                        timestamp:date
-                    })
-                }
-            }
-            transactions.sort((a, b)=>{
-                return b.timestamp-a.timestamp
-            })
-            return res.status(200).json({transactions:transactions})
-        }, (error)=>{
-            return res.status(404).json({message:"ERROR"})
-        })
-    })
-}
 
 const getCompletedTrades=(req, res)=>{
     const userId=req.userId
@@ -397,31 +342,6 @@ const getCompletedTrades=(req, res)=>{
     })
 }
 
-//upload the profile pic of an item to the server
-const uploadProfilePic=(req, res)=>{
-    const {itemId}=req.params
-    const file=req.file
-    const image=req.file.buffer
-    fs.writeFile(`./images/profile-pics/${file.originalname}`, image, 'base64', function(err){
-        if (err) throw err
-        console.log('File saved.')
-    })
-    Item.updateOne({_id:itemId}, {profilePic:file.originalname}).then(data=>{
-        return res.status(200).json({message:"OK", newPath:file.originalname})
-    })
-}
-
-//get the profile pic of an item
-const getProfilePic=(req, res)=>{
-    const {itemId}=req.params
-    Item.findOne({_id:itemId}).then(data=>{
-        let imagePath=path.resolve(`./images/profile-pics/${data.profilePic}`)
-        console.log()
-        return res.sendFile(imagePath)
-    }).catch((e)=>{
-        return res.status(404).json({message:"ERROR"})
-    })
-}
 module.exports = {
     login,
     register,
@@ -432,11 +352,7 @@ module.exports = {
     getProfileQRCode,
     keyVerification,
     scanQrCode,
-    getItemInfo,
     getPendingTrades,
     getCompletedTrades,
     getUserById,
-    uploadProfilePic,
-    getProfilePic,
-    getItemTransactions
 }
