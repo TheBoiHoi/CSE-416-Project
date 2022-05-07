@@ -281,8 +281,6 @@ const scanQrCode = (req, res)=>{
                 console.error(err);
                 // TODO handle error
             }
-            console.log(value.result);
-            console.log(value);
             return res.status(200).json({data:value.result})
         };
         qr.decode(image.bitmap);
@@ -310,7 +308,7 @@ const getItemInfo=(req, res) => {
             return res.status(404).json({message:"ERROR"})
         }
         let item=data
-        return res.status(200).json({item:{itemId:item._id, name:item.name, serialNumber:item.serial_number}})
+        return res.status(200).json({item:{owner:item.owner, itemId:item._id, name:item.name, serialNumber:item.serial_number}})
         
     })
 }
