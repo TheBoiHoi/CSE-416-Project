@@ -14,6 +14,12 @@ const algosdk = require('algosdk');
 const baseServer = 'https://testnet-algorand.api.purestake.io/ps2'
 const port = '';
 
+//Didn't use random because it generate a different key and iv if the sever crash
+const crypto = require('crypto');
+const algorithm = 'aes-192-cbc'; //Using AES encryption
+const key = crypto.scryptSync("generate key","salt",24)
+const iv = Buffer.alloc(16,0)
+
 require('dotenv').config()
 const {TOKEN}=process.env
 const apitoken = {
@@ -57,8 +63,13 @@ const login = async(req, res)=>{
 
 const register = async(req, res)=>{
     const{name, email, password,algoAddr,algoPass} = req.body
+    //encrypted algoPass
+    let cipher = crypto.createCipheriv(algorithm, key, iv);
+    let encrypted = cipher.update(algoPass, "utf-8", "hex");
+    encrypted += cipher.final("hex")
+
     const hash = await bcrypt.hash(password, 10)
-    const user = new User({name:name, email:email, password:hash,algoAddr:algoAddr,algoPass:algoPass, items_owned:[], pending_trades:[], completed_trades:[]})
+    const user = new User({name:name, email:email, password:hash,algoAddr:algoAddr,algoPass:encrypted, items_owned:[], pending_trades:[], completed_trades:[]})
     const saved = await user.save()
     token=auth.generate(user)
     res.cookie('token', token, {
@@ -142,8 +153,22 @@ const completeTrade = async(req, res)=>{
 
     const seller=await User.findOne({_id:seller_id})
     const buyer=await User.findOne({_id:buyer_id})
-    const sellerAcc = algosdk.mnemonicToSecretKey(seller.algoPass)
-    const buyerAcc = algosdk.mnemonicToSecretKey(buyer.algoPass)
+
+    //Decrypted Buyer and Seller algo pass
+    var decipher = crypto.createDecipheriv(algorithm, key, iv);
+    
+    let sellerEncryptedText = seller.algoPass
+    let sellerDecryptedData = decipher.update(sellerEncryptedText, "hex", "utf-8");
+    sellerDecryptedData += decipher.final("utf8");
+    
+    decipher = crypto.createDecipheriv(algorithm, key, iv);
+
+    let BuyerencryptedText = buyer.algoPass
+    let BuyerdecryptedData = decipher.update(BuyerencryptedText, "hex", "utf-8");
+    BuyerdecryptedData += decipher.final("utf8");
+
+    const sellerAcc = algosdk.mnemonicToSecretKey(sellerDecryptedData)
+    const buyerAcc = algosdk.mnemonicToSecretKey(BuyerdecryptedData)
     const target_item = await Item.findOne({_id:item_id})
 
     //Buyer opt in
