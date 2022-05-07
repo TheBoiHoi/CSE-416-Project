@@ -5,6 +5,13 @@ const QRCode=require('qrcode')
 const algosdk = require('algosdk');
 const auth=require('../token.js')
 const user = require('../models/user');
+const crypto = require('crypto');
+const algorithm = 'aes-192-cbc'; //Using AES encryption
+
+//Didn't use random because it generate a different key and iv if the sever crash
+const key = crypto.scryptSync("generate key","salt",24)
+const iv = Buffer.alloc(16,0)
+
 require('dotenv').config()
 //const { default: AlgodClient } = require('algosdk/dist/types/src/client/v2/algod/algod');
 const baseServer = 'https://testnet-algorand.api.purestake.io/ps2'
@@ -46,11 +53,21 @@ const register = async(req, res)=>{
     const algosdk = require('algosdk');
     let account = algosdk.generateAccount();
     let passphrase = algosdk.secretKeyToMnemonic(account.sk);
-    console.log( "My address: " + account.addr );
-    console.log( "My passphrase: " + passphrase );
-    const company = new Company({name:name, email:email, password:hash, items:[],algoAddr:account.addr,algoPass:passphrase})
-    const saved = await company.save()
 
+    // console.log( "key: "+key)
+    // console.log( "iv: "+iv)
+
+    let cipher = crypto.createCipheriv(algorithm, key, iv);
+    let encrypted = cipher.update(passphrase, "utf-8", "hex");
+    encrypted += cipher.final("hex")
+        
+    // console.log( "My address: " + account.addr );
+    // console.log( "My passphrase: " + passphrase );
+    // console.log( "Encrypted passphrase: " + encrypted)
+    
+    const company = new Company({name:name, email:email, password:hash, items:[],algoAddr:account.addr,algoPass:encrypted})
+    const saved = await company.save()
+    console.log("done registering")
     res.status(200).json({company:{
         _id:saved._id,
         name:saved.name
@@ -79,10 +96,19 @@ const getCompany = async(req, res)=>{
 
 const createItem = async(req,res)=>{
     const{id,name,manu_date,manu_location,manu_owner,serial_number} = req.body
-
-    // Instantiate the algod wrapper
+    
     const company=await Company.findOne({_id:id})
-    const companyAcc = algosdk.mnemonicToSecretKey(company.algoPass)
+    //Decrypting AlgoPass
+    console.log(company.algoPass)
+    // let iv = Buffer.from(text.iv, 'hex');
+    let encryptedText = company.algoPass
+    const decipher = crypto.createDecipheriv(algorithm, key, iv);
+    let decryptedData = decipher.update(encryptedText, "hex", "utf-8");
+    decryptedData += decipher.final("utf8");
+    console.log("decrypted : " + decryptedData )
+    // Instantiate the algod wrapper
+    
+    const companyAcc = algosdk.mnemonicToSecretKey(decryptedData)
     let accountInfo = await algodclient.accountInformation(companyAcc.addr).do();
     let accountAmount = accountInfo.amount
     let itemOwned = company.items.length
@@ -104,7 +130,7 @@ const createItem = async(req,res)=>{
     let decimals = 0;
     let totalIssuance = 1;
     let unitName = "Qrify";
-    let assetName = "CSE416 QRify testing";
+    let assetName = name;
     let assetURL = "http://CSE416";
     let assetMetadataHash = "16efaa3924a6fd9d3a4824799a4ac611";
     let manager = companyAcc.addr;
@@ -196,8 +222,22 @@ const sellItem = async(req,res)=>{
     const buyer = await user.findOne({_id:buyerId})
     const company = await Company.findOne({_id:companyId})
     const item =  await Item.findOne({_id:Itemid})
-    const buyerAcc = algosdk.mnemonicToSecretKey(buyer.algoPass)
-    const companyAcc = algosdk.mnemonicToSecretKey(company.algoPass)
+    console.log(company.algoPass)
+    //Decrypted Buyer algo password
+    let BuyerencryptedText = buyer.algoPass
+    var decipher = crypto.createDecipheriv(algorithm, key, iv);
+    let BuyerdecryptedData = decipher.update(BuyerencryptedText, "hex", "utf-8");
+    BuyerdecryptedData += decipher.final("utf8");
+
+    const buyerAcc = algosdk.mnemonicToSecretKey(BuyerdecryptedData)
+    
+    //Decrtpted Company algo Password
+    let companyEncryptedText = company.algoPass
+    decipher = crypto.createDecipheriv(algorithm, key, iv);
+    let companyDecryptedData = decipher.update(companyEncryptedText, "hex", "utf-8");
+    companyDecryptedData += decipher.final("utf8");
+    
+    const companyAcc = algosdk.mnemonicToSecretKey(companyDecryptedData)
 
     let accountInfo = await algodclient.accountInformation(companyAcc.addr).do();
     let accountAmount = accountInfo.amount
