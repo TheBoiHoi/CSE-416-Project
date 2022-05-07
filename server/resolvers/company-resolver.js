@@ -1,7 +1,6 @@
 const Company=require('../models/company')
 const bcrypt=require('bcrypt')
 const Item=require('../models/item')
-const QRCode=require('qrcode')
 const algosdk = require('algosdk');
 const auth=require('../token.js')
 const user = require('../models/user');
@@ -366,28 +365,12 @@ const getItem = async(req,res)=>{
     })
 }
 
-const generateItemQRCode = async(req, res)=>{
-    const {itemId} = req.body
-    const url=`http://localhost:8000/item/profile/${itemId}`
-    QRCode.toFile(`./images/item-qrcodes/${itemId}.png`, url, {
-        color: {
-          dark: '#000000',  // Blue dots
-          light: '#FFFFFF' // Transparent background
-        }
-      }, function (err) {
-        if (err) throw err
-        console.log('done')
-    })
-    res.status(200).json({status:"ok"})
-}
-
 
 module.exports={
     register,
     login,
     getCompany,
     addItem,
-    generateItemQRCode,
     createItem,
     sellItem,
     getItem
