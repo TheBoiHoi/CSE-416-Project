@@ -328,7 +328,7 @@ const getItem = async(req,res)=>{
 
 const generateItemQRCode = async(req, res)=>{
     const {itemId} = req.body
-    const url=`http://localhost/get/item/${itemId}`
+    const url=`http://localhost/item/profile/${itemId}`
     QRCode.toFile(`./images/item-qrcodes/${itemId}.png`, url, {
         color: {
           dark: '#000000',  // Blue dots

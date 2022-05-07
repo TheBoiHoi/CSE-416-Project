@@ -33,12 +33,14 @@ function App() {
   return (
     <div>
     <BrowserRouter>
-    <Navbar user={user} isUser = {isUser} isCompany={isCompany}/>
+    <Navbar setUser={setUser} user={user} isUser = {isUser} isCompany={isCompany}/>
       <Routes>
         <Route path="/" element={<Welcome user={user}/>}/>
         <Route path="/login" element={<Login setUser={setUser}/>}/>
         <Route path="/profile" element={<Profile setUser={setUser} user={user}/>}/>
         <Route path="/public/profile/:userId/:key" element={<PublicProfile/>}/>
+
+        <Route path="/item/profile/:itemId" element={<ItemProfile/>}/>
         <Route path="/item/profile" element={<ItemProfile/>}/>
         <Route path ="/inventory-table" element={<InventoryTable company={user} filter={"none"}/>}/>
         <Route path="/register" element={<Register/>}/>

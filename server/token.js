@@ -8,7 +8,7 @@ const verify = (req, res, next) =>{
         if(!token){
             return res.status(404).json({"msg":"ERROR, no token"})
         }
-        
+        console.log("url:", req.url)
         const verified=jwt.verify(token, JWT_SECRET)
         console.log("verified:", verified)
         req.userId=verified.acctId;//userId here can be company id or regular user id
