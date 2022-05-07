@@ -21,7 +21,7 @@ const PrivateTabs=(props)=>{
     }
 
     return(
-    <Tabs style={{width:"50%"}} defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
+    <Tabs style={{width:"50%"}} defaultActiveKey="Exchanges" id="uncontrolled-tab-example" className="mb-3">
         <Tab style={{width:"50%",boxShadow: "1px 1px 1px #9E9E9E"}} eventKey="Exchanges" title="Exchanges">
             <ExchangesTab  user={props.user}></ExchangesTab>
         </Tab>

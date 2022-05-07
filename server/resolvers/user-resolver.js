@@ -113,19 +113,6 @@ const getUserById=(req, res)=>{
         })
     })
 }
-// const getUser = async(req, res)=>{
-//     console.log("getting the current user")
-//     const user = await User.findOne({_id:req.params.id})
-//     if(user){
-//         return res.status(200).json({
-//             user:{
-//                 userId:user._id,
-//                 name:user.name,
-//                 items_owned:user.items_owned
-//             }
-//         })
-//     }
-// }
 
 const createPendingTrade = async(req, res)=>{
     const {sellerId, buyerId, itemId} = req.body
@@ -332,10 +319,10 @@ const getItemInfo=(req, res) => {
 
 const getItemTransactions=(req, res)=>{
     const {itemId} = req.params
-    console.log("id:", itemId)
+    console.log("get item transactions id:", itemId)
     Item.findOne({_id:itemId}).then(data => {
         if(!data){
-            return res.status(404).json({message:"ERROR"})
+            return res.status(404).json({message:"ERROR; item not found"})
         }
         let item=data
         let assetId=item.asset_id

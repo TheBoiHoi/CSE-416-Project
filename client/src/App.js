@@ -36,7 +36,7 @@ function App() {
         <Route path="/login" element={<Login setUser={setUser}/>}/>
         <Route path="/profile" element={<Profile setUser={setUser} user={user}/>}/>
         <Route path="/public/profile/:userId/:key" element={<PublicProfile/>}/>
-        <Route path="/item/profile" element={<ItemProfile/>}/>
+        <Route path="/item/profile/:itemId" element={<ItemProfile/>}/>
         <Route path ="/inventory-table" element={<InventoryTable company={user}/>}/>
         <Route path="/register" element={<Register/>}/>
       </Routes>

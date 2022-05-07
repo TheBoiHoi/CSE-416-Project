@@ -3,7 +3,9 @@ import {Card,Button} from 'react-bootstrap'
 import ShoeImg from '../../../img/airmags.jpg'
 import axios from 'axios'
 import OperateModal from './InventoryTab/OperateModal'
+import {useNavigate} from 'react-router-dom'
 export const InventoryCard =(props)=>{
+    const navigate=useNavigate()
     const [front,setFront]= React.useState(false)
     const [operation, setOperation]=React.useState(null)
     React.useEffect(()=>{
@@ -12,8 +14,7 @@ export const InventoryCard =(props)=>{
 
     const handleItemProfile=(e)=>{
         e.stopPropagation()
-        setOperation("image-profile")
-
+        navigate(`/item/profile/${props.item.itemId}`)
     }
 
     const handleUploadImage=(e)=>{
