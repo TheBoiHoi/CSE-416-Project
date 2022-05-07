@@ -9,7 +9,7 @@ const ItemProfile =(props)=>{
             </div>
             <div class="row align-items-center">
             <div  align="center" class="col">
-                <ItemCard name="testuser"/>
+                <ItemCard/>
             </div>
             </div>
             <br></br>

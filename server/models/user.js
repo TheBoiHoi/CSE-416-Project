@@ -10,6 +10,6 @@ const userSchema = new Schema({
     items_owned:{type:[String]},
     pending_trades:{type:[String]},
     completed_trades:{type:[String]}
-})
+}, {timestamp:true})
 
 module.exports=mongoose.model('User', userSchema)

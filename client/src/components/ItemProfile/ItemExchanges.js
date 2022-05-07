@@ -1,51 +1,59 @@
 import * as React from 'react';
 import {Table,Row,Col} from 'react-bootstrap'
+import {useParams} from 'react-router-dom'
 import { MDBTable, MDBTableBody, MDBTableHead,MDBDataTable } from 'mdbreact';
+import axios from 'axios';
 const ItemExchanges=(props)=>{
-    const data = {
-        columns: [
-          {
-            label: 'Date',
-            field: 'date',
-            sort: 'asc'
-          },
-          {
-            label: 'From',
-            field: 'user_from',
-            sort: 'asc'
-          },
-          {
-            label: 'To',
-            field: 'user_to',
-            sort: 'asc'
-          },
-          {
-            label: 'Transaction ID',
-            field: 'transaction_id',
-            sort: 'asc'
-          },
-        ],
-        rows: [
-          {
-            'date':'05/19/2022',
-            'user_from':'u412',
-            'user_to':'u579',
-            'transaction_id':'1dlafjganwamad'
-          },
-          {
-            'date':'05/19/2022',
-            'user_from':'u412',
-            'user_to':'u579',
-            'transaction_id':'1dlafjganwamad'
-          },
-          {
-            'date':'05/19/2022',
-            'user_from':'u412',
-            'user_to':'u579',
-            'transaction_id':'1dlafjganwamad'
-          },
-        ]
-      };
+  const {itemId} = useParams()
+  React.useEffect(()=>{
+    axios.get(`http://localhost:3000/item-transactions/get/${itemId}`).then((response)=>{
+        console.log("item transactions:", response.data.transactions)
+    })
+  })
+  const data = {
+    columns: [
+      {
+        label: 'Date',
+        field: 'date',
+        sort: 'asc'
+      },
+      {
+        label: 'From',
+        field: 'user_from',
+        sort: 'asc'
+      },
+      {
+        label: 'To',
+        field: 'user_to',
+        sort: 'asc'
+      },
+      {
+        label: 'Transaction ID',
+        field: 'transaction_id',
+        sort: 'asc'
+      },
+    ],
+    rows: [
+      {
+        'date':'05/19/2022',
+        'user_from':'u412',
+        'user_to':'u579',
+        'transaction_id':'1dlafjganwamad'
+      },
+      {
+        'date':'05/19/2022',
+        'user_from':'u412',
+        'user_to':'u579',
+        'transaction_id':'1dlafjganwamad'
+      },
+      {
+        'date':'05/19/2022',
+        'user_from':'u412',
+        'user_to':'u579',
+        'transaction_id':'1dlafjganwamad'
+      },
+    ]
+  };
       
     return(
         <div >

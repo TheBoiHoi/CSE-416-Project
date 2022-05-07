@@ -14,6 +14,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Logo from '../Icons/Logo-removebg-preview.png'
 import {CompanyNavbarFunctions} from './CompanyNavbarFunctions/CompanyNavbarFunctions';
+import {UserNavbarFunctions} from './UserNavbarFunctions/UserNavbarFunctions';
 import {useNavigate} from 'react-router-dom'
 let settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 export const Navbar = (props) => {
@@ -44,8 +45,8 @@ export const Navbar = (props) => {
   const handleMenuClick =  (event) =>{
 
   }
-  const isCompany = props.isCompany;
-  const isUser = props.isUser;
+  //const isCompany = props.isCompany;
+  //const isUser = props.isUser;
 
   return (
     <AppBar style={{backgroundColor:'white'}}  position="static">
@@ -57,7 +58,7 @@ export const Navbar = (props) => {
           >
             <img style={{width:'15%', cursor:"pointer"}} src= {Logo} onClick={()=>{navigate('/')}}/>
           </Typography>
-{/* 
+
         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -103,29 +104,31 @@ export const Navbar = (props) => {
                     </MenuItem>
                 </Link>
             </Menu>
-        </Box> */}
+        </Box>
         
-        {!isCompany && !isUser && (<Box   sx={{  flexDirection: 'row-reverse', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-          
-            <Link class="link-remove-outline" style={{padding:'5px'}} to="/login">
-                <Button
-                    sx={{ my: 2, color: 'black', display: 'block' ,backgroundColor:'black', color:'white'}}
-                >
-                    Login
-                </Button>
-            </Link>
-            <Link class="link-remove-outline" style={{padding:'5px'}}  to="/register">
-                <Button
-                    sx={{ my: 2, color: 'black', display: 'block' }}
-                >
-                    Register
-                </Button>
-            </Link>
-        </Box>)}
+        
+        {
+        !props.user? (<Box sx={{  flexDirection: 'row-reverse', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Link class="link-remove-outline" style={{padding:'5px'}} to="/login">
+              <Button
+                  sx={{ my: 2, color: 'black', display: 'block' ,backgroundColor:'black', color:'white'}}
+              >
+                  Login
+              </Button>
+          </Link>
+          <Link class="link-remove-outline" style={{padding:'5px'}}  to="/register">
+              <Button
+                  sx={{ my: 2, color: 'black', display: 'block' }}
+              >
+                  Register
+              </Button>
+          </Link>
+          </Box>):
+          props.user.isCompany?<CompanyNavbarFunctions setUser={props.setUser}/>:<UserNavbarFunctions setUser={props.setUser}/>
+        }
 
-        {isCompany && <CompanyNavbarFunctions/>}
 
-        {(isUser || isCompany) && 
+        {/* {(isUser || isCompany) && 
         <Box sx={{ flexGrow: 0, padding:'5px' }}>
               {isCompany ? ( <Button
                     title="Open settings"
@@ -164,7 +167,7 @@ export const Navbar = (props) => {
                 </MenuItem>
               ))}
             </Menu>
-          </Box>}
+          </Box>} */}
           
         </Toolbar>
       </Container>
