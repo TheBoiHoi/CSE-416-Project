@@ -14,14 +14,17 @@ import apis from './api'
 
 function App() {
   const [user, setUser]=useState(null)//user here can be regular user or a company
-  //const [company,setCompany]= useState(null)
+  const [isUser,setIsUser]=useState(false)
+  const [isCompany,setIsCompany]=useState(false)
   useEffect(() => {
     apis.GetCurrentUser().then(response=>{
       if(response.data.user){
         setUser(response.data.user)
+        setIsUser(true)
       }
       else if(response.data.company){
         setUser(response.data.company)
+        setIsCompany(true)
       }
     }).catch(e => {
       console.log(e.response)
@@ -30,14 +33,16 @@ function App() {
   return (
     <div>
     <BrowserRouter>
-    <Navbar user={user} isCompany={true}/>
+    <Navbar setUser={setUser} user={user} isUser = {isUser} isCompany={isCompany}/>
       <Routes>
-        <Route path="/" element={<Welcome/>}/>
+        <Route path="/" element={<Welcome user={user}/>}/>
         <Route path="/login" element={<Login setUser={setUser}/>}/>
         <Route path="/profile" element={<Profile setUser={setUser} user={user}/>}/>
         <Route path="/public/profile/:userId/:key" element={<PublicProfile/>}/>
+
         <Route path="/item/profile/:itemId" element={<ItemProfile/>}/>
-        <Route path ="/inventory-table" element={<InventoryTable company={user}/>}/>
+        <Route path="/item/profile" element={<ItemProfile/>}/>
+        <Route path ="/inventory-table" element={<InventoryTable company={user} filter={"none"}/>}/>
         <Route path="/register" element={<Register/>}/>
       </Routes>
     </BrowserRouter>

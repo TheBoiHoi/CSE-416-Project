@@ -265,7 +265,7 @@ const sellItem = async(req,res)=>{
 
     //remove the item from company
     const companyItems= company.items
-    const newCompanyItems = companyItems.filter(item => item!=item.serial_number)
+    const newCompanyItems = companyItems.filter(item => item!=Itemid)
     await Company.updateOne({_id:companyId}, {items:newCompanyItems})
     
     //update item owner
@@ -275,7 +275,7 @@ const sellItem = async(req,res)=>{
     const buyerItems=buyer.items_owned
     buyerItems.push(Itemid)
     await user.updateOne({_id:buyerId}, {items_owned:buyerItems})
-
+    console.log("done")
     return res.status(200).json({msg:"OK"})
 }
 
@@ -294,14 +294,36 @@ const addItem = async(req, res)=>{
         manu_location:item.manu_location,
         manu_owner:item.manu_owner
     })
-    items.push(newItem.serial_number)
-    console.log("new item serial number", newItem.serial_number)
+    items.push(newItem._id)
+    console.log("new item id", newItem._id)
     await newItem.save()
     const saved=await Company.updateOne({_id:id}, {items:items})
     if(saved){
         return res.status(200).json({"message":"OK"})
     }
     return res.status(404).json({"message":"ERROR"})
+}
+
+const getItem = async(req,res)=>{
+    const {id} = req.params
+    console.log("looking for item "+ id)
+    Item.findOne({_id:id}).then(data=>{
+        if(!data){
+            return res.status(404).json({msg:"Item can not be found"})
+        }
+        return res.status(200).json({
+            item:{
+                name:data.name,
+                owner:data.owner,
+                transactions:data.transactions,
+                asset_id:data.asset_id,
+                serial_number:data.serial_number,
+                manu_date:data.manu_date,
+                manu_location:data.manu_location,
+                manu_owner:data.manu_owner
+            }
+        })
+    })
 }
 
 const generateItemQRCode = async(req, res)=>{
@@ -327,5 +349,6 @@ module.exports={
     addItem,
     generateItemQRCode,
     createItem,
-    sellItem
+    sellItem,
+    getItem
 }

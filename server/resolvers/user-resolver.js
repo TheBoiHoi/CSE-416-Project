@@ -11,7 +11,6 @@ const fs=require('fs')
 const path=require('path')
 const Jimp=require('jimp')
 const algosdk = require('algosdk');
-const company = require('../models/company')
 const baseServer = 'https://testnet-algorand.api.purestake.io/ps2'
 const port = '';
 
@@ -71,10 +70,9 @@ const register = async(req, res)=>{
 }
 
 const logout = async(req, res)=>{
-    const{userId}=req.body
-    const user=await User.findOne({_id:userId})
+    console.log("logging out")
     res.clearCookie("token")
-    res.status(200).send()
+    res.sendStatus(200)
 }
 
 const getCurrentUser = (req, res)=>{
@@ -362,31 +360,41 @@ const getItemTransactions=(req, res)=>{
 
 const getCompletedTrades=(req, res)=>{
     const userId=req.userId
-    User.findOne({_id:userId}).then(data => {
+    User.findOne({_id:userId}).then(async (data) => {
         if(!data){
             return res.status(404).json({message:"ERROR; user is not found"})
         }
-
         const algoAddr=data.algoAddr
-        axios.get(`https://algoindexer.testnet.algoexplorerapi.io/v2/accounts/${algoAddr}/transactions`).then((response)=>{
+        axios.get(`https://algoindexer.testnet.algoexplorerapi.io/v2/accounts/${algoAddr}/transactions`).then(async (response)=>{
             let data=response.data
             let transactions=data.transactions
             let ret=[]
             for(let i=0;i<transactions.length;i++){
                 let transaction=transactions[i]
                 if(transaction['asset-transfer-transaction']){
+                    receiverAlgoId=transaction['asset-transfer-transaction']['receiver']
+                    senderAlgoId=transaction['sender']
+                    itemAssetId=transaction['asset-transfer-transaction']['asset-id']
+
+                    let receiver=await User.findOne({algoAddr:receiverAlgoId})
+                    let sender=await User.findOne({algoAddr:senderAlgoId})
+                    let item=await Item.findOne({asset_id:itemAssetId})
+
                     ret.push({
-                        id:transaction['id'],
-                        receiver:transaction['asset-transfer-transaction']['receiver'],
-                        sender:transaction['sender'],
-                        item:transaction['asset-transfer-transaction']['asset-id'],
-                        timestamp:transaction['round-time']
+                        txid:transaction['id'],
+                        receiverName:receiver.name,
+                        senderName:sender.name,
+                        receiverId:receiver._id,
+                        senderId:sender._id,
+                        item:item.name,
+                        itemId:item._id,
+                        date:new Date(transaction['round-time']*1000).toLocaleString('en-US')
                     })
                 }
             }
             return res.status(200).json({transactions:ret})
         }).catch((e)=>{
-            console.log("ERROR:")
+            console.log("ERROR:", e)
         })
     })
 }
