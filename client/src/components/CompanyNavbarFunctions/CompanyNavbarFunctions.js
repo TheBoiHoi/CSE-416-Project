@@ -37,11 +37,14 @@ export const CompanyNavbarFunctions = () =>{
           </Box>
         </div> */}
 
+<Button  variant="text">Sign out</Button>
+<Button variant="text"><Link to="/inventory-table">Inventory Table</Link></Button>
           <div className ="company_add">
             <IconButton onClick={handleAddItem}>
             <Add/>
             </IconButton>
           </div>
+         
         </Box>
         <CompanyAddModal showModal={showModal} toggleModal={setShowModal}/>
         </>
