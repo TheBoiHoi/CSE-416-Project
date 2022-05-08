@@ -25,12 +25,14 @@ const ProfileCard = (props) =>{
             <Card.Text style={{textAlign:"center"}}>
             {props.user.userId}
             </Card.Text>
-            <Card.Text style={{textAlign:"center"}}>
+            {/* <Card.Text style={{textAlign:"center"}}>
             Joined 02/22/2022
-            </Card.Text>
+            </Card.Text> */}
             <div class="col-md-12 text-center">
                 <Button style={{margin:"auto"}} variant="primary" onClick={generateQRCode}>Generate QR Code</Button>
-                <Button style={{marginLeft:"20px"}} onClick={()=>{setOperation('scanning-qrcode')}}>S</Button>
+            </div>
+            <div class="col-md-12 text-center">
+                <Button style={{marginTop:"20px"}} onClick={()=>{setOperation('scanning-qrcode')}}>Scan QR code</Button>
             </div>
         </Card.Body>
         {operation&&<QrModal operation={operation} code={code} setOperation={setOperation}/>}
