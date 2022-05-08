@@ -5,11 +5,13 @@ import { MDBTable, MDBTableBody, MDBTableHead,MDBDataTable } from 'mdbreact';
 import axios from 'axios';
 const ItemExchanges=(props)=>{
   const {itemId} = useParams()
+  const [transactions, setTransactions]=React.useState([])
   React.useEffect(()=>{
     axios.get(`http://localhost:3000/item-transactions/get/${itemId}`).then((response)=>{
         console.log("item transactions:", response.data.transactions)
+        setTransactions(response.data.transactions)
     })
-  })
+  }, [])
   const data = {
     columns: [
       {
@@ -33,26 +35,26 @@ const ItemExchanges=(props)=>{
         sort: 'asc'
       },
     ],
-    rows: [
-      {
-        'date':'05/19/2022',
-        'user_from':'u412',
-        'user_to':'u579',
-        'transaction_id':'1dlafjganwamad'
-      },
-      {
-        'date':'05/19/2022',
-        'user_from':'u412',
-        'user_to':'u579',
-        'transaction_id':'1dlafjganwamad'
-      },
-      {
-        'date':'05/19/2022',
-        'user_from':'u412',
-        'user_to':'u579',
-        'transaction_id':'1dlafjganwamad'
-      },
-    ]
+    // rows: [
+    //   {
+    //     'date':'05/19/2022',
+    //     'user_from':'u412',
+    //     'user_to':'u579',
+    //     'transaction_id':'1dlafjganwamad'
+    //   },
+    //   {
+    //     'date':'05/19/2022',
+    //     'user_from':'u412',
+    //     'user_to':'u579',
+    //     'transaction_id':'1dlafjganwamad'
+    //   },
+    //   {
+    //     'date':'05/19/2022',
+    //     'user_from':'u412',
+    //     'user_to':'u579',
+    //     'transaction_id':'1dlafjganwamad'
+    //   },
+    // ]
   };
       
     return(
@@ -61,15 +63,13 @@ const ItemExchanges=(props)=>{
                 <MDBTableHead  columns={data.columns} />
                 
                 <MDBTableBody>
-                {data.rows.map((data)=>{
+                {transactions.map((transaction)=>{
                     return(
-                    <tr onClick={()=>{
-                        console.log(data.id)
-                    }}>
-                        <td>{data.date}</td>
-                        <td>{data.user_from}</td>
-                        <td>{data.user_to}</td>
-                        <td>{data.transaction_id}</td>
+                    <tr>
+                        <td>{transaction.date}</td>
+                        <td>{transaction.sender}</td>
+                        <td>{transaction.receiver}</td>
+                        <td>{transaction.transactionId}</td>
                     </tr>
                     )
                 })}
