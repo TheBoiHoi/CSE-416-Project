@@ -3,6 +3,7 @@ const User=require('../models/user')
 const QRCode=require('qrcode')
 const algosdk=require('algosdk')
 const fs=require('fs')
+const path=require('path')
 require('dotenv').config()
 const baseServer = 'https://testnet-algorand.api.purestake.io/idx2'
 const port = '';
@@ -13,14 +14,13 @@ const apitoken = {
 const indexerClient = new algosdk.Indexer(apitoken, baseServer, port);
 const getItemInfo=(req, res) => {
     const {itemId} = req.params
-    console.log("id:", itemId)
+    console.log("get item info id:", itemId)
     Item.findOne({_id:itemId}).then(data => {
         if(!data){
             return res.status(404).json({message:"ERROR"})
         }
         let item=data
         return res.status(200).json({item:{owner:item.owner, itemId:item._id, name:item.name, serialNumber:item.serial_number}})
-        
     })
 }
 
@@ -72,7 +72,7 @@ const getItemTransactions=(req, res)=>{
                         receiverId:receiver._id,
                         sender:sender.name,
                         receiver:receiver.name,
-                        timestamp:date
+                        date:date
                     })
                 }
             }
@@ -96,14 +96,17 @@ const uploadProfilePic=(req, res)=>{
     })
 }
 
-//get the profile pic of an item
+
+// //get the profile pic of an item
 const getProfilePic=(req, res)=>{
     const {itemId}=req.params
+    console.log("getprofilepic itemid:", itemId)
     Item.findOne({_id:itemId}).then(data=>{
         let imagePath=path.resolve(`./images/profile-pics/${data.profilePic}`)
         console.log()
         return res.sendFile(imagePath)
     }).catch((e)=>{
+        console.log(e)
         return res.status(404).json({message:"ERROR"})
     })
 }
