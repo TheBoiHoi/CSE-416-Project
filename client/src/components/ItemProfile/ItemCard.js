@@ -8,13 +8,13 @@ const ItemCard = (props) =>{
     const {itemId}=useParams()
     const[item, setItem]=React.useState(null)
     React.useEffect(()=>{
-        axios.get(`http://localhost:3000/item/get/${itemId}`).then((response)=>{
+        axios.get(`http://194.113.72.18:3000/item/get/${itemId}`).then((response)=>{
             setItem(response.data.item)
         })
     },[])
     return (
         <Card style={{ width: '18rem' }}>
-        {item&&<Card.Img style={{width:"50%", margin:"auto"}} variant="top" src={`http://localhost:3000/profile-pic/get/${item.itemId}`} />}
+        {item&&<Card.Img style={{width:"50%", margin:"auto"}} variant="top" src={`http://194.113.72.18:3000/profile-pic/get/${item.itemId}`} />}
         {item&&<Card.Body>
             <Card.Title style={{textAlign:"center"}}>{item.name}</Card.Title>
             <Card.Text style={{textAlign:"center"}}>

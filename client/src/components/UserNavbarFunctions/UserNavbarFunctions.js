@@ -7,7 +7,7 @@ import {Link, useNavigate} from "react-router-dom"
 export const UserNavbarFunctions = (props) =>{
   const navigate=useNavigate()
   const handleSignOut=(e)=>{
-    axios.post('http://localhost:3000/user/logout').then(response=>{
+    axios.post('http://194.113.72.18:3000/user/logout').then(response=>{
       props.setUser(null)
       navigate('/')
     })

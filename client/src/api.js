@@ -1,7 +1,8 @@
 import axios from 'axios'
 axios.defaults.withCredentials = true
+//axios.defaults.baseURL='http://194.113.72.18:3000'
 const api=axios.create({
-    baseURL:'http://localhost:3000'
+    baseURL:'http://194.113.72.18:3000'
 })
 
 const Login = (payload)=>api.post('/user/login', payload)
