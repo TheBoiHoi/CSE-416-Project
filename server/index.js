@@ -85,8 +85,8 @@ app.get('/user/get/:userId/:key', user.keyVerification, user.getUserById)
 app.get('/user/public/get/:userId', user.getUserById)
 
 
-app.get('/item/get/:itemId', user.getItemInfo)
-app.get('/item-transaction/get/:itemId', user.getItemTransactions)
+// app.get('/item/get/:itemId', user.getItemInfo)
+// app.get('/item-transaction/get/:itemId', user.getItemTransactions)
 app.get('/pending-trade/get/:userId', auth.verify, user.getPendingTrades)
 app.get('/pending-trade/get', user.getPendingTrades)
 app.post('/trade/create',auth.verify, user.createPendingTrade)
