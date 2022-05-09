@@ -10,14 +10,14 @@ const PendingTab = (props) => {
 
     return(
         <ListGroup>
-            {props.trades.map((trade, index) => {
+            {props.pendings.trades.map((trade, index) => {
                 return (
                     <>
                         <ListGroup.Item>
-                            <div className='pendingTrade' onClick={() => showModal(trade, props.items[index], props.buyers[index], props.sellers[index])}>
+                            <div className='pendingTrade' onClick={() => showModal(trade, props.pendings.items[index], props.pendings.buyers[index], props.pendings.sellers[index])}>
                                 <div className='itemImage box'><img className='image' src={shoeImg} /></div>
-                                <div className='itemName box'>{props.items[index].name}</div>
-                                <div className='buyerSeller box'><span className='buyer'>Buyer: {props.buyers[index].name}</span><br/><span className='seller'>Seller: {props.sellers[index].name}</span></div>
+                                <div className='itemName box'>{props.pendings.items[index].name}</div>
+                                <div className='buyerSeller box'><span className='buyer'>Buyer: {props.pendings.buyers[index].name}</span><br/><span className='seller'>Seller: {props.pendings.sellers[index].name}</span></div>
                                 <div className='pendingIcon box'>{trade.buyer_status ? <span className='completed'>Completed</span> : <span className='pending'>Pending</span>}
                                         <br/>{trade.seller_status ? <span className='completed'>Completed</span> : <span className='pending'>Pending</span>}</div>
                             </div>

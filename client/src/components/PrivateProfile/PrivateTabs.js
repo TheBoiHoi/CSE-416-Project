@@ -41,6 +41,7 @@ const PrivateTabs=(props)=>{
         if(data){
             const trade = data.data;
             if(trade.buyer_status == true && trade.seller_status == true){
+                console.log("completing trades");
                 await axios.post(`${process.env.REACT_APP_BACKEND_URL}/trade/complete`, {
                     tradeId: trade._id
                 });
@@ -53,10 +54,12 @@ const PrivateTabs=(props)=>{
     
 
     //PENDING TABS
-    const [trades, setTrades] = useState([])
-    const [items, setItems] = useState([])
-    const [buyers, setBuyers] = useState([])
-    const [sellers, setSellers] = useState([])
+    const [trades, setTrades] = useState({
+        trades: [],
+        items: [],
+        buyers: [],
+        sellers: []
+    })
 
     useEffect(() => {
         fetchPendingTrades();
@@ -66,9 +69,15 @@ const PrivateTabs=(props)=>{
         console.log("fetching trades")
         const data = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/pending-trade/get/${props.user.userId}`);
         if(data.data){ 
-            await fetchPendingItems(data.data);
-            await fetchBuyersAndSellers(data.data);
-            setTrades(data.data)      
+            const itemsList = await fetchPendingItems(data.data);
+            const {buyersList, sellersList} = await fetchBuyersAndSellers(data.data);
+            const trades = {
+                trades: data.data,
+                items: itemsList,
+                buyers: buyersList,
+                sellers: sellersList
+            }
+            setTrades(trades)    
         }
     }
 
@@ -79,7 +88,7 @@ const PrivateTabs=(props)=>{
             const data = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/item/get/${itemId}`)
             itemsList.push(data.data.item);
         }
-        setItems(itemsList)
+        return itemsList;
     }
 
     const fetchBuyersAndSellers = async (tradeslist) => {
@@ -93,8 +102,7 @@ const PrivateTabs=(props)=>{
             buyersList.push(buyerData.data.user);
             sellersList.push(sellerData.data.user);
         }
-        setBuyers(buyersList)
-        setSellers(sellersList)
+        return {buyersList, sellersList};
     }
 
 
@@ -107,7 +115,7 @@ const PrivateTabs=(props)=>{
             <InventoryTab user={props.user}></InventoryTab>
         </Tab>
         <Tab style={{width:"50%",boxShadow: "1px 1px 1px #9E9E9E"}} eventKey="Pending" title="Pending" >
-            <PendingTab trades={trades} buyers={buyers} sellers={sellers} items={items} handleShowModal={showModal}></PendingTab>
+            <PendingTab pendings={trades} handleShowModal={showModal}></PendingTab>
             <PendingModal handleConfirm={confirmTrade} show={show} trade={trade} buyer={buyer} seller={seller} item={item} hide={hideModal} disabled={disabled}/>
         </Tab>
     </Tabs>
