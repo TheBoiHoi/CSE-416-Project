@@ -7,7 +7,7 @@ const ItemExchanges=(props)=>{
   const {itemId} = useParams()
   const [transactions, setTransactions]=React.useState([])
   React.useEffect(()=>{
-    axios.get(`http://194.113.72.18:3000/item-transactions/get/${itemId}`).then((response)=>{
+    axios.get(`item-transactions/get/${itemId}`).then((response)=>{
         console.log("item transactions:", response.data.transactions)
         setTransactions(response.data.transactions)
     })

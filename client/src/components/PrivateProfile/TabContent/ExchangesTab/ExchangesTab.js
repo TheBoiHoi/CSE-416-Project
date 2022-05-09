@@ -12,10 +12,10 @@ const ExchangesTab=(props)=>{
   useEffect(()=>{
     let url
     if(!props.public){
-      url="http://194.113.72.18:3000/completed-trade/get"
+      url="completed-trade/get"
     }
     else{
-      url=`http://194.113.72.18:3000/completed-trade/get/${props.user.userId}/${props.keyValue}`
+      url=`completed-trade/get/${props.user.userId}/${props.keyValue}`
     }
     axios.get(url).then(response=>{
       setTrade(response.data.transactions)

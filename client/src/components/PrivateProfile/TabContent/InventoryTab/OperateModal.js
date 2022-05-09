@@ -17,7 +17,7 @@ const OperateModal=(props)=>{
         let file=document.getElementById(`upload-${props.itemId}`).files[0]
         let formData=new FormData()
         formData.append('file', file, file.name)
-        axios.post(`http://194.113.72.18:3000/profile-pic/upload/${props.itemId}`, formData)
+        axios.post(`profile-pic/upload/${props.itemId}`, formData)
         props.setOperation(null)
     }
     if(props.operation=='upload-image'){

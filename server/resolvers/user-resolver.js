@@ -29,6 +29,7 @@ const axios=require('axios')
 const algodclient = new algosdk.Algodv2(apitoken, baseServer, port);
 
 const login = async(req, res)=>{
+    console.log("login")
     try{
         const {email, password} = req.body
         const user = await User.findOne({email:email})

@@ -10,7 +10,7 @@ export const UserNavbarFunctions = (props) =>{
     navigate('/Profile')
   }
   const handleSignOut=(e)=>{
-    axios.post('http://194.113.72.18:3000/user/logout').then(response=>{
+    axios.post('user/logout').then(response=>{
       props.setUser(null)
       navigate('/')
     })

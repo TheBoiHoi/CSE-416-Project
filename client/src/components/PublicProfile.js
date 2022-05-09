@@ -8,7 +8,7 @@ export const PublicProfile = (props) => {
     const[user, setUser]=useState(null)
     
     useEffect(()=>{
-        axios.get(`http://194.113.72.18:3000/user/get/${userId}/${key}`).then(response => {
+        axios.get(`user/get/${userId}/${key}`).then(response => {
             setUser(response.data.user)
         })
     }, [])
