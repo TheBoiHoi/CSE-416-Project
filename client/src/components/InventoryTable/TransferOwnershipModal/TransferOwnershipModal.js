@@ -16,7 +16,10 @@ const handleSubmit = async (event)=>{
     buyerId:userId,
   }).then(()=>{
     alert("done")
+  }).catch(e=>{
+    alert("Something went wrong, please make sure you enter the right user id and the user have enough algo")
   })
+  window.location.reload();
   
   } catch (error) {
     console.log(error)
