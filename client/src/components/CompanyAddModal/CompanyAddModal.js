@@ -8,20 +8,26 @@ let name = " "
 let date = " "
 let location = " "
 let serial = " "
+let id = " "
   const handleSubmit = async (event) => {
-    const tempCompanyId = "625f8233d1137b6e964ccac9"
-    const tempOwner = "Debugging"
+    event.preventDefault()
     await apis.CreateItem({
-      id:tempCompanyId,
+      id:id,
       name:name,
       manu_date:date,
       manu_location:location,
-      manu_owner:tempOwner,
-      serial_number:serial})
-    console.log("Done creating item")
+      manu_owner:name,
+      serial_number:serial}).catch(e=>{
+        alert("Something went wrong with the item creation, please make sure you have enought algo")
+      })
+      console.log("Done creating item")
+      window.location.reload();
+    
     };
 
 export const CompanyAddModal =(props)=>{
+  name = props.user.name
+  id = props.user.companyId
   return (
     <>
       <Modal

@@ -23,7 +23,7 @@ const setUp = async(promise)=>{
       manu_owner = val.manu_owner
       name = val.name
       owner = val.owner
-      serial_number = val.serial_number
+      serial_number = val.serialNumber
     })
 }
 export const TableRow = (props) =>{
