@@ -8,10 +8,14 @@ const ExchangeModal=(props)=> {
     const [item,setItem]=useState({
       id:props.id,
       sender:'',
+      senderId:'',
       receiver:'',
-      date:'',
+      receiverId:'',
       item:'',
-      itemUrl:''
+      itemId:'',
+      itemUrl:'',
+      date:'',
+      
     })
     return (
       <>
@@ -21,12 +25,12 @@ const ExchangeModal=(props)=> {
             <Modal.Title style={{fontSize:'13px'}}>Exchange # {props.transid}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>Transaction ID: </p>
-            <p>Sender: </p>
-            <p>Receiver: </p>
-            <p>Date: </p> 
+            <p>Transaction ID: {props.transid}</p>
+            <p>Sender: {item.sender}</p>
+            <p>Receiver: {item.receiver}</p>
+            <p>Date: {item.date}</p> 
             <p>Item Transferred: </p>
-            <a href=''>Yeezy Slides</a>
+            <a href=''>{item.item}</a>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>

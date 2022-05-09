@@ -183,7 +183,7 @@ const ExchangesTab=(props)=>{
                 </MDBTableBody>
             </MDBTable>
             {showExchangeModal}
-            <ExchangeModal setShow={setShowExchangeModal} show={showExchangeModal} transid={selectedExchange}></ExchangeModal>
+            <ExchangeModal setShow={setShowExchangeModal} show={true} transid={selectedExchange}></ExchangeModal>
         </div>
     );
 };
