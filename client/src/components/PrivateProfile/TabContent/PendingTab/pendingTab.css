@@ -1,16 +1,31 @@
 .pendingTrade {
     display: flex;
-    background-color: pink;
 }
 
 .box {
     width: 25%;
 }
 
-.tradeInitiated {
-    background-color: royalblue;
+.image{
+    width: 100%;
 }
 
-.itemName {
-    background-color: aquamarine;
+.buyerSeller{
+    text-align: left;
+}
+
+.buyer{
+    color: red;
+}
+
+.seller{
+    color:green;
+}
+
+.pending {
+    color: orange;
+}
+
+.completed {
+    color: green;
 }

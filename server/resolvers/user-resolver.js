@@ -150,6 +150,24 @@ const createPendingTrade = async(req, res)=>{
     return res.status(200).json({msg:"OK"})
 }
 
+const updateTrade = async(req, res) => {
+    const {tradeId, userId} = req.body;
+    const trade = await Trade.findOne({_id: tradeId});
+    if(userId == trade.buyer_id){
+        trade.buyer_status = true;
+    }else if(userId == trade.seller_id){
+        trade.seller_status = true;
+    }
+    trade.save().then((data, err) => {
+        if (err){
+            res.status(404).json({message: "ERROR"});
+        }
+        if(data){
+            res.status(200).send(trade);
+        }
+    });
+}
+
 const completeTrade = async(req, res)=>{
     const {tradeId}=req.body
     const trade=await Trade.findOne({_id:tradeId})
@@ -304,22 +322,46 @@ const scanQrCode = (req, res)=>{
     });
 }
 
-const getPendingTrades = (req, res) => {
+const getPendingTrades = async (req, res) => {
     const {userId} = req.params;
-    Trade.find({$or: [
-        { buyer_id: userId },
-        { seller_id: userId }
-    ]}).and({isPending: true}).exec((err, results) => {
-        if(err){
-            return res.status(404).json({message: "ERROR"});
-        }
-        return results;
-    });
+    const user = await User.findOne({_id: userId});
+    const pendingTrades = user.pending_trades
+    const pendingList = []
+    for(const tradeId of pendingTrades){
+        const trade = await Trade.findOne({_id: tradeId})
+        pendingList.push(trade)
+    }
+    res.status(200).send(pendingList)
+    // User.findById(userId).then((data, err) => {
+    //     if(err){
+    //         return res.status(404).json({message: "ERROR"})
+    //     }
+    //     console.log(data)
+    //     const user = data
+    //     const pendingTrades = data.pending_trades
+    //     const pendingList = []
+    //     for (tradeId in pendingTrades){
+    //         Trade.findById(ObjectId(trade)).then((data) => {
+    //             if(data){
+    //                 pendingList.append(data)
+    //             }
+    //         })
+    //     }
+    //     return pendingList
+    // })
+    // Trade.find({$or: [
+    //     { buyer_id: userId },
+    //     { seller_id: userId }
+    // ]}).and({isPending: true}).exec((err, results) => {
+    //     if(err){
+    //         return res.status(404).json({message: "ERROR"});
+    //     }
+    //     return results;
+    // });
 }
 
 const getItemInfo=(req, res) => {
     const {itemId} = req.params
-    console.log("id:", itemId)
     Item.findOne({_id:itemId}).then(data => {
         if(!data){
             return res.status(404).json({message:"ERROR"})
@@ -436,6 +478,7 @@ module.exports = {
     getCurrentUser,
     createPendingTrade,
     completeTrade,
+    updateTrade,
     getProfileQRCode,
     keyVerification,
     scanQrCode,

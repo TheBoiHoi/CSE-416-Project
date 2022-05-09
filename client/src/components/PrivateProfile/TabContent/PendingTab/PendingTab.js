@@ -1,59 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
 import { ListGroup } from 'react-bootstrap';
-import './pendingTab.css'
+import './pendingTab.css';
+import shoeImg from '../../../../img/airmags.jpg';
 
 const PendingTab = (props) => {
-    const fetchPendingTrades =  async () => {
-        const data = await axios.get("https://google.com");
-        if(data) console.log(data)
+    const showModal = (trade, item, buyer, seller) => {
+        props.handleShowModal(trade, item, buyer, seller);
     }
 
-    const showModal = (trade) => {
-        props.handleShowModal(trade);
-    }
-
-    useEffect(() => {
-        fetchPendingTrades();
-    });
-
-    const [trades, useTrades] = useState([
-        {
-            tradeInitiated: "02/22/2022",
-            buyer_id: "buyer1",
-            seller_id: "seller1",
-            buyer_status: false,
-            seller_status: true,
-            itemName: "Item 1"
-        },
-        {
-            tradeInitiated: "02/26/2022",
-            buyer_id: "buyer2",
-            seller_id: "seller3",
-            buyer_status: false,
-            seller_status: false,
-            itemName: "Item 2"
-        },
-        {
-            tradeInitiated: "02/28/2022",
-            buyer_id: "buyer4",
-            seller_id: "seller1",
-            buyer_status: true,
-            seller_status: false,
-            itemName: "Item 3"
-        }
-    ])
     return(
         <ListGroup>
-            {trades.map((trade) => {
+            {props.trades.map((trade, index) => {
                 return (
                     <>
                         <ListGroup.Item>
-                            <div className='pendingTrade' onClick={() => showModal(trade)}>
-                                <div className='itemImage box'>Image</div>
-                                <div className='itemName box'>{trade.itemName}</div>
-                                <div className='tradeInitiated box'>{trade.tradeInitiated}</div>
-                                <div className='pendingIcon box'>Pending</div>
+                            <div className='pendingTrade' onClick={() => showModal(trade, props.items[index], props.buyers[index], props.sellers[index])}>
+                                <div className='itemImage box'><img className='image' src={shoeImg} /></div>
+                                <div className='itemName box'>{props.items[index].name}</div>
+                                <div className='buyerSeller box'><span className='buyer'>Buyer: {props.buyers[index].name}</span><br/><span className='seller'>Seller: {props.sellers[index].name}</span></div>
+                                <div className='pendingIcon box'>{trade.buyer_status ? <span className='completed'>Completed</span> : <span className='pending'>Pending</span>}
+                                        <br/>{trade.seller_status ? <span className='completed'>Completed</span> : <span className='pending'>Pending</span>}</div>
                             </div>
                         </ListGroup.Item>
                     </>
