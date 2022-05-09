@@ -5,6 +5,14 @@ const ExchangeModal=(props)=> {
     const handleClose=()=>{
       props.setShow(false)
     }
+    const [item,setItem]=useState({
+      id:props.id,
+      sender:'',
+      receiver:'',
+      date:'',
+      item:'',
+      itemUrl:''
+    })
     return (
       <>
   
@@ -12,14 +20,19 @@ const ExchangeModal=(props)=> {
           <Modal.Header closeButton>
             <Modal.Title style={{fontSize:'13px'}}>Exchange # {props.transid}</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+          <Modal.Body>
+            <p>Transaction ID: </p>
+            <p>Sender: </p>
+            <p>Receiver: </p>
+            <p>Date: </p> 
+            <p>Item Transferred: </p>
+            <a href=''>Yeezy Slides</a>
+          </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
-            <Button variant="primary" onClick={handleClose}>
-              Save Changes
-            </Button>
+            
           </Modal.Footer>
         </Modal>
       </>
