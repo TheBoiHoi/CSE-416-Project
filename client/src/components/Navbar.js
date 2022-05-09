@@ -18,6 +18,7 @@ import {UserNavbarFunctions} from './UserNavbarFunctions/UserNavbarFunctions';
 import {useNavigate} from 'react-router-dom'
 let settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 export const Navbar = (props) => {
+  // console.log("User ID: "+props.user.companyId)
   const navigate=useNavigate()
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -124,7 +125,7 @@ export const Navbar = (props) => {
               </Button>
           </Link>
           </Box>):
-          props.user.isCompany?<CompanyNavbarFunctions setUser={props.setUser}/>:<UserNavbarFunctions setUser={props.setUser}/>
+          props.user.isCompany?<CompanyNavbarFunctions user={props.user} setUser={props.setUser}/>:<UserNavbarFunctions setUser={props.setUser}/>
         }
 
 

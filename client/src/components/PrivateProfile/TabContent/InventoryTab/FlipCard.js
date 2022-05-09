@@ -33,10 +33,10 @@ const FlipCard = (props)=>{
     return (
       <div>
         <ReactCardFlip isFlipped={isFlipped} flipDirection="vertical"> 
-            <div onClick={handleClick}>
+            <div style={{width:'200px'}} onClick={handleClick}>
                 <InventoryCard  item={item} front={true}/>
             </div>   
-            <div  onClick={handleClick}>
+            <div style={{width:'200px'}}  onClick={handleClick}>
                 <InventoryCard item={item} public={props.public} front={false}/>
             </div>
         </ReactCardFlip>

@@ -12,10 +12,8 @@ import {useNavigate} from 'react-router-dom'
 import {useState,useEffect} from 'react';
 import axios  from 'axios';
 export const CompanyNavbarFunctions = (props) =>{
-  
   const navigate=useNavigate()
   const handleAddItem = () =>{
-    console.log("test")
     navigate(`/inventory-table`)
     setShowModal(true)
   }
@@ -51,7 +49,7 @@ export const CompanyNavbarFunctions = (props) =>{
             </IconButton>
           </div>
         </Box>
-        <CompanyAddModal showModal={showModal} toggleModal={setShowModal}/>
+        <CompanyAddModal user = {props.user} showModal={showModal} toggleModal={setShowModal}/>
         </>
   )
 }
