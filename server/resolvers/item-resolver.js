@@ -20,7 +20,16 @@ const getItemInfo=(req, res) => {
             return res.status(404).json({message:"ERROR"})
         }
         let item=data
-        return res.status(200).json({item:{owner:item.owner, itemId:item._id, name:item.name, serialNumber:item.serial_number}})
+        return res.status(200).json({item:
+            {owner:item.owner, 
+            itemId:item._id, 
+            name:item.name, 
+            serialNumber:item.serial_number, 
+            asset_id:item.asset_id, 
+            manu_date:item.manu_date,
+            manu_location:item.manu_location,
+            manu_owner:item.manu_owner
+         } })
     })
 }
 
