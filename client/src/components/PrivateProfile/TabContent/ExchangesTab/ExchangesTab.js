@@ -10,29 +10,32 @@ const ExchangesTab=(props)=>{
   const [selectedExchange,setSelectedExchange]=useState('')
   const [showExchangeModal,setShowExchangeModal]=useState(false)
   useEffect(()=>{
+    let url
     if(!props.public){
-      axios.get("http://localhost:3000/completed-trade/get").then(response=>{
-        setTrade(response.data.transactions)
-        //console.log("response transactions:", response.data.transactions)
-        data.rows=response.data.transactions
-      }).catch((e)=>{console.log("ERROR:", e)})
+      url="http://localhost:3000/completed-trade/get"
     }
     else{
-      axios.get(`http://localhost:3000/completed-trade/get/${props.user.userId}/${props.keyValue}`).then(response=>{
-        setTrade(response.data.transactions)
-        //console.log("response transactions:", response.data.transactions)
-        data.rows=response.data.transactions
-      }).catch((e)=>{console.log("ERROR:", e)})
+      url=`http://localhost:3000/completed-trade/get/${props.user.userId}/${props.keyValue}`
     }
+    axios.get(url).then(response=>{
+      setTrade(response.data.transactions)
+      //console.log("response transactions:", response.data.transactions)
+      // response.data.transactions.forEach(transaction=>{
+      //   let dict={
+      //     sender:transaction.senderName,
+      //     receiver: transaction.receiverName,
+      //     item:transaction.item,
+      //     date:transaction.timestamp
+      //   }
+      //   data.rows.push(dict)
+      //   console.log("data rows:", data.rows)
+      // })
+    }).catch((e)=>{console.log("ERROR:", e)})
     
   },[])
+
   let data = {
     columns:[
-      {
-        label: 'ID',
-        field: 'id',
-        sort: 'asc'
-      },
       {
         label: 'Sender',
         field: 'sender',
@@ -160,7 +163,6 @@ const ExchangesTab=(props)=>{
       setSelectedExchange(id)
       setShowExchangeModal(true)
     }
-    console.log("transactions:", data)
     return(
         <div >
             <MDBTable  maxHeight="450px" borderless scrollY hover paging>
@@ -171,11 +173,10 @@ const ExchangesTab=(props)=>{
                     <tr key={i} onClick={()=>{
                         openModal(data.id)
                     }}>
-                        <td>{data.id}</td>
+                        <td>{data.senderName}</td>
+                        <td>{data.receiverName}</td>
                         <td>{data.item}</td>
                         <td>{data.date}</td>
-                        <td>{data.other}</td>
-                        <td>{data.type}</td>
                     </tr>
                     )
                 })}

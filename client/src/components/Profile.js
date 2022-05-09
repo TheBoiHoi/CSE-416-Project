@@ -9,7 +9,6 @@ export const Profile = (props) => {
         return(
             <div>
                 <div>
-                    Hello, {props.user.name}! You have successfully logged in
                     <div style={{}} class="row align-items-center">
                         <br></br>
                     </div>

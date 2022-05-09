@@ -45,6 +45,7 @@ const Login = (props) =>  {
       navigate('/profile')
       }).catch(error => {
         console.log("error:", error.response)
+        alert("Wrong login information")
       })
     }else if(document.getElementById('company_checkbox').checked){
       console.log("company logging in")
@@ -54,8 +55,9 @@ const Login = (props) =>  {
         navigate(`/inventory-table`)
       }).catch(error => {
         console.log("error:", error.response)
+        alert("Wrong login information")
       })
-    }   
+    }
   };
 
   return (

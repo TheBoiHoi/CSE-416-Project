@@ -1,10 +1,16 @@
 const Company=require('../models/company')
 const bcrypt=require('bcrypt')
 const Item=require('../models/item')
-const QRCode=require('qrcode')
 const algosdk = require('algosdk');
 const auth=require('../token.js')
 const user = require('../models/user');
+const crypto = require('crypto');
+const algorithm = 'aes-192-cbc'; //Using AES encryption
+
+//Didn't use random because it generate a different key and iv if the sever crash
+const key = crypto.scryptSync("generate key","salt",24)
+const iv = Buffer.alloc(16,0)
+
 require('dotenv').config()
 //const { default: AlgodClient } = require('algosdk/dist/types/src/client/v2/algod/algod');
 const baseServer = 'https://testnet-algorand.api.purestake.io/ps2'
@@ -46,11 +52,21 @@ const register = async(req, res)=>{
     const algosdk = require('algosdk');
     let account = algosdk.generateAccount();
     let passphrase = algosdk.secretKeyToMnemonic(account.sk);
-    console.log( "My address: " + account.addr );
-    console.log( "My passphrase: " + passphrase );
-    const company = new Company({name:name, email:email, password:hash, items:[],algoAddr:account.addr,algoPass:passphrase})
-    const saved = await company.save()
 
+    // console.log( "key: "+key)
+    // console.log( "iv: "+iv)
+
+    let cipher = crypto.createCipheriv(algorithm, key, iv);
+    let encrypted = cipher.update(passphrase, "utf-8", "hex");
+    encrypted += cipher.final("hex")
+        
+    // console.log( "My address: " + account.addr );
+    // console.log( "My passphrase: " + passphrase );
+    // console.log( "Encrypted passphrase: " + encrypted)
+    
+    const company = new Company({name:name, email:email, password:hash, items:[],algoAddr:account.addr,algoPass:encrypted})
+    const saved = await company.save()
+    console.log("done registering")
     res.status(200).json({company:{
         _id:saved._id,
         name:saved.name
@@ -78,41 +94,51 @@ const getCompany = async(req, res)=>{
 
 
 const createItem = async(req,res)=>{
-    const{id,name,manu_date,manu_location,manu_owner,serial_number} = req.body
+    const{id,name,manu_date,manu_location,manu_owner,serial_number} = req.body;
 
-    // Instantiate the algod wrapper
-    const company=await Company.findOne({_id:id})
-    const companyAcc = algosdk.mnemonicToSecretKey(company.algoPass)
-    let accountInfo = await algodclient.accountInformation(companyAcc.addr).do();
-    let accountAmount = accountInfo.amount
-    let itemOwned = company.items.length
-    console.log("Account balance: %d microAlgos", accountAmount);
-    let neededAmount = (itemOwned*1000 + 3000)
-    console.log("Min amount needed: %d microAlgos", neededAmount);
-    if(accountAmount < neededAmount){
-        return res.status(404).json({"message":"Not enough Algo"})
-    }
-    //Algo stuff
-    let params = await algodclient.getTransactionParams().do();
-    //comment out the next two lines to use suggested fee
-    params.fee = 1000;
-    params.flatFee = true;
-    console.log(params);
-    let note = undefined; 
-    let addr = companyAcc.addr;
-    let defaultFrozen = false;
-    let decimals = 0;
-    let totalIssuance = 1;
-    let unitName = "Qrify";
-    let assetName = "CSE416 QRify testing";
-    let assetURL = "http://CSE416";
-    let assetMetadataHash = "16efaa3924a6fd9d3a4824799a4ac611";
-    let manager = companyAcc.addr;
-    let reserve = companyAcc.addr;
-    let freeze = companyAcc.addr;
-    let clawback = companyAcc.addr;
-
-    // signing and sending "txn" allows "addr" to create an asset
+    (async ()=>{
+        console.log("Looking for company with id: " + id);
+        const company=await Company.findOne({_id:id});
+        //Decrypting AlgoPass
+        // console.log(company.algoPass)
+        // let iv = Buffer.from(text.iv, 'hex');
+        let encryptedText = company.algoPass;
+        const decipher = crypto.createDecipheriv(algorithm, key, iv);
+        let decryptedData = decipher.update(encryptedText, "hex", "utf-8");
+        decryptedData += decipher.final("utf8");
+        // console.log("decrypted : " + decryptedData )
+        // Instantiate the algod wrapper
+        
+        const companyAcc = algosdk.mnemonicToSecretKey(decryptedData);
+        let accountInfo = await algodclient.accountInformation(companyAcc.addr).do();
+        let accountAmount = accountInfo.amount;
+        let itemOwned = company.items.length;
+        console.log("Account balance: %d microAlgos", accountAmount);
+        let neededAmount = (itemOwned*1000 + 3000);
+        console.log("Min amount needed: %d microAlgos", neededAmount);
+        if(accountAmount < neededAmount){
+            return res.status(404).json({"message":"err"})
+        }
+        //Algo stuff
+        let params = await algodclient.getTransactionParams().do();
+        //comment out the next two lines to use suggested fee
+        params.fee = 1000;
+        params.flatFee = true;
+        console.log(params);
+        let note = undefined; 
+        let addr = companyAcc.addr;
+        let defaultFrozen = false;
+        let decimals = 0;
+        let totalIssuance = 1;
+        let unitName = "Qrify";
+        let assetName = name;
+        let assetURL = "http://CSE416";
+        let assetMetadataHash = "16efaa3924a6fd9d3a4824799a4ac611";
+        let manager = companyAcc.addr;
+        let reserve = companyAcc.addr;
+        let freeze = companyAcc.addr;
+        let clawback = companyAcc.addr;
+        // signing and sending "txn" allows "addr" to create an asset
     let txn = algosdk.makeAssetCreateTxnWithSuggestedParams(
         addr, 
         note,
@@ -128,6 +154,7 @@ const createItem = async(req,res)=>{
         assetURL, 
         assetMetadataHash, 
         params);
+        
     let rawSignedTxn = txn.signTxn(companyAcc.sk)
     let tx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
     let assetID = null;
@@ -150,9 +177,10 @@ const createItem = async(req,res)=>{
         note, 
         assetID, 
         params);
+        
     rawSignedTxn = opttxn.signTxn(companyAcc.sk);
-    opttx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
-    confirmedTxn = await algosdk.waitForConfirmation(algodclient, opttx.txId, 4);
+    opttx = (await algodclient.sendRawTransaction(rawSignedTxn).do())
+    confirmedTxn = await algosdk.waitForConfirmation(algodclient, opttx.txId, 4)
     console.log("Transaction " + opttx.txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
     console.log("Company = " + companyAcc.addr);
 
@@ -186,40 +214,62 @@ const createItem = async(req,res)=>{
     await newItem.save()
     const saved=await Company.updateOne({_id:id}, {items:company.items})
     if(saved){
-        return res.status(404).json({"message":"yes"})
+        return res.status(200).json({"message":"yes"})
     }
     return res.status(404).json({"message":"err"})
+
+    })().catch(e => {
+        console.log(e);
+        return res.status(404).json({"message":"err"})
+    });
+    
+
+    
 }
 
 const sellItem = async(req,res)=>{
-    const {Itemid,companyId,buyerId}=req.body
-    const buyer = await user.findOne({_id:buyerId})
-    const company = await Company.findOne({_id:companyId})
-    const item =  await Item.findOne({_id:Itemid})
-    const buyerAcc = algosdk.mnemonicToSecretKey(buyer.algoPass)
-    const companyAcc = algosdk.mnemonicToSecretKey(company.algoPass)
-
-    let accountInfo = await algodclient.accountInformation(companyAcc.addr).do();
-    let accountAmount = accountInfo.amount
-    let itemOwned = company.items.length
-    console.log("Company balance: %d microAlgos", accountAmount);
-    let neededAmount = ((itemOwned-1)*1000 + 1000)
-    console.log("Min amount needed: %d microAlgos", neededAmount);
-    if(accountAmount < neededAmount){
-        return res.status(404).json({"message":"Not enough Algo for company"})
-    }
-
-    let buyerInfo = await algodclient.accountInformation(buyerAcc.addr).do();
-    accountAmount = buyerInfo.amount
-    itemOwned = buyer.items_owned.length
-    console.log("Buyer balance: %d microAlgos", accountAmount);
-    neededAmount = ((itemOwned+1)*1000 + 2000)
-    console.log("Min amount needed: %d microAlgos", neededAmount);
-    if(accountAmount < neededAmount){
-        return res.status(404).json({"message":"Not enough Algo from buyer"})
-    }
-
-    //buyer opt in for this assets
+    const {Itemid,companyId,buyerId}=req.body;
+    (async () =>{
+        const buyer = await user.findOne({_id:buyerId})
+        const company = await Company.findOne({_id:companyId})
+        const item =  await Item.findOne({_id:Itemid})
+        console.log(company.algoPass)
+        //Decrypted Buyer algo password
+        let BuyerencryptedText = buyer.algoPass
+        var decipher = crypto.createDecipheriv(algorithm, key, iv);
+        let BuyerdecryptedData = decipher.update(BuyerencryptedText, "hex", "utf-8");
+        BuyerdecryptedData += decipher.final("utf8");
+    
+        const buyerAcc = algosdk.mnemonicToSecretKey(BuyerdecryptedData)
+        
+        //Decrtpted Company algo Password
+        let companyEncryptedText = company.algoPass
+        decipher = crypto.createDecipheriv(algorithm, key, iv);
+        let companyDecryptedData = decipher.update(companyEncryptedText, "hex", "utf-8");
+        companyDecryptedData += decipher.final("utf8");
+        
+        const companyAcc = algosdk.mnemonicToSecretKey(companyDecryptedData)
+    
+        let accountInfo = await algodclient.accountInformation(companyAcc.addr).do();
+        let accountAmount = accountInfo.amount
+        let itemOwned = company.items.length
+        console.log("Company balance: %d microAlgos", accountAmount);
+        let neededAmount = ((itemOwned-1)*1000 + 1000)
+        console.log("Min amount needed: %d microAlgos", neededAmount);
+        if(accountAmount < neededAmount){
+            return res.status(404).json({"message":"Not enough Algo for company"})
+        }
+    
+        let buyerInfo = await algodclient.accountInformation(buyerAcc.addr).do();
+        accountAmount = buyerInfo.amount
+        itemOwned = buyer.items_owned.length
+        console.log("Buyer balance: %d microAlgos", accountAmount);
+        neededAmount = ((itemOwned+1)*1000 + 2000)
+        console.log("Min amount needed: %d microAlgos", neededAmount);
+        if(accountAmount < neededAmount){
+            return res.status(404).json({"message":"Not enough Algo from buyer"})
+        }
+        //buyer opt in for this assets
     params = await algodclient.getTransactionParams().do();
     params.fee = 1000;
     params.flatFee = true;
@@ -277,6 +327,12 @@ const sellItem = async(req,res)=>{
     await user.updateOne({_id:buyerId}, {items_owned:buyerItems})
     console.log("done")
     return res.status(200).json({msg:"OK"})
+    })().catch(e => {
+        console.log(e);
+        return res.status(404).json({"message":"err"})
+    });
+    
+    
 }
 
 const addItem = async(req, res)=>{
@@ -326,28 +382,12 @@ const getItem = async(req,res)=>{
     })
 }
 
-const generateItemQRCode = async(req, res)=>{
-    const {itemId} = req.body
-    const url=`http://localhost/get/item/${itemId}`
-    QRCode.toFile(`./images/item-qrcodes/${itemId}.png`, url, {
-        color: {
-          dark: '#000000',  // Blue dots
-          light: '#FFFFFF' // Transparent background
-        }
-      }, function (err) {
-        if (err) throw err
-        console.log('done')
-    })
-    res.status(200).json({status:"ok"})
-}
-
 
 module.exports={
     register,
     login,
     getCompany,
     addItem,
-    generateItemQRCode,
     createItem,
     sellItem,
     getItem

@@ -2,22 +2,28 @@
 import * as React from 'react';
 import {Card, Button} from 'react-bootstrap'; 
 import ShoeImg from '../../img/airmags2.jpg'
+import {useParams} from 'react-router-dom'
+import axios from 'axios'
 const ItemCard = (props) =>{
+    const {itemId}=useParams()
+    const[item, setItem]=React.useState(null)
+    React.useEffect(()=>{
+        axios.get(`http://localhost:3000/item/get/${itemId}`).then((response)=>{
+            setItem(response.data.item)
+        })
+    },[])
     return (
         <Card style={{ width: '18rem' }}>
-        <Card.Img style={{width:"50%",margin:"auto"}} variant="top" src={ShoeImg} />
-        <Card.Body>
-            <Card.Title style={{textAlign:"center"}}>{props.name}</Card.Title>
+        {item&&<Card.Img style={{width:"50%", margin:"auto"}} variant="top" src={`http://localhost:3000/profile-pic/get/${item.itemId}`} />}
+        {item&&<Card.Body>
+            <Card.Title style={{textAlign:"center"}}>{item.name}</Card.Title>
             <Card.Text style={{textAlign:"center"}}>
-            1dxads091r11rk
+                {item.itemId}
             </Card.Text>
             <Card.Text style={{textAlign:"center"}}>
-            Made In China
+            {`Owned by ${item.owner}`}
             </Card.Text>
-            <Card.Text style={{textAlign:"center"}}>
-            Owned By u579
-            </Card.Text>
-        </Card.Body>
+        </Card.Body>}
         </Card>
     );
 };

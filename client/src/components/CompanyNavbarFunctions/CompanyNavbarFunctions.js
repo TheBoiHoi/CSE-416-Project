@@ -10,21 +10,26 @@ import {TableModal} from '../InventoryTable/TableModal/TableModal';
 import {CompanyAddModal} from '../CompanyAddModal/CompanyAddModal';
 import {useNavigate} from 'react-router-dom'
 import {useState,useEffect} from 'react';
-
-export const CompanyNavbarFunctions = () =>{
-  
+import axios  from 'axios';
+export const CompanyNavbarFunctions = (props) =>{
   const navigate=useNavigate()
   const handleAddItem = () =>{
-    console.log("test")
     navigate(`/inventory-table`)
     setShowModal(true)
   }
 
-  // const handleSerch = (name) =>{
-  //   console.log("serach: "+name)
-  //   navigate(`/inventory-table`,{filter:name})
-  // }
   const [showModal,setShowModal] = useState(false);
+
+  const handleInventoryTable = async () =>{
+    navigate(`/inventory-table`)
+  }
+
+  const handleSignOut = async () =>{
+    axios.post('http://localhost:3000/user/logout').then(response=>{
+      props.setUser(null)
+      navigate('/')
+    })
+  }
 
   return(
     <>
@@ -36,14 +41,15 @@ export const CompanyNavbarFunctions = () =>{
               <TextField id="input-with-sx" label="With sx" variant="standard" onBlur={e => handleSerch(e.target.value)}/>
           </Box>
         </div> */}
-
+          <Button  variant="text" onClick={handleSignOut}>Sign out</Button>
+          <Button variant="text" onClick={handleInventoryTable}>Inventory Table</Button>
           <div className ="company_add">
             <IconButton onClick={handleAddItem}>
             <Add/>
             </IconButton>
           </div>
         </Box>
-        <CompanyAddModal showModal={showModal} toggleModal={setShowModal}/>
+        <CompanyAddModal user = {props.user} showModal={showModal} toggleModal={setShowModal}/>
         </>
   )
 }

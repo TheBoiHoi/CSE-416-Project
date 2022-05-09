@@ -14,10 +14,11 @@ export  const InventoryTable  = (props) => {
     let itemId = new Array()
     let itemList = items.map( async (id)=>{
       itemId.push(id)
-      const response = await axios.get(`http://localhost:3000/company/getItem/${id}`)
-      return structuredClone(response.data.item)
+      const response = await axios.get(`http://localhost:3000/item/get/${id}`)
+      console.log(response.data.item)
+      return (response.data.item)
     })
-
+    
     return(
       <div className="inventory_table">
         <TableHead/>
