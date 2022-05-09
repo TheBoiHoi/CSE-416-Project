@@ -95,7 +95,7 @@ const getCompany = async(req, res)=>{
 
 const createItem = async(req,res)=>{
     const{id,name,manu_date,manu_location,manu_owner,serial_number} = req.body
-    
+    console.log("Looking for company with id: " + id)
     const company=await Company.findOne({_id:id})
     //Decrypting AlgoPass
     console.log(company.algoPass)

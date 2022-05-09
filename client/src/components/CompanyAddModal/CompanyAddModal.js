@@ -8,11 +8,12 @@ let name = " "
 let date = " "
 let location = " "
 let serial = " "
+let id = " "
   const handleSubmit = async (event) => {
     const tempCompanyId = "625f8233d1137b6e964ccac9"
     const tempOwner = "Debugging"
     await apis.CreateItem({
-      id:tempCompanyId,
+      id:id,
       name:name,
       manu_date:date,
       manu_location:location,
@@ -22,6 +23,8 @@ let serial = " "
     };
 
 export const CompanyAddModal =(props)=>{
+  name = props.user.name
+  id = props.user.companyId
   return (
     <>
       <Modal
