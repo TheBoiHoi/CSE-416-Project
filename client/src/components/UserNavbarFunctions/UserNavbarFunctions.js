@@ -6,6 +6,9 @@ import {Link, useNavigate} from "react-router-dom"
 
 export const UserNavbarFunctions = (props) =>{
   const navigate=useNavigate()
+  const handleProfile= (e)=>{
+    navigate('/Profile')
+  }
   const handleSignOut=(e)=>{
     axios.post('http://194.113.72.18:3000/user/logout').then(response=>{
       props.setUser(null)
@@ -26,7 +29,7 @@ export const UserNavbarFunctions = (props) =>{
         
         <Button onClick={handleSignOut} variant="text">Sign out</Button>
         <Button variant="text">Account Settings</Button>
-        <Button variant="text"><Link to="/Profile">Profile</Link></Button>
+        <Button variant="text" onClick={handleProfile}>Profile</Button>
         </Box>
         </>
   )
