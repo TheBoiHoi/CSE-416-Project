@@ -8,7 +8,7 @@ export const ItemNameComponent = (props) =>{
   return (
     <Row className="item_name_row">
           <Col>
-            <img src={air_mag} className="shoe_img"/>
+            <img src={`http://localhost:3000/profile-pic/get/${props.itemId}`} alt={"Not Found"} className="shoe_img"/>
           </Col>
           <Col className="name_description">
             <Row>{props.name}</Row>

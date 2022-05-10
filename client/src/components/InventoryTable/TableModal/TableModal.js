@@ -43,7 +43,7 @@ export const TableModal =(props)=>{
           <h6>Date Created:</h6>
           <p>{props.item.manu_date}</p>
           <h6>Serial Number:</h6>
-          <p>{props.item.serial_number}</p>
+          <p>{props.item.serialNumber}</p>
           <h6>Location:</h6>
           <p>{props.item.manu_location}</p>
           <h6>Asset ID:</h6>
