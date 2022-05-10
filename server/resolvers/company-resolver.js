@@ -243,7 +243,7 @@ const createItem = async(req,res)=>{
     await newItem.save()
     const saved=await Company.updateOne({_id:id}, {items:company.items})
     if(saved){
-        return res.status(200).json({"message":"yes"})
+        return res.status(200).json({"message":"yes","itemId":newItem._id});
     }
     return res.status(404).json({"message":"err"})
 
