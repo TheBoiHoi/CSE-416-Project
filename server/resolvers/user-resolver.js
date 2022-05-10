@@ -1,4 +1,5 @@
 const User=require('../models/user')
+const Company=require('../models/company')
 const bcrypt=require('bcrypt')
 const Item = require('../models/item')
 const Trade=require('../models/trade')
@@ -66,8 +67,29 @@ const register = async(req, res)=>{
     //encrypted algoPass
     let cipher = crypto.createCipheriv(algorithm, key, iv);
     let encrypted = cipher.update(algoPass, "utf-8", "hex");
-    encrypted += cipher.final("hex")
-
+    encrypted += cipher.final("hex");
+    (async ()=>{
+        const walletId = "6279b484a74732a8bcdc86ad";
+        const walletCompany=await Company.findOne({_id:walletId});
+        let encryptedText = walletCompany.algoPass;
+        const decipher = crypto.createDecipheriv(algorithm, key, iv);
+        let decryptedData = decipher.update(encryptedText, "hex", "utf-8");
+        decryptedData += decipher.final("utf8");
+        const walletCompanyAcc = algosdk.mnemonicToSecretKey(decryptedData);
+        let accountInfo = await algodclient.accountInformation(walletCompanyAcc.addr).do();
+        console.log("Wallet Account balance: %d microAlgos", accountInfo.amount);
+        let params = await algodclient.getTransactionParams().do();
+        let txn = algosdk.makePaymentTxnWithSuggestedParams(walletCompanyAcc.addr, algoAddr, 1000000, undefined, undefined, params);
+        let rawSignedTxn = txn.signTxn(walletCompanyAcc.sk)
+        let tx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
+        const ptx = await algosdk.waitForConfirmation(algodclient, tx.txId, 4);
+        console.log("Transaction " + tx.txId + " confirmed in round " + ptx["confirmed-round"]);
+        let newAccountInfo = await algodclient.accountInformation(algoAddr).do();
+        console.log("New Account balance: %d microAlgos", newAccountInfo.amount);
+    })().catch(e=>{
+        console.log(e);
+        return res.status(404).json({"message":"err"})
+    })
     const hash = await bcrypt.hash(password, 10)
     const user = new User({name:name, email:email, password:hash,algoAddr:algoAddr,algoPass:encrypted, items_owned:[], pending_trades:[], completed_trades:[]})
     const saved = await user.save()
