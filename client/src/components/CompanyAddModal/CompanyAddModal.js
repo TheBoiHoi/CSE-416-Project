@@ -17,6 +17,8 @@ export const CompanyAddModal =(props)=>{
   const [location, setLocation]=useState("")
   const [serial, setSerial]=useState("")
   const[image, setImage]=useState(null)
+  const[disableButton,setDisableButton] = useState(false);
+  const [showLoading,setShowLoading] = useState(false);
 
   const handleOnChange=(e)=>{
     let file=e.target.files[0]
@@ -28,6 +30,8 @@ export const CompanyAddModal =(props)=>{
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+    setDisableButton(true);
+    setShowLoading(true);
     let response=await apis.CreateItem({
       id:props.user.companyId,
       name:name,
@@ -44,6 +48,8 @@ export const CompanyAddModal =(props)=>{
     if(image){
       await axios.post(`profile-pic/upload/${response.data.itemId}`, image)
     }
+    setDisableButton(false);
+    setShowLoading(false);
     window.location.reload();
   }
 
@@ -92,10 +98,10 @@ export const CompanyAddModal =(props)=>{
             <Form.Label>Serial Number</Form.Label>
             <Form.Control type="number" placeholder="Item serial number" onChange={(e)=>{setSerial(e.target.value)}} required/>
           </Form.Group>
-          
-          <Button onClick={handleSubmit} variant="primary" type="submit" id="itemSubmit" >
+          {showLoading && (<div class="loader"></div>)}
+          {disableButton ? <Button variant="primary" type="submit" disabled>Submit</Button> : <Button onClick={handleSubmit} variant="primary" type="submit" id="itemSubmit" >
             Submit
-          </Button>
+          </Button>}
         </Form>
         </Modal.Body>
         <Modal.Footer>
