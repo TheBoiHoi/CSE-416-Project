@@ -9,7 +9,9 @@ let date = " "
 let location = " "
 let serial = " "
 let id = " "
+let img = " "
   const handleSubmit = async (event) => {
+    console.log(img)
     event.preventDefault()
     await apis.CreateItem({
       id:id,
@@ -44,10 +46,10 @@ export const CompanyAddModal =(props)=>{
         </Modal.Header>
         <Modal.Body >
         <Form onSubmit={handleSubmit}>
-        {/* <Form.Group className="mb-3" controlId="formImage">
+        <Form.Group className="mb-3" controlId="formImage">
             <Form.Label>Images of Product</Form.Label>
-            <Form.Control type="file" multiple placeholder="Select a minimum of 3 images for the product" />
-          </Form.Group> */}
+            <Form.Control type="file" multiple placeholder="Select an image for the product" onChange={e => img= e.target.value}/>
+          </Form.Group>
 
 
           <Form.Group className="mb-3" controlId="formItemName">

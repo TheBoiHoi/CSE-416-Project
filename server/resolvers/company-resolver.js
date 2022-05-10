@@ -58,19 +58,45 @@ const register = async(req, res)=>{
 
     let cipher = crypto.createCipheriv(algorithm, key, iv);
     let encrypted = cipher.update(passphrase, "utf-8", "hex");
-    encrypted += cipher.final("hex")
+    encrypted += cipher.final("hex");
         
     // console.log( "My address: " + account.addr );
     // console.log( "My passphrase: " + passphrase );
     // console.log( "Encrypted passphrase: " + encrypted)
     
-    const company = new Company({name:name, email:email, password:hash, items:[],algoAddr:account.addr,algoPass:encrypted})
-    const saved = await company.save()
-    console.log("done registering")
-    res.status(200).json({company:{
-        _id:saved._id,
-        name:saved.name
-    }})
+    //Transfer some algo from the wallet account to the users
+    (async ()=>{
+        const walletId = "6279b484a74732a8bcdc86ad";
+        const walletCompany=await Company.findOne({_id:walletId});
+        let encryptedText = walletCompany.algoPass;
+        const decipher = crypto.createDecipheriv(algorithm, key, iv);
+        let decryptedData = decipher.update(encryptedText, "hex", "utf-8");
+        decryptedData += decipher.final("utf8");
+        const walletCompanyAcc = algosdk.mnemonicToSecretKey(decryptedData);
+        let accountInfo = await algodclient.accountInformation(walletCompanyAcc.addr).do();
+        console.log("Wallet Account balance: %d microAlgos", accountInfo.amount);
+        let params = await algodclient.getTransactionParams().do();
+        let txn = algosdk.makePaymentTxnWithSuggestedParams(walletCompanyAcc.addr, account.addr, 1000000, undefined, undefined, params);
+        let rawSignedTxn = txn.signTxn(walletCompanyAcc.sk)
+        let tx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
+        const ptx = await algosdk.waitForConfirmation(algodclient, tx.txId, 4);
+        console.log("Transaction " + tx.txId + " confirmed in round " + ptx["confirmed-round"]);
+        let newAccountInfo = await algodclient.accountInformation(account.addr).do();
+        console.log("New Account balance: %d microAlgos", newAccountInfo.amount);
+
+
+        const company = new Company({name:name, email:email, password:hash, items:[],algoAddr:account.addr,algoPass:encrypted})
+        const saved = await company.save()
+        console.log("done registering")
+        return res.status(200).json({company:{
+            _id:saved._id,
+            name:saved.name
+        }})
+    })().catch(e => {
+        console.log(e);
+        return res.status(404).json({"message":"err"})
+    });
+    
 }
 
 const getCompany = async(req, res)=>{
