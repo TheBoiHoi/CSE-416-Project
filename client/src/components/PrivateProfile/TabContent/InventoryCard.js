@@ -41,9 +41,9 @@ export const InventoryCard =(props)=>{
                         :
                         <></>
                     }
-                    {!props.public&&<button onClick={handleUploadImage}>Upload Image</button>}
-                    <br></br>
-                    <button onClick={handleItemProfile} >Item Profile</button>
+                    {/* {!props.public&&<Button onClick={handleUploadImage}>Upload Image</Button>} */}
+                    <br></br><br></br>
+                    <Card.Link style={{cursor:'pointer'}} onClick={handleItemProfile} >Item Profile</Card.Link>
                     </Card.Body>
                     
                 </Card>
