@@ -5,6 +5,7 @@ import './CompanyAddModal.css';
 import apis from '../../api'
 import axios from 'axios'
 import { Navigate } from 'react-router-dom';
+
 import {useState} from 'react'
 
 
@@ -24,7 +25,9 @@ export const CompanyAddModal =(props)=>{
     setImage(formData)
   }
 
+
   const handleSubmit = async (event) => {
+    console.log(img)
     event.preventDefault()
     let response=await apis.CreateItem({
       id:props.user.companyId,
@@ -60,12 +63,12 @@ export const CompanyAddModal =(props)=>{
           <Modal.Title id="contained-modal-title-vcenter">Add a New Item</Modal.Title>
         </Modal.Header>
         <Modal.Body >
+
         <Form>
         <Form.Group className="mb-3" controlId="formImage">
             <Form.Label>Images of Product</Form.Label>
             <Form.Control onChange={handleOnChange} type="file" multiple placeholder="Select a minimum of 3 images for the product" />
           </Form.Group> 
-
 
           <Form.Group className="mb-3" controlId="formItemName">
             <Form.Label>Item Name</Form.Label>
