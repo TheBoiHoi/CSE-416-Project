@@ -25,13 +25,16 @@ const algodclient = new algosdk.Algodv2(apitoken, baseServer, port);
 const login=async(req, res)=>{
     const {email, password}=req.body
     const company=await Company.findOne({email:email})
+    console.log("starting.....");
     if(!company){
-        return res.status(404).send()
+        console.log("not company");
+        return res.status(404).send("Cannot find the company")
     }
 
     const hash=company.password
     const valid=await bcrypt.compare(password, hash)
     if(!valid){
+        console.log("password is not valid");
         return res.status(404).send('Invalid Password')
     }
     else{

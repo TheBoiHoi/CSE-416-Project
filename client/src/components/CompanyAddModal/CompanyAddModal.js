@@ -27,7 +27,6 @@ export const CompanyAddModal =(props)=>{
 
 
   const handleSubmit = async (event) => {
-    console.log(img)
     event.preventDefault()
     let response=await apis.CreateItem({
       id:props.user.companyId,

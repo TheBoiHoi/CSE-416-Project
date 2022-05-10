@@ -4,9 +4,12 @@ import air_mags2 from '../../../img/airmags2.jpg';
 import './TableModal.css';
 import {TransferOwnerShipModal} from '../TransferOwnershipModal/TransferOwnershipModal';
 import {useState} from 'react';
+
+import {QrCodeDisplayModal} from '../../QrCodeDisplayModal/QrCodeDisplayModal';
 export const TableModal =(props)=>{
 
   const [showModal,setShowModal] = useState(false);
+  const [showQRModal,setShowQRModal] = useState(false);
   return (
     <>
       <Modal
@@ -58,6 +61,9 @@ export const TableModal =(props)=>{
          
         </Modal.Body>
         <Modal.Footer>
+        <Button variant="info" onClick={()=>{setShowQRModal(true)}}>
+            QR Code    
+        </Button>
         <Button variant="warning" onClick={()=>{setShowModal(true)}}>
             Transfer Ownership
           </Button>
@@ -65,6 +71,7 @@ export const TableModal =(props)=>{
             Close
           </Button> */}
           <Button variant="primary"  onClick={()=>props.toggleModal(!props.showModal)}>Understood</Button>
+          <QrCodeDisplayModal showModal={showQRModal} toggleModal ={setShowQRModal}/>
           <TransferOwnerShipModal company={props.company} itemId = {props.itemId} showModal={showModal} toggleModal ={setShowModal}/>
         </Modal.Footer>
       </Modal>
