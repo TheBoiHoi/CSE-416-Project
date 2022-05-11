@@ -23,6 +23,7 @@ const PrivateTabs=(props)=>{
         setSeller(seller);
         if((trade.seller_id == props.user.userId && trade.seller_status == true)
                 || (trade.buyer_id == props.user.userId && trade.buyer_status == true)){
+            console.log("setting true")
             setDisabled(true);
         }else{
             setDisabled(false);
@@ -42,9 +43,13 @@ const PrivateTabs=(props)=>{
             const trade = data.data;
             if(trade.buyer_status == true && trade.seller_status == true){
                 console.log("completing trades");
-                await axios.post(`${process.env.REACT_APP_BACKEND_URL}/trade/complete`, {
+                const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/trade/complete`, {
                     tradeId: trade._id
                 });
+                if(res.data.message == 'Error'){
+                    window.alert("Transaction not completed! Error encountered!");
+                    // console.log("TRANSACTION NOT COMPLETED")
+                }
             }
         }
         setDisabled(true);

@@ -188,7 +188,7 @@ const completeTrade = async(req, res)=>{
     const sellerAcc = algosdk.mnemonicToSecretKey(sellerDecryptedData)
     const buyerAcc = algosdk.mnemonicToSecretKey(BuyerdecryptedData)
     const target_item = await Item.findOne({_id:item_id})
-
+    try{
     //Buyer opt in
     let params = await algodclient.getTransactionParams().do();
     params.fee = 1000;
@@ -233,6 +233,13 @@ const completeTrade = async(req, res)=>{
     rawSignedTxn = xtxn.signTxn(sellerAcc.sk)
     let xtx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
     confirmedTxn = await algosdk.waitForConfirmation(algodclient, xtx.txId, 4);
+    }catch(e){
+        console.log(e);
+        trade.buyer_status = false;
+        trade.seller_status = false;
+        trade.save();
+        return res.status(200).json({message:"Error"})
+    }
 
     //update the item owner and add the transaction
     // const itemTransactions = target_item.transactions
