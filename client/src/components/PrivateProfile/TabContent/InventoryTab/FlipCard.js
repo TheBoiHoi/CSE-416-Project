@@ -15,7 +15,7 @@ const FlipCard = (props)=>{
     // }
   
     useEffect(()=>{
-      axios.get(`http://localhost:3000/item/get/${props.item}`).then(response=>{
+      axios.get(`item/get/${props.item}`).then(response=>{
             let item=response.data.item
             setItem(item)
         })
@@ -33,10 +33,10 @@ const FlipCard = (props)=>{
     return (
       <div>
         <ReactCardFlip isFlipped={isFlipped} flipDirection="vertical"> 
-            <div onClick={handleClick}>
+            <div style={{width:'200px'}} onClick={handleClick}>
                 <InventoryCard  item={item} front={true}/>
             </div>   
-            <div  onClick={handleClick}>
+            <div style={{width:'200px'}}  onClick={handleClick}>
                 <InventoryCard item={item} public={props.public} front={false}/>
             </div>
         </ReactCardFlip>

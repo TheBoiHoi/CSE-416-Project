@@ -57,7 +57,14 @@ export const Navbar = (props) => {
             component="div"
             align="left"
           >
-            <img style={{width:'15%', cursor:"pointer"}} src= {Logo} onClick={()=>{navigate('/')}}/>
+            <img style={{width:'15%', cursor:"pointer"}} src= {Logo} onClick={()=>{
+              if(props.user.isCompany){
+                navigate('/inventory-table')
+              }else{
+                navigate('/')
+              }
+              
+              }}/>
           </Typography>
 
         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>

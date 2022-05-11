@@ -8,7 +8,7 @@ const ItemCard = (props) =>{
     const {itemId}=useParams()
     const[item, setItem]=React.useState(null)
     React.useEffect(()=>{
-        axios.get(`http://localhost:3000/item/get/${itemId}`).then((response)=>{
+        axios.get(`item/get/${itemId}`).then((response)=>{
             setItem(response.data.item)
         })
     },[])
