@@ -38,7 +38,7 @@ function App() {
         <Route path="/" element={<Welcome user={user}/>}/>
         <Route path="/login" element={<Login setUser={setUser}/>}/>
         <Route path="/profile" element={<Profile user={user}/>}/>
-        <Route path="/public/profile/:userId/:key" element={<PublicProfile/>}/>
+        <Route path="/public-profile/:userId/:key" element={<PublicProfile/>}/>
 
         <Route path="/item/profile/:itemId" element={<ItemProfile/>}/>
         <Route path="/item/profile" element={<ItemProfile/>}/>

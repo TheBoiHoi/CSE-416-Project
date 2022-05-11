@@ -15,7 +15,7 @@ const FlipCard = (props)=>{
     // }
   
     useEffect(()=>{
-      axios.get(`item/get/${props.item}`).then(response=>{
+      axios.get(`/item/get/${props.item}`).then(response=>{
             let item=response.data.item
             setItem(item)
         })

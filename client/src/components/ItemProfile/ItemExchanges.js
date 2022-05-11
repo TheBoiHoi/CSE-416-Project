@@ -34,27 +34,7 @@ const ItemExchanges=(props)=>{
         field: 'transaction_id',
         sort: 'asc'
       },
-    ],
-    // rows: [
-    //   {
-    //     'date':'05/19/2022',
-    //     'user_from':'u412',
-    //     'user_to':'u579',
-    //     'transaction_id':'1dlafjganwamad'
-    //   },
-    //   {
-    //     'date':'05/19/2022',
-    //     'user_from':'u412',
-    //     'user_to':'u579',
-    //     'transaction_id':'1dlafjganwamad'
-    //   },
-    //   {
-    //     'date':'05/19/2022',
-    //     'user_from':'u412',
-    //     'user_to':'u579',
-    //     'transaction_id':'1dlafjganwamad'
-    //   },
-    // ]
+    ]
   };
       
     return(
