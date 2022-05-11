@@ -93,7 +93,7 @@ app.get('/completed-trade/get/:userId/:key', user.keyVerification, user.getCompl
 
 
 app.post('/company_register', company.register)
-app.post('/company_login', company.login)
+app.post('/company/login', company.login)
 app.get(`/company`, auth.verify, company.getCompany)
 app.get(`/inventory/:id`, auth.verify, company.getCompany)
 app.post('/company/createItem', company.createItem)

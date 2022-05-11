@@ -11,7 +11,7 @@ const GetCurrentUser = () => api.get(`/user/get`)
 const generateProfileQRCode = () => api.get(`/qrcode/profile`, {responseType:'arraybuffer'})
 
 const GetCompany = () => api.get(`/company/get`)
-const CompanyLogin = (payload) => api.post('/company_login', payload)
+const CompanyLogin = (payload) => api.post('/company/login', payload)
 const CreateItem = (payload) => api.post('/company/createItem',payload)
 const apis = {
     Login,

@@ -26,7 +26,7 @@ const login=async(req, res)=>{
     const {email, password}=req.body
     const company=await Company.findOne({email:email})
     if(!company){
-        return res.status(404).send()
+        return res.status(404).send("Cannot find the company")
     }
 
     const hash=company.password
