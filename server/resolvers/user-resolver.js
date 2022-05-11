@@ -51,7 +51,8 @@ const login = async(req, res)=>{
             return res.status(200).json({user:{
                 userId:user._id,
                 name:user.name,
-                items:user.items_owned
+                items:user.items_owned,
+                isCompany:false
             }})
         }
     }

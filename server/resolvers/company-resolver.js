@@ -23,6 +23,7 @@ const apitoken = {
 const algodclient = new algosdk.Algodv2(apitoken, baseServer, port);
 
 const login=async(req, res)=>{
+    console.log("company logging in")
     const {email, password}=req.body
     const company=await Company.findOne({email:email})
     if(!company){
@@ -42,7 +43,15 @@ const login=async(req, res)=>{
             sameSite: "None",
             maxAge: 1000 * 60 * 60 * 24 * 7
         })
-        return res.status(200).json({companyId:company._id}).send()
+        return res.status(200).json({
+            company:{
+                companyId:company._id,
+                name:company.name,
+                items:company.items,
+                isCompany:true
+            }
+            
+        })
     }
 }
 
@@ -211,10 +220,10 @@ const createItem = async(req,res)=>{
     })
     company.items.push(newItem._id)
     console.log("new item id number", newItem._id)
-    await newItem.save()
-    const saved=await Company.updateOne({_id:id}, {items:company.items})
+    let saved=await newItem.save()
+    let updated=await Company.updateOne({_id:id}, {items:company.items})
     if(saved){
-        return res.status(200).json({"message":"yes"})
+        return res.status(200).json({itemId:saved._id, "message":"yes"})
     }
     return res.status(404).json({"message":"err"})
 

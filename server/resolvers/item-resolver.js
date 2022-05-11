@@ -109,14 +109,18 @@ const uploadProfilePic=(req, res)=>{
 // //get the profile pic of an item
 const getProfilePic=(req, res)=>{
     const {itemId}=req.params
-    console.log("getprofilepic itemid:", itemId)
     Item.findOne({_id:itemId}).then(data=>{
-        let imagePath=path.resolve(`./images/profile-pics/${data.profilePic}`)
-        console.log()
+        let imagePath
+        if(data.profilePic){
+            imagePath=path.resolve(`./images/profile-pics/${data.profilePic}`)
+        }
+        else{
+            imagePath=path.resolve('./images/profile-pics/airmags.jpg')
+        }
         return res.sendFile(imagePath)
     }).catch((e)=>{
-        console.log(e)
-        return res.status(404).json({message:"ERROR"})
+        console.log("There is an error", e)
+        return res.status(404).json({message:"some ERROR has happened"})
     })
 }
 
