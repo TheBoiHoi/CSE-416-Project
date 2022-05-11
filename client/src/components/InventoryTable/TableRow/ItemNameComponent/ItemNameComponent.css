@@ -1,5 +1,7 @@
 .name_description {
-  margin-right: 3rem;
+  margin-right: 7rem;
+  position: relative;
+  top:1rem;
 }
 .item_name_row {
   padding-left: 3rem;
@@ -9,4 +11,6 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
+  position: relative;
+  right:2rem;
 }

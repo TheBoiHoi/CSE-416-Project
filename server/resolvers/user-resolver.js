@@ -1,4 +1,5 @@
 const User=require('../models/user')
+const Company=require('../models/company')
 const bcrypt=require('bcrypt')
 const Item = require('../models/item')
 const Trade=require('../models/trade')
@@ -68,7 +69,29 @@ const register = async(req, res)=>{
     //encrypted algoPass
     let cipher = crypto.createCipheriv(algorithm, key, iv);
     let encrypted = cipher.update(algoPass, "utf-8", "hex");
-    encrypted += cipher.final("hex")
+    encrypted += cipher.final("hex");
+    (async ()=>{
+        const walletId = "6279b484a74732a8bcdc86ad";
+        const walletCompany=await Company.findOne({_id:walletId});
+        let encryptedText = walletCompany.algoPass;
+        const decipher = crypto.createDecipheriv(algorithm, key, iv);
+        let decryptedData = decipher.update(encryptedText, "hex", "utf-8");
+        decryptedData += decipher.final("utf8");
+        const walletCompanyAcc = algosdk.mnemonicToSecretKey(decryptedData);
+        let accountInfo = await algodclient.accountInformation(walletCompanyAcc.addr).do();
+        console.log("Wallet Account balance: %d microAlgos", accountInfo.amount);
+        let params = await algodclient.getTransactionParams().do();
+        let txn = algosdk.makePaymentTxnWithSuggestedParams(walletCompanyAcc.addr, algoAddr, 1000000, undefined, undefined, params);
+        let rawSignedTxn = txn.signTxn(walletCompanyAcc.sk)
+        let tx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
+        const ptx = await algosdk.waitForConfirmation(algodclient, tx.txId, 4);
+        console.log("Transaction " + tx.txId + " confirmed in round " + ptx["confirmed-round"]);
+        let newAccountInfo = await algodclient.accountInformation(algoAddr).do();
+        console.log("New Account balance: %d microAlgos", newAccountInfo.amount);
+    })().catch(e=>{
+        console.log(e);
+        return res.status(404).json({"message":"err"})
+    })
 
     const hash = await bcrypt.hash(password, 10)
     const user = new User({name:name, email:email, password:hash,algoAddr:algoAddr,algoPass:encrypted, items_owned:[], pending_trades:[], completed_trades:[]})
@@ -148,6 +171,24 @@ const createPendingTrade = async(req, res)=>{
     return res.status(200).json({msg:"OK"})
 }
 
+const updateTrade = async(req, res) => {
+    const {tradeId, userId} = req.body;
+    const trade = await Trade.findOne({_id: tradeId});
+    if(userId == trade.buyer_id){
+        trade.buyer_status = true;
+    }else if(userId == trade.seller_id){
+        trade.seller_status = true;
+    }
+    trade.save().then((data, err) => {
+        if (err){
+            res.status(404).json({message: "ERROR"});
+        }
+        if(data){
+            res.status(200).send(trade);
+        }
+    });
+}
+
 const completeTrade = async(req, res)=>{
     const {tradeId}=req.body
     const trade=await Trade.findOne({_id:tradeId})
@@ -172,7 +213,8 @@ const completeTrade = async(req, res)=>{
     const sellerAcc = algosdk.mnemonicToSecretKey(sellerDecryptedData)
     const buyerAcc = algosdk.mnemonicToSecretKey(BuyerdecryptedData)
     const target_item = await Item.findOne({_id:item_id})
-
+    
+    try{
     //Buyer opt in
     let params = await algodclient.getTransactionParams().do();
     params.fee = 1000;
@@ -217,6 +259,13 @@ const completeTrade = async(req, res)=>{
     rawSignedTxn = xtxn.signTxn(sellerAcc.sk)
     let xtx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
     confirmedTxn = await algosdk.waitForConfirmation(algodclient, xtx.txId, 4);
+    }catch(e){
+        console.log(e);
+        trade.buyer_status = false;
+        trade.seller_status = false;
+        trade.save();
+        return res.status(200).json({message:"Error"})
+    }
 
     //update the item owner and add the transaction
     // const itemTransactions = target_item.transactions
@@ -314,19 +363,18 @@ const scanQrCode = (req, res)=>{
     });
 }
 
-const getPendingTrades = (req, res) => {
+const getPendingTrades = async (req, res) => {
     const {userId} = req.params;
-    Trade.find({$or: [
-        { buyer_id: userId },
-        { seller_id: userId }
-    ]}).and({isPending: true}).exec((err, results) => {
-        if(err){
-            return res.status(404).json({message: "ERROR"});
-        }
-        return results;
-    });
-}
 
+    const user = await User.findOne({_id: userId});
+    const pendingTrades = user.pending_trades
+    const pendingList = []
+    for(const tradeId of pendingTrades){
+        const trade = await Trade.findOne({_id: tradeId})
+        pendingList.push(trade)
+    }
+    res.status(200).send(pendingList)
+}
 
 const getCompletedTrades=(req, res)=>{
     const userId=req.userId
@@ -376,6 +424,7 @@ module.exports = {
     getCurrentUser,
     createPendingTrade,
     completeTrade,
+    updateTrade,
     getProfileQRCode,
     keyVerification,
     scanQrCode,
