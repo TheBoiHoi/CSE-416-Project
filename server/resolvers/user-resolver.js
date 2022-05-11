@@ -52,7 +52,8 @@ const login = async(req, res)=>{
             return res.status(200).json({user:{
                 userId:user._id,
                 name:user.name,
-                items:user.items_owned
+                items:user.items_owned,
+                isCompany:false
             }})
         }
     }
@@ -212,23 +213,7 @@ const completeTrade = async(req, res)=>{
     const sellerAcc = algosdk.mnemonicToSecretKey(sellerDecryptedData)
     const buyerAcc = algosdk.mnemonicToSecretKey(BuyerdecryptedData)
     const target_item = await Item.findOne({_id:item_id})
-
-    //Decrypted Buyer and Seller algo pass
-    var decipher = crypto.createDecipheriv(algorithm, key, iv);
     
-    let sellerEncryptedText = seller.algoPass
-    let sellerDecryptedData = decipher.update(sellerEncryptedText, "hex", "utf-8");
-    sellerDecryptedData += decipher.final("utf8");
-    
-    decipher = crypto.createDecipheriv(algorithm, key, iv);
-
-    let BuyerencryptedText = buyer.algoPass
-    let BuyerdecryptedData = decipher.update(BuyerencryptedText, "hex", "utf-8");
-    BuyerdecryptedData += decipher.final("utf8");
-
-    const sellerAcc = algosdk.mnemonicToSecretKey(sellerDecryptedData)
-    const buyerAcc = algosdk.mnemonicToSecretKey(BuyerdecryptedData)
-    const target_item = await Item.findOne({_id:item_id})
     try{
     //Buyer opt in
     let params = await algodclient.getTransactionParams().do();

@@ -84,9 +84,6 @@ app.post('/user/logout', auth.verify, user.logout)
 app.get('/user/get/:userId/:key', user.keyVerification, user.getUserById)
 app.get('/user/public/get/:userId', user.getUserById)
 
-
-// app.get('/item/get/:itemId', user.getItemInfo)
-// app.get('/item-transaction/get/:itemId', user.getItemTransactions)
 app.get('/pending-trade/get/:userId', auth.verify, user.getPendingTrades)
 app.get('/pending-trade/get', user.getPendingTrades)
 app.post('/trade/create',auth.verify, user.createPendingTrade)
@@ -96,8 +93,7 @@ app.get('/completed-trade/get', auth.verify, user.getCompletedTrades)
 app.get('/completed-trade/get/:userId/:key', user.keyVerification, user.getCompletedTrades)
 
 
-
-app.post('/company_register', company.register)
+app.post('/company/register', company.register)
 app.post('/company/login', company.login)
 app.get(`/company`, auth.verify, company.getCompany)
 app.get(`/inventory/:id`, auth.verify, company.getCompany)
@@ -107,8 +103,8 @@ app.post('/company_addItem', auth.verify, company.addItem)
 
 app.get('/item/get/:itemId', item.getItemInfo)
 app.get('/item-transactions/get/:itemId', item.getItemTransactions)
-app.post('/generate/qrcode/item', item.generateItemQRCode)
-app.post('/profile-pic/upload/:itemId', multer().single('file'), item.uploadProfilePic)
+app.post('/generate/qrcode/item', auth.verify, item.generateItemQRCode)
+app.post('/profile-pic/upload/:itemId', auth.verify, multer().single('file'), item.uploadProfilePic)
 app.get('/profile-pic/get/:itemId', item.getProfilePic)
 app.get('/qrcode/item/:itemId', (req, res)=>{
     const itemId=req.params.itemId
