@@ -3,7 +3,7 @@ const Company=require('../models/company')
 const bcrypt=require('bcrypt')
 const Item = require('../models/item')
 const Trade=require('../models/trade')
-const PublicProfile=require('../models/PublicProfile')
+const PublicProfile=require('../models/publicProfile')
 const auth=require('../token.js')
 const ObjectId=require('bson-objectid')
 const QRCode=require('qrcode')
@@ -310,7 +310,7 @@ const getProfileQRCode = (req, res)=>{
     const newProfileCode = new PublicProfile({userId:userId, key:key, expireAt:Date.now()})
     
     newProfileCode.save().then(()=>{
-        const url=`/${userId}/${key}`
+        const url=`http://194.113.72.18/public-profile/${userId}/${key}`
         QRCode.toFile(`./images/${userId}-${key}.png`, url, {
             color: {
               dark: '#000000',  
