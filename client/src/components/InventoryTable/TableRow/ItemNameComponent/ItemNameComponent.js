@@ -7,7 +7,7 @@ import "./ItemNameComponent.css";
 import React, {useEffect, useState} from 'react';
 
 export const ItemNameComponent = (props) =>{
-  const[srcLink,setSrcLink] = useState(`http://localhost:3000/profile-pic/get/${props.itemId}`);
+  const[srcLink,setSrcLink] = useState(`${process.env.REACT_APP_BACKEND_URL}/profile-pic/get/${props.itemId}`);
   return (
     <Row className="item_name_row">
           <Col>

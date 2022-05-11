@@ -72,7 +72,7 @@ const PrivateTabs=(props)=>{
 
     const fetchPendingTrades =  async () => {
         console.log("fetching trades")
-        const data = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/pending-trade/get/${props.user.userId}`);
+        const data = await axios.get(`pending-trade/get/${props.user.userId}`);
         if(data.data){ 
             const itemsList = await fetchPendingItems(data.data);
             const {buyersList, sellersList} = await fetchBuyersAndSellers(data.data);
@@ -102,8 +102,8 @@ const PrivateTabs=(props)=>{
         for(const trade of tradeslist){
             const buyerId = trade.buyer_id;
             const sellerId = trade.seller_id;
-            const buyerData = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/user/public/get/${buyerId}`)
-            const sellerData = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/user/public/get/${sellerId}`)
+            const buyerData = await axios.get(`user/public/get/${buyerId}`)
+            const sellerData = await axios.get(`user/public/get/${sellerId}`)
             buyersList.push(buyerData.data.user);
             sellersList.push(sellerData.data.user);
         }
