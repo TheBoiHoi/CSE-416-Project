@@ -61,7 +61,8 @@ const register = async(req, res)=>{
 
     let cipher = crypto.createCipheriv(algorithm, key, iv);
     let encrypted = cipher.update(passphrase, "utf-8", "hex");
-    encrypted += cipher.final("hex");
+
+    encrypted += cipher.final("hex")
         
     // console.log( "My address: " + account.addr );
     // console.log( "My passphrase: " + passphrase );
