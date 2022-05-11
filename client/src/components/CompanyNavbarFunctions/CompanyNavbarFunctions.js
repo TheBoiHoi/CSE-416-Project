@@ -25,7 +25,7 @@ export const CompanyNavbarFunctions = (props) =>{
   }
 
   const handleSignOut = async () =>{
-    axios.post('http://localhost:3000/user/logout').then(response=>{
+    axios.post('user/logout').then(response=>{
       props.setUser(null)
       navigate('/')
     })

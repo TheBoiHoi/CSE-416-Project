@@ -10,7 +10,7 @@ const handleSubmit = async (event)=>{
   console.log("item : "+itemId)
   event.preventDefault()
   try {
-    await axios.post(`http://localhost:3000/company/sellItem`, {
+    await axios.post(`/company/sellItem`, {
     Itemid:itemId,
     companyId:companyId,
     buyerId:userId,

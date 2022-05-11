@@ -17,14 +17,10 @@ export const InventoryCard =(props)=>{
         navigate(`/item/profile/${props.item.itemId}`)
     }
 
-    const handleUploadImage=(e)=>{
-        e.stopPropagation()
-        setOperation("upload-image")
-    }
     if(front){
         return (
             <Card style={{ height:'13rem',width: '13rem' }}>
-                <Card.Img style={{height:'100%',width:'100%'}} alt="Profile Image" src={`http://localhost:3000/profile-pic/get/${props.item.itemId}`}/>
+                <Card.Img style={{height:'100%',width:'100%'}} alt="Profile Image" src={`${process.env.REACT_APP_BACKEND_URL}/profile-pic/get/${props.item.itemId}`}/>
                 <Card.Title>{props.item.name}</Card.Title>
             </Card>
         )

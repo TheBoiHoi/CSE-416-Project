@@ -4,7 +4,8 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import {ItemNameComponent} from "./ItemNameComponent/ItemNameComponent";
 import "./TableRow.css";
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import axios from 'axios'
 import {TableModal} from '../TableModal/TableModal';
 
 let asset_id 
@@ -28,24 +29,32 @@ const setUp = async(promise)=>{
 }
 export const TableRow = (props) =>{
 
-  const promise = props.item;
+  // const promise = props.item;
 
-  setUp(promise)
+  // setUp(promise)
 
-  let currItem = {
-    asset_id: asset_id,
-    manu_date:manu_date, 
-    manu_location :manu_location,
-    manu_owner :manu_owner,
-    name :name,
-    owner:owner,
-    serial_number:serial_number
-  }
+  // let currItem = {
+  //   asset_id: asset_id,
+  //   manu_date:manu_date, 
+  //   manu_location :manu_location,
+  //   manu_owner :manu_owner,
+  //   name :name,
+  //   owner:owner,
+  //   serial_number:serial_number
+  // }
+  
   const [background,setBackground] = useState("table_row_container");
 
   const [showModal,setShowModal] = useState(false);
 
   const [transferOwnerShip, setTransferOwnership] = useState(false);
+  const [item, setItem]=useState(null)
+
+  useEffect(()=>{
+    axios.get(`item/get/${props.itemId}`).then(response=>{
+      setItem(response.data.item)
+    })
+  }, [])
 
   // const toggleModal =() =>{
   //   setShowModal(!showModal);
@@ -53,28 +62,28 @@ export const TableRow = (props) =>{
   return (
     <>
     <Container className={background} 
-    onMouseEnter={()=>{
-      setBackground("table_row_container_hover");
-    }}
-    onMouseLeave={()=>{
-      setBackground("table_row_container");
-    }}
-    onClick={()=>{
-      setShowModal(true);
-    }}
+      onMouseEnter={()=>{
+        setBackground("table_row_container_hover");
+      }}
+      onMouseLeave={()=>{
+        setBackground("table_row_container");
+      }}
+      onClick={()=>{
+        setShowModal(true);
+      }}
     >
-      <Row>
+      {item&&<Row>
         <Col>
-        <ItemNameComponent name = {name}/>
+        <ItemNameComponent itemId={item.itemId} name = {item.name}/>
         </Col>
-        <Col className="m-auto date">{currItem.manu_date}</Col>
+        <Col className="m-auto date">{item.manu_date}</Col>
         <Col className ="m-auto">
-        <div className="serial_number">{currItem.serial_number}</div></Col>
-        <Col className="m-auto"><div className="location">{currItem.manu_location}</div></Col>
-      </Row>
+        <div className="serial_number">{item.serialNumber}</div></Col>
+        <Col className="m-auto"><div className="location">{item.manu_location}</div></Col>
+      </Row>}
       <div className="seperator"></div>
     </Container>
-    <TableModal itemId={props.itemId} company = {props.company} item = {currItem} showModal={showModal} toggleModal={setShowModal}/>
+    {item&&<TableModal company = {props.company} item={item} showModal={showModal} toggleModal={setShowModal}/>}
     </>
   )
 }

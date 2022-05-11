@@ -1,18 +1,20 @@
 import axios from 'axios'
 axios.defaults.withCredentials = true
-const api=axios.create({
-    baseURL:'http://localhost:3000'
-})
+axios.defaults.baseURL='http://194.113.72.18:3000'
+//axios.defaults.baseURL='http://localhost:3000'
+// const api=axios.create({
+//     baseURL:'http://194.113.72.18:3000'
+// })
 
-const Login = (payload)=>api.post('/user/login', payload)
-const Register = (payload) => api.post('/user/register', payload)
+const Login = (payload)=>axios.post('/user/login', payload)
+const Register = (payload) => axios.post('/user/register', payload)
 
-const GetCurrentUser = () => api.get(`/user/get`)
-const generateProfileQRCode = () => api.get(`/qrcode/profile`, {responseType:'arraybuffer'})
+const GetCurrentUser = () => axios.get(`/user/get`)
+const generateProfileQRCode = () => axios.get(`/user/qrcode/profile`, {responseType:'arraybuffer'})
 
-const GetCompany = () => api.get(`/company/get`)
-const CompanyLogin = (payload) => api.post('/company/login', payload)
-const CreateItem = (payload) => api.post('/company/createItem',payload)
+const GetCompany = () => axios.get(`/company/get`)
+const CompanyLogin = (payload) => axios.post('/company/login', payload)
+const CreateItem = (payload) => axios.post('/company/createItem',payload)
 const apis = {
     Login,
     Register,

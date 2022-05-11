@@ -12,7 +12,7 @@ const QrModal=(props)=> {
       var formData=new FormData()
       formData.append('file', file, file.name)
       console.log("form data:", formData)
-      axios.post("http://localhost:3000/qrcode/scan", formData).then(response=>{
+      axios.post("/user/qrcode/scan", formData).then(response=>{
         setUrl(response.data.data)
       })
     }

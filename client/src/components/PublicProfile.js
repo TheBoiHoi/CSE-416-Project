@@ -5,15 +5,15 @@ import {useState, useEffect} from 'react'
 import axios from 'axios'
 export const PublicProfile = (props) => {
     const {userId, key} = useParams()
-    const[user, setUser]=useState(null)
-    
+    const [user, setUser]=useState(null)
+    console.log("key:", key)
     useEffect(()=>{
-        axios.get(`http://localhost:3000/user/get/${userId}/${key}`).then(response => {
+        axios.get(`user/get/${userId}/${key}`).then(response => {
+            console.log("public profile user:", response.data.user)
             setUser(response.data.user)
         })
     }, [])
 
-    console.log("key:", key)
     if(user){
         return(
             <div>
