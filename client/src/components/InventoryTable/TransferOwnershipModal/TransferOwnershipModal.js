@@ -1,35 +1,28 @@
 import {Modal,Button,Form} from 'react-bootstrap';
 import axios from 'axios';
-let userId
-let companyId
-let itemId
-const handleSubmit = async (event)=>{
-  console.log("transfer ownership")
-  console.log("company :"+companyId)
-  console.log("user : "+userId)
-  console.log("item : "+itemId)
-  event.preventDefault()
-  try {
-    await axios.post(`/company/sellItem`, {
-    Itemid:itemId,
-    companyId:companyId,
-    buyerId:userId,
-  }).then(()=>{
-    alert("done")
-  }).catch(e=>{
-    alert("Something went wrong, please make sure you enter the right user id and the user have enough algo")
-  })
-  window.location.reload();
-  
-  } catch (error) {
-    console.log(error)
-  }
-    
-  
-}
+import {useState} from 'react'
 export const TransferOwnerShipModal =(props)=>{
-  itemId = props.itemId
-  companyId = props.company.companyId
+  const[userId, setUserId]=useState("")
+
+  const handleSubmit = async (event)=>{
+    event.preventDefault()
+    console.log("userId:", userId)
+    console.log("companyId:", props.company.companyId)
+    console.log("itemId:", props.itemId)
+    let itemId=props.itemId
+    let companyId=props.company.companyId
+    axios.post('/company/sellItem', {
+      itemId:itemId,
+      companyId:companyId,
+      buyerId:userId,
+    }).then(()=>{
+      alert("done")
+      window.location.reload();
+    }).catch(e=>{
+      console.log("error:", e)
+      alert("Something went wrong, please make sure you enter the right user id and the user have enough algo")
+    })
+  }
   return (
     <>
       <Modal
@@ -49,7 +42,7 @@ export const TransferOwnerShipModal =(props)=>{
             <Form.Label>User ID</Form.Label>
             <Form.Control type="text" 
                           placeholder="Enter the user id of the person you want to transfer ownership to" 
-                          onChange={e => userId= e.target.value}
+                          onChange={e=>setUserId(e.target.value)}
                           required/>
           </Form.Group>
           <Button variant="primary" type="submit">

@@ -1,10 +1,11 @@
 const User=require('../models/user')
 const Company=require('../models/company')
+const {parseTransactions}=require('../common/algoUtils')
 const bcrypt=require('bcrypt')
 const Item = require('../models/item')
 const Trade=require('../models/trade')
 const PublicProfile=require('../models/publicProfile')
-const auth=require('../token.js')
+const auth=require('../common/token.js')
 const ObjectId=require('bson-objectid')
 const QRCode=require('qrcode')
 const QRCodeReader=require('qrcode-reader')
@@ -102,7 +103,12 @@ const register = async(req, res)=>{
         secure: true,
         sameSite: "None"
     })
-    return res.status(200).json({msg:"OK", userId:user._id}).send()
+    return res.status(200).json({msg:"OK", user:{
+        userId:saved._id,
+        name:saved.name,
+        items:saved.items_owned,
+        isCompany:false
+    }})
 }
 
 const logout = async(req, res)=>{
@@ -386,30 +392,7 @@ const getCompletedTrades=(req, res)=>{
         axios.get(`https://algoindexer.testnet.algoexplorerapi.io/v2/accounts/${algoAddr}/transactions`).then(async (response)=>{
             let data=response.data
             let transactions=data.transactions
-            let ret=[]
-            for(let i=0;i<transactions.length;i++){
-                let transaction=transactions[i]
-                if(transaction['asset-transfer-transaction']){
-                    receiverAlgoId=transaction['asset-transfer-transaction']['receiver']
-                    senderAlgoId=transaction['sender']
-                    itemAssetId=transaction['asset-transfer-transaction']['asset-id']
-
-                    let receiver=await User.findOne({algoAddr:receiverAlgoId})
-                    let sender=await User.findOne({algoAddr:senderAlgoId})
-                    let item=await Item.findOne({asset_id:itemAssetId})
-
-                    ret.push({
-                        txid:transaction['id'],
-                        receiverName:receiver.name,
-                        senderName:sender.name,
-                        receiverId:receiver._id,
-                        senderId:sender._id,
-                        item:item.name,
-                        itemId:item._id,
-                        date:new Date(transaction['round-time']*1000).toLocaleString('en-US')
-                    })
-                }
-            }
+            let ret=await parseTransactions(transactions)
             return res.status(200).json({transactions:ret})
         }).catch((e)=>{
             console.log("ERROR:", e)

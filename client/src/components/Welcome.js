@@ -8,9 +8,10 @@ import startPNG from '../img/LandingPageSteps/start_trade.png'
 import confirmPNG from '../img/LandingPageSteps/confirm_trade.png'
 const Welcome = (props) => {
   if(props.user){
-    return(
-      <Navigate to='/profile'/>
+    return (
+      props.user.isCompany?<Navigate to='/inventory-table'/> :<Navigate to='/profile'/>
     )
+    
   }
   else{
     return (
