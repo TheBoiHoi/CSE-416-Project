@@ -14,7 +14,6 @@ const ProfileCard = (props) =>{
             setCode(Buffer.from(response.data).toString('base64'))
             setOperation('generating-qrcode')
         })
-        
     }
     
     return (

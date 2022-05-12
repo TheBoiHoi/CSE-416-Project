@@ -8,15 +8,6 @@ export const InventoryTable  = (props) => {
   console.log("the company is ", props.company)
   // console.log("company:", props.company)
   if(props.company && props.company.isCompany){
-    // const items = props.company.items
-
-    // let itemId = new Array()
-    // let itemList = items.map( async (id)=>{
-    //   itemId.push(id)
-    //   const response = await axios.get(`item/get/${id}`)
-    //   console.log(response.data.item)
-    //   return (response.data.item)
-    // })
     
     return(
       <div className="inventory_table">

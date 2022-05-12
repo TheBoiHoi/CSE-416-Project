@@ -103,7 +103,6 @@ app.post('/company/sellItem', company.sellItem)
 
 app.get('/item/get/:itemId', item.getItemInfo)
 app.get('/item-transactions/get/:itemId', item.getItemTransactions)
-app.post('/item/generate/qrcode', auth.verify, item.generateItemQRCode)
 app.post('/profile-pic/upload/:itemId', auth.verify, multer().single('file'), item.uploadProfilePic)
 app.get('/profile-pic/get/:itemId', item.getProfilePic)
 app.get('/item/qrcode/:itemId', (req, res)=>{
