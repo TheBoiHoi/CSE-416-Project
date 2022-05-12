@@ -71,7 +71,7 @@ export const TableModal =(props)=>{
           </Button> */}
           <Button variant="primary"  onClick={()=>props.toggleModal(!props.showModal)}>Understood</Button>
           <QrCodeDisplayModal itemId={props.item.itemId} showModal={showQRModal} toggleModal ={setShowQRModal}/>
-          <TransferOwnerShipModal company={props.company} itemId = {props.itemId} showModal={showModal} toggleModal ={setShowModal}/>
+          <TransferOwnerShipModal company={props.company} itemId = {props.item.itemId} showModal={showModal} toggleModal ={setShowModal}/>
         </Modal.Footer>
       </Modal>
     </>

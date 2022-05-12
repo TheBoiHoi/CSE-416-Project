@@ -1,9 +1,9 @@
 const Item=require('../models/item')
 const User=require('../models/user')
-const QRCode=require('qrcode')
 const algosdk=require('algosdk')
 const fs=require('fs')
 const path=require('path')
+const {parseTransactions}=require('../common/algoUtils')
 require('dotenv').config()
 const baseServer = 'https://testnet-algorand.api.purestake.io/idx2'
 const port = '';
@@ -41,36 +41,17 @@ const getItemTransactions=(req, res)=>{
         }
         let item=data
         let assetId=item.asset_id
+        let ret=[]
         indexerClient.lookupAssetTransactions(assetId).do().then(async (data)=>{
-            let transactions=[]
-            let assetTransactions=data.transactions
-            for(let i=0;i<assetTransactions.length;i++){
-                let transaction=assetTransactions[i]
-                const date=new Date(transaction['round-time']*1000).toLocaleString('en-US')
-                let id=transaction.id
-                // if(transaction['asset-config-transaction']){
+            // if(transaction['asset-config-transaction']){
                 //     transactions.push({
                 //         transactionId:id, 
                 //         creator:transaction['asset-config-transaction']['params']['creator'],
                 //         timestamp:date
                 //     })
                 // }
-                if(transaction['asset-transfer-transaction']){
-                    let senderAlgoId=transaction['sender']
-                    let receiverAlgoId=transaction['asset-transfer-transaction']['receiver']
-                    let sender=await User.findOne({algoAddr:senderAlgoId})
-                    let receiver=await User.findOne({algoAddr:receiverAlgoId})
-                    transactions.push({
-                        transactionId:id,
-                        senderId:sender._id,
-                        receiverId:receiver._id,
-                        sender:sender.name,
-                        receiver:receiver.name,
-                        date:date
-                    })
-                }
-            }
-            return res.status(200).json({transactions:transactions.reverse()})
+            ret=await parseTransactions(data.transactions)
+            return res.status(200).json({transactions:ret})
         })
     })
 
