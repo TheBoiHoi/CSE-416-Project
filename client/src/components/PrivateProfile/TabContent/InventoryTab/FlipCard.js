@@ -6,20 +6,12 @@ import axios from 'axios'
 const FlipCard = (props)=>{
   const [isFlipped, toggleIsFlipped]=useState(false)
   const [item, setItem]=useState(false)
-    // constructor() {
-    //   super();
-    //     this.state = {
-    //     isFlipped: false
-    //   };
-    //   this.handleClick = this.handleClick.bind(this);
-    // }
-  
-    useEffect(()=>{
-      axios.get(`/item/get/${props.item}`).then(response=>{
-            let item=response.data.item
-            setItem(item)
-        })
-    },[])
+  useEffect(()=>{
+    axios.get(`/item/get/${props.item}`).then(response=>{
+          let item=response.data.item
+          setItem(item)
+      })
+  },[])
     
     const handleClick=(e)=>{
       e.preventDefault();

@@ -1,5 +1,6 @@
 const Company=require('../models/company')
 const bcrypt=require('bcrypt')
+const QRCode=require('qrcode')
 const Item=require('../models/item')
 const algosdk = require('algosdk');
 const auth=require('../token.js')
@@ -251,6 +252,7 @@ const createItem = async(req,res)=>{
     company.items.push(newItem._id)
     console.log("new item id number", newItem._id)
     let saved=await newItem.save()
+    generateItemQRCode(newItem._id)
     let updated=await Company.updateOne({_id:id}, {items:company.items})
     if(saved){
         return res.status(200).json({"message":"yes","itemId":newItem._id});
@@ -261,9 +263,19 @@ const createItem = async(req,res)=>{
         console.log(e);
         return res.status(404).json({"message":"err"})
     });
-    
+}
 
-    
+const generateItemQRCode = (itemId)=>{
+    const url=`http://194.113.72.18/item/profile/${itemId}`
+    QRCode.toFile(`./images/item-qrcodes/${itemId}.png`, url, {
+        color: {
+          dark: '#000000',  // Blue dots
+          light: '#FFFFFF' // Transparent background
+        }
+      }, function (err) {
+        if (err) throw err
+        console.log('done')
+    })
 }
 
 const sellItem = async(req,res)=>{

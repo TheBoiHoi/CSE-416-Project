@@ -3,8 +3,7 @@ import Image from 'react-bootstrap/Image'
 import air_mags2 from '../../../img/airmags2.jpg';
 import './TableModal.css';
 import {TransferOwnerShipModal} from '../TransferOwnershipModal/TransferOwnershipModal';
-import {useState} from 'react';
-
+import {useState, useEffect} from 'react';
 import {QrCodeDisplayModal} from '../../QrCodeDisplayModal/QrCodeDisplayModal';
 export const TableModal =(props)=>{
 
@@ -27,7 +26,8 @@ export const TableModal =(props)=>{
         <Modal.Body >
           <Row className='modal-row-one-content-stuff'>
             <Col>
-            <Carousel>
+              <Image src={`${process.env.REACT_APP_BACKEND_URL}/profile-pic/get/${props.item.itemId}`} fluid={true}/>
+            {/*<Carousel>
             <Carousel.Item>
               <Image src={air_mags2} fluid={true}/>
              </Carousel.Item>
@@ -37,8 +37,7 @@ export const TableModal =(props)=>{
              <Carousel.Item>
               <Image src={air_mags2} fluid={true}/>
              </Carousel.Item>
-            </Carousel>
-           
+            </Carousel>*/}
             </Col>
             <Col>
             <h6>Item Name:</h6>
@@ -71,7 +70,7 @@ export const TableModal =(props)=>{
             Close
           </Button> */}
           <Button variant="primary"  onClick={()=>props.toggleModal(!props.showModal)}>Understood</Button>
-          <QrCodeDisplayModal showModal={showQRModal} toggleModal ={setShowQRModal}/>
+          <QrCodeDisplayModal itemId={props.item.itemId} showModal={showQRModal} toggleModal ={setShowQRModal}/>
           <TransferOwnerShipModal company={props.company} itemId = {props.itemId} showModal={showModal} toggleModal ={setShowModal}/>
         </Modal.Footer>
       </Modal>
