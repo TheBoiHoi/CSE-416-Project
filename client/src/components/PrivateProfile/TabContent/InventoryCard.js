@@ -23,7 +23,6 @@ export const InventoryCard =(props)=>{
     const openModal=(transaction)=>{
         setShowTradeModal(true)
       }
-      console.log(props.item)
     if(front){
         return (
             <Card style={{ height:'13rem',width: '13rem' }}>
@@ -52,7 +51,7 @@ export const InventoryCard =(props)=>{
                     </Card.Body>
                     
                 </Card>
-                {showTradeModal && <StartTradeModal item={props.item} setShow={setShowTradeModal} show={showTradeModal} ></StartTradeModal>}
+                {showTradeModal && <StartTradeModal user={props.user.userId} curr_user={props.curr_user.userId} item={props.item} setShow={setShowTradeModal} show={showTradeModal} ></StartTradeModal>}
                 {operation&&<OperateModal itemId={props.item.itemId} setOperation={setOperation} operation={operation}></OperateModal>}
             </div>
         )

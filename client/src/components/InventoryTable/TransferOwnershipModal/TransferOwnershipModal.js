@@ -1,8 +1,12 @@
 import {Modal,Button,Form} from 'react-bootstrap';
 import axios from 'axios';
 import {useState} from 'react'
+import './TransferOwnershipModal.css';
+
 export const TransferOwnerShipModal =(props)=>{
-  const[userId, setUserId]=useState("")
+  const[userId, setUserId]=useState("");
+  const [showLoading,setShowLoading] = useState(false);
+  const [disableButton, setDisableButton] = useState(false);
 
   const handleSubmit = async (event)=>{
     event.preventDefault()
@@ -16,7 +20,9 @@ export const TransferOwnerShipModal =(props)=>{
       companyId:companyId,
       buyerId:userId,
     }).then(()=>{
-      alert("done")
+      alert("done");
+      setShowLoading(false);
+      setDisableButton(false);
       window.location.reload();
     }).catch(e=>{
       console.log("error:", e)
@@ -45,7 +51,8 @@ export const TransferOwnerShipModal =(props)=>{
                           onChange={e=>setUserId(e.target.value)}
                           required/>
           </Form.Group>
-          <Button variant="primary" type="submit">
+         
+          <Button variant="primary" type="submit" onClick={()=>{setShowLoading(true);}}>
             Submit
           </Button>
         </Form>
@@ -55,7 +62,9 @@ export const TransferOwnerShipModal =(props)=>{
             Close
           </Button>
         </Modal.Footer>
+        {showLoading && (<div class="loader"></div>)}
       </Modal>
+      
     </>
   );
 }

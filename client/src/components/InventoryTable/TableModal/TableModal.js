@@ -5,10 +5,13 @@ import './TableModal.css';
 import {TransferOwnerShipModal} from '../TransferOwnershipModal/TransferOwnershipModal';
 import {useState, useEffect} from 'react';
 import {QrCodeDisplayModal} from '../../QrCodeDisplayModal/QrCodeDisplayModal';
+import temp from '../../../img/temp.jpg';
+
 export const TableModal =(props)=>{
 
   const [showModal,setShowModal] = useState(false);
   const [showQRModal,setShowQRModal] = useState(false);
+  const [imageUrl, setImageUrl] = useState(`${process.env.REACT_APP_BACKEND_URL}/profile-pic/get/${props.item.itemId}`);
   return (
     <>
       <Modal
@@ -26,7 +29,7 @@ export const TableModal =(props)=>{
         <Modal.Body >
           <Row className='modal-row-one-content-stuff'>
             <Col>
-              <Image src={`${process.env.REACT_APP_BACKEND_URL}/profile-pic/get/${props.item.itemId}`} fluid={true}/>
+              <Image src={imageUrl} fluid={true} onError={()=> setImageUrl(temp)}/>
             {/*<Carousel>
             <Carousel.Item>
               <Image src={air_mags2} fluid={true}/>

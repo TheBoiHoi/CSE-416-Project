@@ -2,11 +2,26 @@ import {useState,useEffect} from 'react'
 import {Modal,Button} from 'react-bootstrap'
 import {useNavigate} from 'react-router-dom'
 import axios from 'axios'
+import { TramRounded } from '@mui/icons-material'
 const StartTradeModal=(props)=> {
     //make request to get transaction info 
-    const handleClose=(e)=>{
+    //props.curr_user= current user id
+    //props.user=user id of the profile
+    //props.item.itemId= item id
+    const requestTrade=async ()=>{
+        let trade=await axios.post('/user/trade/create',{
+            sellerId:props.user,
+            buyerId:props.curr_user,
+            itemId:props.item.itemId
+        })
+        console.log(trade)
+        props.setShow(false)
+    }
+    const handleClose=()=>{
       props.setShow(false)
     }
+    
+    console.log(props)
     return (
       <>
   
@@ -20,7 +35,7 @@ const StartTradeModal=(props)=> {
             <p style={{fontWeight:'bold'}}>{props.item.owner}</p>
           </Modal.Body>
           <Modal.Footer>
-          <Button variant="primary" onClick={handleClose}>Request Trade</Button>
+          <Button variant="primary" onClick={requestTrade}>Request Trade</Button>
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
