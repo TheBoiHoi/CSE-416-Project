@@ -5,6 +5,7 @@ import axios from 'axios'
 import OperateModal from './InventoryTab/OperateModal'
 import {useNavigate} from 'react-router-dom'
 export const InventoryCard =(props)=>{
+    console.log(props.public)
     const navigate=useNavigate()
     const [front,setFront]= React.useState(false)
     const [operation, setOperation]=React.useState(null)

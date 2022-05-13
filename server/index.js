@@ -88,7 +88,7 @@ app.post('/user/qrcode/scan', multer().single('file'), user.scanQrCode)
 
 app.get('/pending-trade/get/:userId', auth.verify, user.getPendingTrades)
 app.get('/pending-trade/get', user.getPendingTrades)
-app.post('/trade/create',auth.verify, user.createPendingTrade)
+app.post('/trade/create', user.createPendingTrade)
 app.post('/trade/complete', auth.verify, user.completeTrade)
 app.post('/trade/update-status', auth.verify, user.updateTrade)
 app.get('/completed-trade/get', auth.verify, user.getCompletedTrades)
