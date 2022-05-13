@@ -1,8 +1,6 @@
 import React from 'react';
 import { ListGroup } from 'react-bootstrap';
 import './pendingTab.css';
-import shoeImg from '../../../../img/airmags.jpg';
-import axios from 'axios';
 
 const PendingTab = (props) => {
     const showModal = (trade, item, buyer, seller) => {
