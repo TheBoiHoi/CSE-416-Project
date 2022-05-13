@@ -13,9 +13,9 @@ const PublicProfileCard = (props) =>{
             <Card.Text style={{textAlign:"center"}}>
             {props.user.userId}
             </Card.Text>
-            <Card.Text style={{textAlign:"center"}}>
+            {/* <Card.Text style={{textAlign:"center"}}>
             Joined 02/22/2022
-            </Card.Text>
+            </Card.Text> */}
         </Card.Body>
         </Card>
         
