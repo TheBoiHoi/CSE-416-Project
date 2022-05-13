@@ -12,10 +12,10 @@ const ExchangesTab=(props)=>{
   useEffect(()=>{
     let url
     if(!props.public){
-      url="/completed-trade/get"
+      url="/user/completed-trade/get"
     }
     else{
-      url=`/completed-trade/get/${props.user.userId}/${props.keyValue}`
+      url=`/user/completed-trade/get/${props.user.userId}/${props.keyValue}`
     }
     axios.get(url).then(response=>{
       setTrade(response.data.transactions)

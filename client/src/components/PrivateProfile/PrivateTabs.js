@@ -35,7 +35,7 @@ const PrivateTabs=(props)=>{
     }
 
     const confirmTrade = async () => {
-        const data = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/trade/update-status`, {
+        const data = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/user/trade/update-status`, {
             tradeId: trade._id,
             userId: props.user.userId
         });
@@ -43,7 +43,7 @@ const PrivateTabs=(props)=>{
             const trade = data.data;
             if(trade.buyer_status == true && trade.seller_status == true){
                 console.log("completing trades");
-                const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/trade/complete`, {
+                const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/user/trade/complete`, {
                     tradeId: trade._id
                 });
                 if(res.data.message == 'Error'){
@@ -72,7 +72,7 @@ const PrivateTabs=(props)=>{
 
     const fetchPendingTrades =  async () => {
         console.log("fetching trades")
-        const data = await axios.get(`pending-trade/get/${props.user.userId}`);
+        const data = await axios.get(`/user/pending-trade/get/${props.user.userId}`);
         if(data.data){ 
             const itemsList = await fetchPendingItems(data.data);
             const {buyersList, sellersList} = await fetchBuyersAndSellers(data.data);
