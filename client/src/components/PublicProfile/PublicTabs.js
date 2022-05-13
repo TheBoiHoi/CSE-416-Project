@@ -10,7 +10,7 @@ const PublicTabs=(props)=>{
             <ExchangesTab public={true} keyValue={props.keyValue} user={props.user}></ExchangesTab>
         </Tab>
         <Tab style={{width:"50%",boxShadow: "1px 1px 1px #9E9E9E"}} eventKey="Inventory" title="Inventory">
-            <InventoryTab user={props.user} public={true}></InventoryTab>
+            <InventoryTab  curr_user={props.curr_user} user={props.user} public={true}></InventoryTab>
         </Tab>
     </Tabs>
     )

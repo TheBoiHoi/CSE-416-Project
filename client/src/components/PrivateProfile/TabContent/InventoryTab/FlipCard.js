@@ -29,7 +29,7 @@ const FlipCard = (props)=>{
                 <InventoryCard  item={item} front={true}/>
             </div>   
             <div style={{width:'200px'}}  onClick={handleClick}>
-                <InventoryCard item={item} public={props.public} front={false}/>
+                <InventoryCard curr_user={props.curr_user} user={props.user} item={item} public={props.public} front={false}/>
             </div>
         </ReactCardFlip>
       </div>

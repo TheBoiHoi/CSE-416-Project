@@ -27,7 +27,7 @@ export const PublicProfile = (props) => {
                 </div>
                 <div class="row align-items-center">
                 <div   align="center" class="col">
-                    <PublicTabs keyValue={key} user={user}></PublicTabs>
+                    <PublicTabs keyValue={key} curr_user={props.user} user={user}></PublicTabs>
                 </div>
                 </div>
             </div>

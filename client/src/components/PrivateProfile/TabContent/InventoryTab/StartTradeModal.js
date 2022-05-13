@@ -4,9 +4,17 @@ import {useNavigate} from 'react-router-dom'
 import axios from 'axios'
 const StartTradeModal=(props)=> {
     //make request to get transaction info 
+    //props.curr_user= current user id
+    //props.user=user id of the profile
+    //props.item.itemId= item id
+    const requestTrade=()=>{
+        props.setShow(false)
+    }
     const handleClose=()=>{
       props.setShow(false)
     }
+    
+    console.log(props)
     return (
       <>
   
@@ -20,7 +28,7 @@ const StartTradeModal=(props)=> {
             <p style={{fontWeight:'bold'}}>{props.item.owner}</p>
           </Modal.Body>
           <Modal.Footer>
-          <Button variant="primary" onClick={handleClose}>Request Trade</Button>
+          <Button variant="primary" onClick={requestTrade}>Request Trade</Button>
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
