@@ -79,6 +79,7 @@ app.get(`/user/get`, auth.verify, (req, res)=>{
 
 app.use('/user', require('./routes/user-route'))
 app.use('/company', require('./routes/company-route'))
+//the rest of the routes are all item related
 app.get('/item/get/:itemId', item.getItemInfo)
 app.get('/item-transactions/get/:itemId', item.getItemTransactions)
 app.post('/profile-pic/upload/:itemId', auth.verify, multer().single('file'), item.uploadProfilePic)

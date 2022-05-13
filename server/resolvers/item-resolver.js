@@ -62,7 +62,7 @@ const uploadProfilePic=(req, res)=>{
     const {itemId}=req.params
     const file=req.file
     const image=req.file.buffer
-    fs.writeFile(`./images/profile-pics/${file.originalname}`, image, 'base64', function(err){
+    fs.writeFile(`./images/item-profile-pics/${file.originalname}`, image, 'base64', function(err){
         if (err) throw err
         console.log('File saved.')
     })
@@ -78,10 +78,10 @@ const getProfilePic=(req, res)=>{
     Item.findOne({_id:itemId}).then(data=>{
         let imagePath
         if(data.profilePic){
-            imagePath=path.resolve(`./images/profile-pics/${data.profilePic}`)
+            imagePath=path.resolve(`./images/item-profile-pics/${data.profilePic}`)
         }
         else{
-            imagePath=path.resolve('./images/profile-pics/airmags.jpg')
+            imagePath=path.resolve('./images/item-profile-pics/airmags.jpg')
         }
         return res.sendFile(imagePath)
     }).catch((e)=>{

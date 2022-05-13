@@ -7,7 +7,7 @@ import OperateModal from './InventoryTab/OperateModal'
 import {useNavigate} from 'react-router-dom'
 import StartTradeModal from './InventoryTab/StartTradeModal'
 export const InventoryCard =(props)=>{
-    console.log(props.public)
+    console.log("the public status is", props.public)
     const navigate=useNavigate()
     const [front,setFront]= React.useState(false)
     const [operation, setOperation]=React.useState(null)
@@ -39,7 +39,7 @@ export const InventoryCard =(props)=>{
                     <Card.Body>
                     <Card.Title>{props.item.name}</Card.Title>
                     <Card.Text>Serial Number: {props.item.serialNumber}</Card.Text>
-                    {!props.public?
+                    {props.public?
                         <Card.Link href='#' onClick={()=>{
                             openModal()
                         }} >Start Trade</Card.Link>
