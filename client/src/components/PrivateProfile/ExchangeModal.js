@@ -1,22 +1,18 @@
 import {useState,useEffect} from 'react'
 import {Modal,Button} from 'react-bootstrap'
+import {useNavigate} from 'react-router-dom'
+import axios from 'axios'
 const ExchangeModal=(props)=> {
     //make request to get transaction info 
     const handleClose=()=>{
       props.setShow(false)
     }
-    const [item,setItem]=useState({
-      id:props.id,
-      sender:'',
-      senderId:'',
-      receiver:'',
-      receiverId:'',
-      item:'',
-      itemId:'',
-      itemUrl:'',
-      date:'',
-      
-    })
+    const navigate=useNavigate()
+    const handleItemProfile=(e)=>{
+      e.stopPropagation()
+      navigate(`/item/profile/${props.trans.itemId}`)
+  }
+
     return (
       <>
   
@@ -25,12 +21,20 @@ const ExchangeModal=(props)=> {
             <Modal.Title style={{fontSize:'13px'}}>Exchange # {props.transid}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>Transaction ID: {props.transid}</p>
-            <p>Sender: {item.sender}</p>
-            <p>Receiver: {item.receiver}</p>
-            <p>Date: {item.date}</p> 
+            <p style={{fontWeight:'bold'}}>Transaction ID: </p>
+            <p>{props.trans.txid}</p>
+            <p style={{fontWeight:'bold'}}>Sender: </p>
+            <p>{props.trans.senderName}</p>
+            <p style={{fontWeight:'bold'}}>Sender ID: </p>
+            <p>{props.trans.senderId}</p>
+            <p style={{fontWeight:'bold'}}>Receiver: </p>
+            <p>{props.trans.receiverName}</p>
+            <p style={{fontWeight:'bold'}}>Receiver ID: </p>
+            <p>{props.trans.receiverId}</p>
+            <p style={{fontWeight:'bold'}}>Date: </p> 
+            <p>{props.trans.date}</p>
             <p>Item Transferred: </p>
-            <a href=''>{item.item}</a>
+            <a href='#' onClick={handleItemProfile}>{props.trans.item}</a> 
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
