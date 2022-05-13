@@ -51,7 +51,7 @@ const getItemTransactions=(req, res)=>{
                 //     })
                 // }
             ret=await parseTransactions(data.transactions)
-            return res.status(200).json({transactions:ret})
+            return res.status(200).json({transactions:ret.reverse()})
         })
     })
 
