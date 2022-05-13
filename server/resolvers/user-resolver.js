@@ -117,25 +117,6 @@ const logout = async(req, res)=>{
     res.sendStatus(200)
 }
 
-const getCurrentUser = (req, res)=>{
-    const userId=req.userId
-    if(!userId){
-        return res.status(404).json({msg:"No user id"})
-    }
-    User.findOne({_id:userId}).then(data=>{
-        if(!data){
-            return res.status(404).json({msg:"User not found"})
-        }
-        return res.status(200).json({
-            user:{
-                userId:data._id,
-                name:data.name,
-                items:data.items_owned
-            }
-        })
-    })
-}
-
 const getUserById=(req, res)=>{
     
     const userId=req.params.userId
@@ -400,11 +381,40 @@ const getCompletedTrades=(req, res)=>{
     })
 }
 
+const uploadProfilePic=(req, res)=>{
+    const userId=req.userId
+    const file=req.file
+    const image=req.file.buffer
+    fs.writeFile(`./images/user-profile-pics/${file.originalName}`, image, 'base64', function(err){
+        if(err) throw err
+        console.log('User profile picture saved')
+    })
+    User.updateOne({_id:userId}, {profilePic:file.originalName}).then(data=>{
+        return res.status(200).json({message:"OK", newPath:file.originalname})
+    })
+}
+
+const getProfilePic=(req, res)=>{
+    const userId=req.params.userId
+    User.findOne({_id:userId}).then(data=>{
+        let imagePath
+        if(data.profilePic){
+            imagePath=path.resolve(`./images/user-profile-pics/${data.profilePic}`)
+        }
+        else{
+            imagePath=path.resolve(`./images/user-profile-pics/duckpfp.png`)
+        }
+        return res.sendFile(imagePath)
+    }).catch((e)=>{
+        console.log("There is an error", e)
+        return res.status(404).json({message:"some ERROR has happened"})
+    })
+}
+
 module.exports = {
     login,
     register,
     logout,
-    getCurrentUser,
     createPendingTrade,
     completeTrade,
     updateTrade,
@@ -414,4 +424,6 @@ module.exports = {
     getPendingTrades,
     getCompletedTrades,
     getUserById,
+    uploadProfilePic,
+    getProfilePic
 }

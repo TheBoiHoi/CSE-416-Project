@@ -110,26 +110,6 @@ const register = async(req, res)=>{
     
 }
 
-const getCompany = async(req, res)=>{
-    const companyId=req.companyId
-    if(!companyId){
-        return res.status(404).json({msg:"No company id"})
-    }
-    Company.findOne({_id:companyId}).then(data=>{
-        if(!data){
-            return res.status(404).json({msg:"company not found"})
-        }
-        return res.status(200).json({
-            company:{
-                companyId:data._id,
-                name:data.name,
-                items:data.items
-            }
-        })
-    })
-}
-
-
 const createItem = async(req,res)=>{
     const{id,name,manu_date,manu_location,manu_owner,serial_number} = req.body;
 
@@ -385,7 +365,6 @@ const sellItem = async(req,res)=>{
 module.exports={
     register,
     login,
-    getCompany,
     createItem,
     sellItem,
 }
