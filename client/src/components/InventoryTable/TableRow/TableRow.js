@@ -13,10 +13,9 @@ export const TableRow = (props) =>{
   const [background,setBackground] = useState("table_row_container");
 
   const [showModal,setShowModal] = useState(false);
-
   const [transferOwnerShip, setTransferOwnership] = useState(false);
   const [item, setItem]=useState(null)
-
+  
   useEffect(()=>{
     axios.get(`/item/get/${props.itemId}`).then(response=>{
       setItem(response.data.item)
