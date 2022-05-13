@@ -1,9 +1,9 @@
 const Item=require('../models/item')
 const User=require('../models/user')
-const QRCode=require('qrcode')
 const algosdk=require('algosdk')
 const fs=require('fs')
 const path=require('path')
+const {parseTransactions}=require('../common/algoUtils')
 require('dotenv').config()
 const baseServer = 'https://testnet-algorand.api.purestake.io/idx2'
 const port = '';
@@ -33,21 +33,6 @@ const getItemInfo=(req, res) => {
     })
 }
 
-const generateItemQRCode = async(req, res)=>{
-    const {itemId} = req.body
-    const url=`http://localhost:8000/item/profile/${itemId}`
-    QRCode.toFile(`./images/item-qrcodes/${itemId}.png`, url, {
-        color: {
-          dark: '#000000',  // Blue dots
-          light: '#FFFFFF' // Transparent background
-        }
-      }, function (err) {
-        if (err) throw err
-        console.log('done')
-    })
-    res.status(200).json({status:"ok"})
-}
-
 const getItemTransactions=(req, res)=>{
     const {itemId}=req.params
     Item.findOne({_id:itemId}).then(async(data) => {
@@ -56,36 +41,17 @@ const getItemTransactions=(req, res)=>{
         }
         let item=data
         let assetId=item.asset_id
+        let ret=[]
         indexerClient.lookupAssetTransactions(assetId).do().then(async (data)=>{
-            let transactions=[]
-            let assetTransactions=data.transactions
-            for(let i=0;i<assetTransactions.length;i++){
-                let transaction=assetTransactions[i]
-                const date=new Date(transaction['round-time']*1000).toLocaleString('en-US')
-                let id=transaction.id
-                // if(transaction['asset-config-transaction']){
+            // if(transaction['asset-config-transaction']){
                 //     transactions.push({
                 //         transactionId:id, 
                 //         creator:transaction['asset-config-transaction']['params']['creator'],
                 //         timestamp:date
                 //     })
                 // }
-                if(transaction['asset-transfer-transaction']){
-                    let senderAlgoId=transaction['sender']
-                    let receiverAlgoId=transaction['asset-transfer-transaction']['receiver']
-                    let sender=await User.findOne({algoAddr:senderAlgoId})
-                    let receiver=await User.findOne({algoAddr:receiverAlgoId})
-                    transactions.push({
-                        transactionId:id,
-                        senderId:sender._id,
-                        receiverId:receiver._id,
-                        sender:sender.name,
-                        receiver:receiver.name,
-                        date:date
-                    })
-                }
-            }
-            return res.status(200).json({transactions:transactions.reverse()})
+            ret=await parseTransactions(data.transactions)
+            return res.status(200).json({transactions:ret})
         })
     })
 
@@ -126,7 +92,6 @@ const getProfilePic=(req, res)=>{
 
 module.exports={
     getItemInfo,
-    generateItemQRCode,
     getItemTransactions,
     uploadProfilePic,
     getProfilePic

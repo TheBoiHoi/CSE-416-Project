@@ -47,9 +47,9 @@ const ItemExchanges=(props)=>{
                     return(
                     <tr>
                         <td>{transaction.date}</td>
-                        <td>{transaction.sender+"("+transaction.senderId+")"}</td>
-                        <td>{transaction.receiver+"("+transaction.receiverId+")"}</td>
-                        <td>{transaction.transactionId}</td>
+                        <td>{transaction.senderName+"("+transaction.senderId+")"}</td>
+                        <td>{transaction.receiverName+"("+transaction.receiverId+")"}</td>
+                        <td>{transaction.txid}</td>
                     </tr>
                     )
                 })}

@@ -8,40 +8,7 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios'
 import {TableModal} from '../TableModal/TableModal';
 
-let asset_id 
-let manu_date 
-let manu_location 
-let manu_owner 
-let name 
-let owner
-let serial_number
-
-const setUp = async(promise)=>{  
-  await promise.then((val)=>{
-      asset_id = val.asset_id
-      manu_date = val.manu_date
-      manu_location = val.manu_location
-      manu_owner = val.manu_owner
-      name = val.name
-      owner = val.owner
-      serial_number = val.serialNumber
-    })
-}
 export const TableRow = (props) =>{
-
-  // const promise = props.item;
-
-  // setUp(promise)
-
-  // let currItem = {
-  //   asset_id: asset_id,
-  //   manu_date:manu_date, 
-  //   manu_location :manu_location,
-  //   manu_owner :manu_owner,
-  //   name :name,
-  //   owner:owner,
-  //   serial_number:serial_number
-  // }
   
   const [background,setBackground] = useState("table_row_container");
 
@@ -51,7 +18,7 @@ export const TableRow = (props) =>{
   const [item, setItem]=useState(null)
 
   useEffect(()=>{
-    axios.get(`item/get/${props.itemId}`).then(response=>{
+    axios.get(`/item/get/${props.itemId}`).then(response=>{
       setItem(response.data.item)
     })
   }, [])
