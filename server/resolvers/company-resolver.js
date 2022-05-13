@@ -1,9 +1,10 @@
 const Company=require('../models/company')
 const bcrypt=require('bcrypt')
+const QRCode=require('qrcode')
 const Item=require('../models/item')
 const algosdk = require('algosdk');
-const auth=require('../token.js')
-const user = require('../models/user');
+const auth=require('../common/token.js')
+const User = require('../models/user');
 const crypto = require('crypto');
 const algorithm = 'aes-192-cbc'; //Using AES encryption
 
@@ -23,15 +24,19 @@ const apitoken = {
 const algodclient = new algosdk.Algodv2(apitoken, baseServer, port);
 
 const login=async(req, res)=>{
+    console.log("company logging in")
     const {email, password}=req.body
     const company=await Company.findOne({email:email})
+    console.log("starting.....");
     if(!company){
-        return res.status(404).send()
+        console.log("not company");
+        return res.status(404).send("Cannot find the company")
     }
 
     const hash=company.password
     const valid=await bcrypt.compare(password, hash)
     if(!valid){
+        console.log("password is not valid");
         return res.status(404).send('Invalid Password')
     }
     else{
@@ -42,7 +47,15 @@ const login=async(req, res)=>{
             sameSite: "None",
             maxAge: 1000 * 60 * 60 * 24 * 7
         })
-        return res.status(200).json({companyId:company._id}).send()
+        return res.status(200).json({
+            company:{
+                companyId:company._id,
+                name:company.name,
+                items:company.items,
+                isCompany:true
+            }
+            
+        })
     }
 }
 
@@ -55,17 +68,15 @@ const register = async(req, res)=>{
 
     // console.log( "key: "+key)
     // console.log( "iv: "+iv)
-
-    let cipher = crypto.createCipheriv(algorithm, key, iv);
-    let encrypted = cipher.update(passphrase, "utf-8", "hex");
-    encrypted += cipher.final("hex");
-        
     // console.log( "My address: " + account.addr );
     // console.log( "My passphrase: " + passphrase );
     // console.log( "Encrypted passphrase: " + encrypted)
     
     //Transfer some algo from the wallet account to the users
     (async ()=>{
+        let cipher = crypto.createCipheriv(algorithm, key, iv);
+        let encrypted = cipher.update(passphrase, "utf-8", "hex");
+        encrypted += cipher.final("hex")
         const walletId = "6279b484a74732a8bcdc86ad";
         const walletCompany=await Company.findOne({_id:walletId});
         let encryptedText = walletCompany.algoPass;
@@ -237,10 +248,11 @@ const createItem = async(req,res)=>{
     })
     company.items.push(newItem._id)
     console.log("new item id number", newItem._id)
-    await newItem.save()
-    const saved=await Company.updateOne({_id:id}, {items:company.items})
+    let saved=await newItem.save()
+    generateItemQRCode(newItem._id)
+    let updated=await Company.updateOne({_id:id}, {items:company.items})
     if(saved){
-        return res.status(200).json({"message":"yes"})
+        return res.status(200).json({"message":"yes","itemId":newItem._id});
     }
     return res.status(404).json({"message":"err"})
 
@@ -248,17 +260,28 @@ const createItem = async(req,res)=>{
         console.log(e);
         return res.status(404).json({"message":"err"})
     });
-    
+}
 
-    
+const generateItemQRCode = (itemId)=>{
+    const url=`http://194.113.72.18/item/profile/${itemId}`
+    QRCode.toFile(`./images/item-qrcodes/${itemId}.png`, url, {
+        color: {
+          dark: '#000000',  // Blue dots
+          light: '#FFFFFF' // Transparent background
+        }
+      }, function (err) {
+        if (err) throw err
+        console.log('done')
+    })
 }
 
 const sellItem = async(req,res)=>{
-    const {Itemid,companyId,buyerId}=req.body;
+    const {itemId,companyId,buyerId}=req.body;
+    
     (async () =>{
-        const buyer = await user.findOne({_id:buyerId})
+        const buyer = await User.findOne({_id:buyerId})
         const company = await Company.findOne({_id:companyId})
-        const item =  await Item.findOne({_id:Itemid})
+        const item =  await Item.findOne({_id:itemId})
         console.log(company.algoPass)
         //Decrypted Buyer algo password
         let BuyerencryptedText = buyer.algoPass
@@ -341,80 +364,28 @@ const sellItem = async(req,res)=>{
 
     //remove the item from company
     const companyItems= company.items
-    const newCompanyItems = companyItems.filter(item => item!=Itemid)
+    const newCompanyItems = companyItems.filter(item => item!=itemId)
     await Company.updateOne({_id:companyId}, {items:newCompanyItems})
     
     //update item owner
-    await Item.updateOne({_id:Itemid},{owner:buyer.name})
+    await Item.updateOne({_id:itemId},{owner:buyer.name})
     
     //push the item to user
     const buyerItems=buyer.items_owned
-    buyerItems.push(Itemid)
-    await user.updateOne({_id:buyerId}, {items_owned:buyerItems})
+    buyerItems.push(itemId)
+    await User.updateOne({_id:buyerId}, {items_owned:buyerItems})
     console.log("done")
     return res.status(200).json({msg:"OK"})
     })().catch(e => {
         console.log(e);
         return res.status(404).json({"message":"err"})
     });
-    
-    
 }
-
-const addItem = async(req, res)=>{
-    const {id, item}=req.body
-    const company=await Company.findOne({_id:id})
-    const items=company.items
-    console.log("serial number:", item.serial_number)
-    const newItem=new Item({
-        name:item.name,
-        owner:item.owner,
-        transactions:[],
-        asset_id:item.asset_id,
-        serial_number:item.serial_number,
-        manu_date:item.manu_date,
-        manu_location:item.manu_location,
-        manu_owner:item.manu_owner
-    })
-    items.push(newItem._id)
-    console.log("new item id", newItem._id)
-    await newItem.save()
-    const saved=await Company.updateOne({_id:id}, {items:items})
-    if(saved){
-        return res.status(200).json({"message":"OK"})
-    }
-    return res.status(404).json({"message":"ERROR"})
-}
-
-const getItem = async(req,res)=>{
-    const {id} = req.params
-    console.log("looking for item "+ id)
-    Item.findOne({_id:id}).then(data=>{
-        if(!data){
-            return res.status(404).json({msg:"Item can not be found"})
-        }
-        return res.status(200).json({
-            item:{
-                name:data.name,
-                owner:data.owner,
-                transactions:data.transactions,
-                asset_id:data.asset_id,
-                serial_number:data.serial_number,
-                manu_date:data.manu_date,
-                manu_location:data.manu_location,
-                manu_owner:data.manu_owner
-            }
-        })
-    })
-}
-
 
 module.exports={
     register,
     login,
     getCompany,
-    addItem,
     createItem,
     sellItem,
-    getItem
 }

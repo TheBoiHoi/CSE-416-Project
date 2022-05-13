@@ -22,7 +22,7 @@ function Copyright(props) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        Qrify
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -33,7 +33,7 @@ function Copyright(props) {
 const theme = createTheme();
 const algosdk = require('algosdk');
 
-export default function Register() {
+export default function Register(props) {
     const navigate = useNavigate()
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -50,7 +50,8 @@ export default function Register() {
             algoPass:passphrase
         }
         apis.Register(payload).then(response=>{
-            navigate(`/profile/${response.data.userId}`)
+            props.setUser(response.data.user)
+            navigate(`/profile`)
         }).catch(error => {
             console.log("error:", error.response)
         })

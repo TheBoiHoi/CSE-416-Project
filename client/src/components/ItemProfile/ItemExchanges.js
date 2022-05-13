@@ -34,27 +34,7 @@ const ItemExchanges=(props)=>{
         field: 'transaction_id',
         sort: 'asc'
       },
-    ],
-    // rows: [
-    //   {
-    //     'date':'05/19/2022',
-    //     'user_from':'u412',
-    //     'user_to':'u579',
-    //     'transaction_id':'1dlafjganwamad'
-    //   },
-    //   {
-    //     'date':'05/19/2022',
-    //     'user_from':'u412',
-    //     'user_to':'u579',
-    //     'transaction_id':'1dlafjganwamad'
-    //   },
-    //   {
-    //     'date':'05/19/2022',
-    //     'user_from':'u412',
-    //     'user_to':'u579',
-    //     'transaction_id':'1dlafjganwamad'
-    //   },
-    // ]
+    ]
   };
       
     return(
@@ -67,9 +47,9 @@ const ItemExchanges=(props)=>{
                     return(
                     <tr>
                         <td>{transaction.date}</td>
-                        <td>{transaction.sender+"("+transaction.senderId+")"}</td>
-                        <td>{transaction.receiver+"("+transaction.receiverId+")"}</td>
-                        <td>{transaction.transactionId}</td>
+                        <td>{transaction.senderName+"("+transaction.senderId+")"}</td>
+                        <td>{transaction.receiverName+"("+transaction.receiverId+")"}</td>
+                        <td>{transaction.txid}</td>
                     </tr>
                     )
                 })}

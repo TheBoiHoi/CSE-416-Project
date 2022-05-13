@@ -12,7 +12,7 @@ const QrModal=(props)=> {
       var formData=new FormData()
       formData.append('file', file, file.name)
       console.log("form data:", formData)
-      axios.post("qrcode/scan", formData).then(response=>{
+      axios.post("/user/qrcode/scan", formData).then(response=>{
         setUrl(response.data.data)
       })
     }
@@ -26,7 +26,7 @@ const QrModal=(props)=> {
         <>
           <Modal centered show={true}>
             <Modal.Header>
-              <Modal.Title>Modal heading</Modal.Title>
+              <Modal.Title>Generating QRCode</Modal.Title>
             </Modal.Header>
             <Modal.Body>{props.code&&<img src={`data:image/png;base64, ${props.code}`}/>}</Modal.Body>
             <Modal.Footer>
@@ -49,12 +49,13 @@ const QrModal=(props)=> {
         <>
           <Modal centered show={true}>
             <Modal.Header>
-              <Modal.Title>Modal heading</Modal.Title>
+              <Modal.Title>Scanning QRCode</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <input onChange={uploadQRCode} type="file" id="qrcode-upload" name="file" accept="image/*"/>
               {scanningImage&&<img src={`${scanningImage}`}/>}
-              <span>{url}</span>
+              <br></br>
+              <a href={url}>{url}</a>
             </Modal.Body>
             <Modal.Footer>
             <Button variant="primary" onClick={scanQRCode}>

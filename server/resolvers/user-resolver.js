@@ -1,10 +1,11 @@
 const User=require('../models/user')
 const Company=require('../models/company')
+const {parseTransactions}=require('../common/algoUtils')
 const bcrypt=require('bcrypt')
 const Item = require('../models/item')
 const Trade=require('../models/trade')
-const PublicProfile=require('../models/PublicProfile')
-const auth=require('../token.js')
+const PublicProfile=require('../models/publicProfile')
+const auth=require('../common/token.js')
 const ObjectId=require('bson-objectid')
 const QRCode=require('qrcode')
 const QRCodeReader=require('qrcode-reader')
@@ -52,7 +53,8 @@ const login = async(req, res)=>{
             return res.status(200).json({user:{
                 userId:user._id,
                 name:user.name,
-                items:user.items_owned
+                items:user.items_owned,
+                isCompany:false
             }})
         }
     }
@@ -91,6 +93,7 @@ const register = async(req, res)=>{
         console.log(e);
         return res.status(404).json({"message":"err"})
     })
+
     const hash = await bcrypt.hash(password, 10)
     const user = new User({name:name, email:email, password:hash,algoAddr:algoAddr,algoPass:encrypted, items_owned:[], pending_trades:[], completed_trades:[]})
     const saved = await user.save()
@@ -100,7 +103,12 @@ const register = async(req, res)=>{
         secure: true,
         sameSite: "None"
     })
-    return res.status(200).json({msg:"OK", userId:user._id}).send()
+    return res.status(200).json({msg:"OK", user:{
+        userId:saved._id,
+        name:saved.name,
+        items:saved.items_owned,
+        isCompany:false
+    }})
 }
 
 const logout = async(req, res)=>{
@@ -169,6 +177,24 @@ const createPendingTrade = async(req, res)=>{
     return res.status(200).json({msg:"OK"})
 }
 
+const updateTrade = async(req, res) => {
+    const {tradeId, userId} = req.body;
+    const trade = await Trade.findOne({_id: tradeId});
+    if(userId == trade.buyer_id){
+        trade.buyer_status = true;
+    }else if(userId == trade.seller_id){
+        trade.seller_status = true;
+    }
+    trade.save().then((data, err) => {
+        if (err){
+            res.status(404).json({message: "ERROR"});
+        }
+        if(data){
+            res.status(200).send(trade);
+        }
+    });
+}
+
 const completeTrade = async(req, res)=>{
     const {tradeId}=req.body
     const trade=await Trade.findOne({_id:tradeId})
@@ -193,7 +219,8 @@ const completeTrade = async(req, res)=>{
     const sellerAcc = algosdk.mnemonicToSecretKey(sellerDecryptedData)
     const buyerAcc = algosdk.mnemonicToSecretKey(BuyerdecryptedData)
     const target_item = await Item.findOne({_id:item_id})
-
+    
+    try{
     //Buyer opt in
     let params = await algodclient.getTransactionParams().do();
     params.fee = 1000;
@@ -238,6 +265,13 @@ const completeTrade = async(req, res)=>{
     rawSignedTxn = xtxn.signTxn(sellerAcc.sk)
     let xtx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
     confirmedTxn = await algosdk.waitForConfirmation(algodclient, xtx.txId, 4);
+    }catch(e){
+        console.log(e);
+        trade.buyer_status = false;
+        trade.seller_status = false;
+        trade.save();
+        return res.status(200).json({message:"Error"})
+    }
 
     //update the item owner and add the transaction
     // const itemTransactions = target_item.transactions
@@ -282,7 +316,7 @@ const getProfileQRCode = (req, res)=>{
     const newProfileCode = new PublicProfile({userId:userId, key:key, expireAt:Date.now()})
     
     newProfileCode.save().then(()=>{
-        const url=`/${userId}/${key}`
+        const url=`http://194.113.72.18/public-profile/${userId}/${key}`
         QRCode.toFile(`./images/${userId}-${key}.png`, url, {
             color: {
               dark: '#000000',  
@@ -335,19 +369,18 @@ const scanQrCode = (req, res)=>{
     });
 }
 
-const getPendingTrades = (req, res) => {
+const getPendingTrades = async (req, res) => {
     const {userId} = req.params;
-    Trade.find({$or: [
-        { buyer_id: userId },
-        { seller_id: userId }
-    ]}).and({isPending: true}).exec((err, results) => {
-        if(err){
-            return res.status(404).json({message: "ERROR"});
-        }
-        return results;
-    });
-}
 
+    const user = await User.findOne({_id: userId});
+    const pendingTrades = user.pending_trades
+    const pendingList = []
+    for(const tradeId of pendingTrades){
+        const trade = await Trade.findOne({_id: tradeId})
+        pendingList.push(trade)
+    }
+    res.status(200).send(pendingList)
+}
 
 const getCompletedTrades=(req, res)=>{
     const userId=req.userId
@@ -359,30 +392,7 @@ const getCompletedTrades=(req, res)=>{
         axios.get(`https://algoindexer.testnet.algoexplorerapi.io/v2/accounts/${algoAddr}/transactions`).then(async (response)=>{
             let data=response.data
             let transactions=data.transactions
-            let ret=[]
-            for(let i=0;i<transactions.length;i++){
-                let transaction=transactions[i]
-                if(transaction['asset-transfer-transaction']){
-                    receiverAlgoId=transaction['asset-transfer-transaction']['receiver']
-                    senderAlgoId=transaction['sender']
-                    itemAssetId=transaction['asset-transfer-transaction']['asset-id']
-
-                    let receiver=await User.findOne({algoAddr:receiverAlgoId})
-                    let sender=await User.findOne({algoAddr:senderAlgoId})
-                    let item=await Item.findOne({asset_id:itemAssetId})
-
-                    ret.push({
-                        txid:transaction['id'],
-                        receiverName:receiver.name,
-                        senderName:sender.name,
-                        receiverId:receiver._id,
-                        senderId:sender._id,
-                        item:item.name,
-                        itemId:item._id,
-                        date:new Date(transaction['round-time']*1000).toLocaleString('en-US')
-                    })
-                }
-            }
+            let ret=await parseTransactions(transactions)
             return res.status(200).json({transactions:ret})
         }).catch((e)=>{
             console.log("ERROR:", e)
@@ -397,6 +407,7 @@ module.exports = {
     getCurrentUser,
     createPendingTrade,
     completeTrade,
+    updateTrade,
     getProfileQRCode,
     keyVerification,
     scanQrCode,
