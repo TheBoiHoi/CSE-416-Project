@@ -102,8 +102,8 @@ const PrivateTabs=(props)=>{
         for(const trade of tradeslist){
             const buyerId = trade.buyer_id;
             const sellerId = trade.seller_id;
-            const buyerData = await axios.get(`user/public/get/${buyerId}`)
-            const sellerData = await axios.get(`user/public/get/${sellerId}`)
+            const buyerData = await axios.get(`/user/public/get/${buyerId}`)
+            const sellerData = await axios.get(`/user/public/get/${sellerId}`)
             buyersList.push(buyerData.data.user);
             sellersList.push(sellerData.data.user);
         }
