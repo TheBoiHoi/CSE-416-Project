@@ -3,11 +3,14 @@ import {Card,Button} from 'react-bootstrap'
 import ShoeImg from '../../../img/airmags.jpg'
 import axios from 'axios'
 import OperateModal from './InventoryTab/OperateModal'
+
 import {useNavigate} from 'react-router-dom'
+import StartTradeModal from './InventoryTab/StartTradeModal'
 export const InventoryCard =(props)=>{
     const navigate=useNavigate()
     const [front,setFront]= React.useState(false)
     const [operation, setOperation]=React.useState(null)
+    const [showTradeModal,setShowTradeModal] = React.useState(false)
     React.useEffect(()=>{
         setFront(props.front)
     },[])
@@ -16,7 +19,10 @@ export const InventoryCard =(props)=>{
         e.stopPropagation()
         navigate(`/item/profile/${props.item.itemId}`)
     }
-
+    const openModal=(transaction)=>{
+        setShowTradeModal(true)
+      }
+      console.log(props.item)
     if(front){
         return (
             <Card style={{ height:'13rem',width: '13rem' }}>
@@ -32,8 +38,10 @@ export const InventoryCard =(props)=>{
                     <Card.Body>
                     <Card.Title>{props.item.name}</Card.Title>
                     <Card.Text>Serial Number: {props.item.serialNumber}</Card.Text>
-                    {props.public?
-                        <Card.Link href='#'>Start Trade</Card.Link>
+                    {!props.public?
+                        <Card.Link href='#' onClick={()=>{
+                            openModal()
+                        }} >Start Trade</Card.Link>
                         :
                         <></>
                     }
@@ -43,6 +51,7 @@ export const InventoryCard =(props)=>{
                     </Card.Body>
                     
                 </Card>
+                {showTradeModal && <StartTradeModal item={props.item} setShow={setShowTradeModal} show={showTradeModal} ></StartTradeModal>}
                 {operation&&<OperateModal itemId={props.item.itemId} setOperation={setOperation} operation={operation}></OperateModal>}
             </div>
         )
