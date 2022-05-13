@@ -9,7 +9,8 @@ const userSchema = new Schema({
     algoPass:{type:String, required:true},
     items_owned:{type:[String]},
     pending_trades:{type:[String]},
-    completed_trades:{type:[String]}
+    completed_trades:{type:[String]},
+    profilePic:{type:String}
 }, {timestamp:true})
 
 module.exports=mongoose.model('User', userSchema)

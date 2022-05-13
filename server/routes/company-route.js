@@ -5,8 +5,7 @@ const router=express.Router()
 
 router.post('/register', company.register)
 router.post('/login', company.login)
-router.get(`/inventory/:id`, auth.verify, company.getCompany)
-router.post('/createItem', company.createItem)
-router.post('/sellItem', company.sellItem)
+router.post('/createItem', auth.verify, company.createItem)
+router.post('/sellItem', auth.verify, company.sellItem)
 
 module.exports=router

@@ -4,7 +4,7 @@ import {useNavigate} from 'react-router-dom'
 import axios from 'axios'
 const StartTradeModal=(props)=> {
     //make request to get transaction info 
-    const handleClose=()=>{
+    const handleClose=(e)=>{
       props.setShow(false)
     }
     return (
