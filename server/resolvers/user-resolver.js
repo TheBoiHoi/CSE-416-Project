@@ -316,7 +316,7 @@ const getProfileQRCode = (req, res)=>{
     const newProfileCode = new PublicProfile({userId:userId, key:key, expireAt:Date.now()})
     
     newProfileCode.save().then(()=>{
-        const url=`http://194.113.72.18/public-profile/${userId}/${key}`
+        const url=`http://localhost:8000/public-profile/${userId}/${key}`
         QRCode.toFile(`./images/${userId}-${key}.png`, url, {
             color: {
               dark: '#000000',  

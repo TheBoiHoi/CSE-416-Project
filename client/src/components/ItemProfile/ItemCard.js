@@ -23,6 +23,9 @@ const ItemCard = (props) =>{
             <Card.Text style={{textAlign:"center"}}>
             {`Owned by ${item.owner}`}
             </Card.Text>
+            <Card.Text style={{textAlign:"center"}}>
+            {`Created by ${item.manu_owner}`}
+            </Card.Text>
         </Card.Body>}
         </Card>
     );

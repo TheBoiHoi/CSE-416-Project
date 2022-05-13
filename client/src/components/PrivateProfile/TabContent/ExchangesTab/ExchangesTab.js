@@ -48,10 +48,11 @@ const ExchangesTab=(props)=>{
 
     ]
   };
-    const openModal=(id)=>{
-      setSelectedExchange(id)
+    const openModal=(transaction)=>{
+      setSelectedExchange(transaction)
       setShowExchangeModal(true)
     }
+    console.log(trade)
     return(
         <div >
             <MDBTable  maxHeight="450px" borderless scrollY hover paging>
@@ -60,7 +61,7 @@ const ExchangesTab=(props)=>{
                 {trade.map((data, i)=>{
                     return(
                     <tr key={i} onClick={()=>{
-                        openModal(data.id)
+                        openModal(data)
                     }}>
                         <td>{data.senderName}</td>
                         <td>{data.receiverName}</td>
@@ -72,7 +73,7 @@ const ExchangesTab=(props)=>{
                 </MDBTableBody>
             </MDBTable>
             {showExchangeModal}
-            <ExchangeModal setShow={setShowExchangeModal} show={showExchangeModal} transid={selectedExchange}></ExchangeModal>
+            <ExchangeModal  setShow={setShowExchangeModal} show={showExchangeModal} trans={selectedExchange}></ExchangeModal>
         </div>
     );
 };
