@@ -1,6 +1,4 @@
 const User=require('../models/user')
-const Company=require('../models/company')
-const {parseTransactions}=require('../common/algoUtils')
 const bcrypt=require('bcrypt')
 const Item = require('../models/item')
 const Trade=require('../models/trade')
@@ -12,10 +10,8 @@ const QRCodeReader=require('qrcode-reader')
 const fs=require('fs')
 const path=require('path')
 const Jimp=require('jimp')
-const {createItems,fundAccount,itemOptIn, tradeItem} =require('../common/algoUtils')
+const {parseTransactions, fundAccount,itemOptIn, tradeItem} =require('../common/algoUtils')
 const algosdk = require('algosdk');
-const baseServer = 'https://testnet-algorand.api.purestake.io/ps2'
-const port = '';
 
 //Didn't use random because it generate a different key and iv if the sever crash
 const crypto = require('crypto');
@@ -24,12 +20,15 @@ const key = crypto.scryptSync("generate key","salt",24)
 const iv = Buffer.alloc(16,0)
 
 require('dotenv').config()
+const axios=require('axios')
+
+const baseServer = 'https://testnet-algorand.api.purestake.io/idx2'
+const port = '';
 const {TOKEN}=process.env
 const apitoken = {
-    'X-API-Key': TOKEN
+    'X-API-key':TOKEN
 }
-const axios=require('axios')
-const algodclient = new algosdk.Algodv2(apitoken, baseServer, port);
+const indexerClient = new algosdk.Indexer(apitoken, baseServer, port);
 
 const login = async(req, res)=>{
     console.log("login")
@@ -318,8 +317,7 @@ const getCompletedTrades=(req, res)=>{
             return res.status(404).json({message:"ERROR; user is not found"})
         }
         const algoAddr=data.algoAddr
-        axios.get(`https://algoindexer.testnet.algoexplorerapi.io/v2/accounts/${algoAddr}/transactions`).then(async (response)=>{
-            let data=response.data
+        indexerClient.searchForTransactions().address(algoAddr).do().then(async (data)=>{
             let transactions=data.transactions
             let ret=await parseTransactions(transactions)
             return res.status(200).json({transactions:ret})
