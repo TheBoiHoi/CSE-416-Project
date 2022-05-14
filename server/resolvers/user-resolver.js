@@ -104,7 +104,6 @@ const logout = async(req, res)=>{
 }
 
 const getUserById=(req, res)=>{
-    
     const userId=req.params.userId
     console.log("getting user by id, the id is:", userId )
     User.findOne({_id:userId}).then(data=>{
@@ -123,6 +122,9 @@ const getUserById=(req, res)=>{
 
 const createPendingTrade = async(req, res)=>{
     const {sellerId, buyerId, itemId} = req.body
+    if(sellerId==buyerId){
+        return res.status(404).json({message:"ERROR; You cannot trade with yourself"})
+    }
     const seller=await User.findOne({_id:sellerId})
     const buyer=await User.findOne({_id:buyerId})
     const newTrade= new Trade({

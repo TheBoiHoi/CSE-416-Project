@@ -10,7 +10,7 @@ const PendingModal = (props) => {
 
     return (
         <Modal show={props.show} centered size='sm' onHide={props.hide}>
-            <Button disabled={props.disabled}  variant={"success"} onClick={confirmTrade}>Complete Trade</Button>
+            {props.buttonShow && <Button disabled={props.disabled}  variant={"success"} onClick={confirmTrade}>Complete Trade</Button>}
         </Modal>        
     )
 }
