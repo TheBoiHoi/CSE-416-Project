@@ -20,7 +20,7 @@ export const TransferOwnerShipModal =(props)=>{
       companyId:companyId,
       buyerId:userId,
     }).then(()=>{
-      alert("done");
+      // alert("done");
       setShowLoading(false);
       setDisableButton(false);
       window.location.reload();

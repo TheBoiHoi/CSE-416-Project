@@ -56,7 +56,7 @@ async function parseTransactions(transactions){
     return ret
 };
 
-async function fundAccount(user){
+async function fundAccount(userAddr){
     //Get the wallet account in our data base
     const walletId = "6279b484a74732a8bcdc86ad";
     const walletCompany=await Company.findOne({_id:walletId});
@@ -69,12 +69,12 @@ async function fundAccount(user){
     console.log("Wallet Account balance: %d microAlgos", accountInfo.amount);
     
     let params = await algodclient.getTransactionParams().do();
-    let txn = algosdk.makePaymentTxnWithSuggestedParams(walletCompanyAcc.addr, user.addr, 3000000, undefined, undefined, params);
+    let txn = algosdk.makePaymentTxnWithSuggestedParams(walletCompanyAcc.addr, userAddr, 3000000, undefined, undefined, params);
     let rawSignedTxn = txn.signTxn(walletCompanyAcc.sk)
     let tx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
     const ptx = await algosdk.waitForConfirmation(algodclient, tx.txId, 4);
     console.log("Transaction " + tx.txId + " confirmed in round " + ptx["confirmed-round"]);
-    let newAccountInfo = await algodclient.accountInformation(user.addr).do();
+    let newAccountInfo = await algodclient.accountInformation(userAddr).do();
     console.log("New Account balance: %d microAlgos", newAccountInfo.amount);
     console.log("Finish funding account");
 }
@@ -105,8 +105,31 @@ async function itemOptIn(user,assetID){
     console.log("Finish Item Opt in");
 }
 
-async function tradeItem(user1,user2,item){
-    
+async function tradeItem(user1,user2,assetID){
+    console.log("Begin Transfering item")
+    let params = await algodclient.getTransactionParams().do();
+    let note = undefined; 
+    let sender = user1.addr;
+    let recipient = user2.addr;
+    let amount = 1;
+    let closeRemainderTo = undefined
+    let revocationTarget = undefined
+    opttxn = algosdk.makeAssetTransferTxnWithSuggestedParams(
+        sender, 
+        recipient, 
+        closeRemainderTo, 
+        revocationTarget,
+        amount, 
+        note, 
+        assetID, 
+        params);
+        
+    rawSignedTxn = opttxn.signTxn(user1.sk);
+    opttx = (await algodclient.sendRawTransaction(rawSignedTxn).do())
+    confirmedTxn = await algosdk.waitForConfirmation(algodclient, opttx.txId, 4)
+    console.log("Transaction " + opttx.txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
+    console.log("Finish Trading process")
+
 }
 
 async function createItems(user,name){
