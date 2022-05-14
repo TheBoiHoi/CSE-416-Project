@@ -66,7 +66,6 @@ export const Navbar = (props) => {
               
               }}/>
           </Typography>
-
         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -132,51 +131,9 @@ export const Navbar = (props) => {
               </Button>
           </Link>
           </Box>):
-          props.user.isCompany?<CompanyNavbarFunctions user={props.user} setUser={props.setUser}/>:<UserNavbarFunctions setUser={props.setUser}/>
+          props.user.isCompany?<CompanyNavbarFunctions setFilter={props.setFilter} user={props.user} setUser={props.setUser}/>:
+                              <UserNavbarFunctions setUser={props.setUser}/>
         }
-
-
-        {/* {(isUser || isCompany) && 
-        <Box sx={{ flexGrow: 0, padding:'5px' }}>
-              {isCompany ? ( <Button
-                    title="Open settings"
-                    sx={{ my: 2, color: 'black', display: 'block' ,backgroundColor:'white'}}
-                    onClick ={handleOpenCompanyMenu}
-                >
-                    {props.user.name}
-                </Button>) : ( <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt= {props.user.name} src="/static/images/avatar/2.jpg" />
-              </IconButton>
-              
-            </Tooltip> )}
-           
-           
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {
-                settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleMenuClick}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>} */}
-          
         </Toolbar>
       </Container>
     </AppBar>

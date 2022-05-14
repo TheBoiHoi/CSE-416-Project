@@ -90,9 +90,18 @@ const getProfilePic=(req, res)=>{
     })
 }
 
+const search=async (req, res)=>{
+    let q=req.query.query
+    let items=await Item.find({name:q})
+    if(items){
+        return res.status(200).json({items:items})
+    }
+    return res.sendStatus(404)
+}
 module.exports={
     getItemInfo,
     getItemTransactions,
     uploadProfilePic,
-    getProfilePic
+    getProfilePic,
+    search
 }
