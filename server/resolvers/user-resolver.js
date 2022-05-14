@@ -12,6 +12,7 @@ const QRCodeReader=require('qrcode-reader')
 const fs=require('fs')
 const path=require('path')
 const Jimp=require('jimp')
+const {createItems,fundAccount,itemOptIn, tradeItem} =require('../common/algoUtils')
 const algosdk = require('algosdk');
 const baseServer = 'https://testnet-algorand.api.purestake.io/ps2'
 const port = '';
@@ -72,23 +73,8 @@ const register = async(req, res)=>{
     let encrypted = cipher.update(algoPass, "utf-8", "hex");
     encrypted += cipher.final("hex");
     (async ()=>{
-        const walletId = "6279b484a74732a8bcdc86ad";
-        const walletCompany=await Company.findOne({_id:walletId});
-        let encryptedText = walletCompany.algoPass;
-        const decipher = crypto.createDecipheriv(algorithm, key, iv);
-        let decryptedData = decipher.update(encryptedText, "hex", "utf-8");
-        decryptedData += decipher.final("utf8");
-        const walletCompanyAcc = algosdk.mnemonicToSecretKey(decryptedData);
-        let accountInfo = await algodclient.accountInformation(walletCompanyAcc.addr).do();
-        console.log("Wallet Account balance: %d microAlgos", accountInfo.amount);
-        let params = await algodclient.getTransactionParams().do();
-        let txn = algosdk.makePaymentTxnWithSuggestedParams(walletCompanyAcc.addr, algoAddr, 1000000, undefined, undefined, params);
-        let rawSignedTxn = txn.signTxn(walletCompanyAcc.sk)
-        let tx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
-        const ptx = await algosdk.waitForConfirmation(algodclient, tx.txId, 4);
-        console.log("Transaction " + tx.txId + " confirmed in round " + ptx["confirmed-round"]);
-        let newAccountInfo = await algodclient.accountInformation(algoAddr).do();
-        console.log("New Account balance: %d microAlgos", newAccountInfo.amount);
+
+        await fundAccount(algoAddr)
     })().catch(e=>{
         console.log(e);
         return res.status(404).json({"message":"err"})
@@ -204,50 +190,10 @@ const completeTrade = async(req, res)=>{
     const target_item = await Item.findOne({_id:item_id})
     
     try{
-    //Buyer opt in
-    let params = await algodclient.getTransactionParams().do();
-    params.fee = 1000;
-    params.flatFee = true;
-    let note = undefined;
-    let sender = buyerAcc.addr;
-    let recipient = sender;
-    let revocationTarget = undefined;
-    let closeRemainderTo = undefined;
-    assetID = target_item.asset_id
-    amount = 0;
-    let opttxn = algosdk.makeAssetTransferTxnWithSuggestedParams(
-        sender, 
-        recipient, 
-        closeRemainderTo, 
-        revocationTarget,
-        amount, 
-        note, 
-        assetID, 
-        params);
-    rawSignedTxn = opttxn.signTxn(buyerAcc.sk);
-    let opttx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
-    confirmedTxn = await algosdk.waitForConfirmation(algodclient, opttx.txId, 4);
+    assetID = target_item.asset_id;
+    await itemOptIn(buyerAcc,assetID)
+    await tradeItem(sellerAcc,buyerAcc,assetID)
 
-    //Start algorand asset transaction
-     params = await algodclient.getTransactionParams().do();
-     sender = sellerAcc.addr
-     recipient = buyerAcc.addr
-     assetID = target_item.asset_id
-     revocationTarget = undefined;
-     closeRemainderTo = undefined;
-     amount = 1;
-    let xtxn = algosdk.makeAssetTransferTxnWithSuggestedParams(
-        sender, 
-        recipient, 
-        closeRemainderTo, 
-        revocationTarget,
-        amount,  
-        note, 
-        assetID, 
-        params);
-    rawSignedTxn = xtxn.signTxn(sellerAcc.sk)
-    let xtx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
-    confirmedTxn = await algosdk.waitForConfirmation(algodclient, xtx.txId, 4);
     }catch(e){
         console.log(e);
         trade.buyer_status = false;
