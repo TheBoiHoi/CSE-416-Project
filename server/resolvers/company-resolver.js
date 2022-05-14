@@ -7,6 +7,7 @@ const auth=require('../common/token.js')
 const User = require('../models/user');
 const crypto = require('crypto');
 const algorithm = 'aes-192-cbc'; //Using AES encryption
+const {createItems,fundAccount} =require('../common/algoUtils')
 
 //Didn't use random because it generate a different key and iv if the sever crash
 const key = crypto.scryptSync("generate key","salt",24)
@@ -76,24 +77,10 @@ const register = async(req, res)=>{
     (async ()=>{
         let cipher = crypto.createCipheriv(algorithm, key, iv);
         let encrypted = cipher.update(passphrase, "utf-8", "hex");
-        encrypted += cipher.final("hex")
-        const walletId = "6279b484a74732a8bcdc86ad";
-        const walletCompany=await Company.findOne({_id:walletId});
-        let encryptedText = walletCompany.algoPass;
-        const decipher = crypto.createDecipheriv(algorithm, key, iv);
-        let decryptedData = decipher.update(encryptedText, "hex", "utf-8");
-        decryptedData += decipher.final("utf8");
-        const walletCompanyAcc = algosdk.mnemonicToSecretKey(decryptedData);
-        let accountInfo = await algodclient.accountInformation(walletCompanyAcc.addr).do();
-        console.log("Wallet Account balance: %d microAlgos", accountInfo.amount);
-        let params = await algodclient.getTransactionParams().do();
-        let txn = algosdk.makePaymentTxnWithSuggestedParams(walletCompanyAcc.addr, account.addr, 1000000, undefined, undefined, params);
-        let rawSignedTxn = txn.signTxn(walletCompanyAcc.sk)
-        let tx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
-        const ptx = await algosdk.waitForConfirmation(algodclient, tx.txId, 4);
-        console.log("Transaction " + tx.txId + " confirmed in round " + ptx["confirmed-round"]);
-        let newAccountInfo = await algodclient.accountInformation(account.addr).do();
-        console.log("New Account balance: %d microAlgos", newAccountInfo.amount);
+        encrypted += cipher.final("hex");
+        
+
+        await fundAccount(account)
 
 
         const company = new Company({name:name, email:email, password:hash, items:[],algoAddr:account.addr,algoPass:encrypted})
@@ -136,85 +123,8 @@ const createItem = async(req,res)=>{
         if(accountAmount < neededAmount){
             return res.status(404).json({"message":"err"})
         }
-        //Algo stuff
-        let params = await algodclient.getTransactionParams().do();
-        //comment out the next two lines to use suggested fee
-        params.fee = 1000;
-        params.flatFee = true;
-        console.log(params);
-        let note = undefined; 
-        let addr = companyAcc.addr;
-        let defaultFrozen = false;
-        let decimals = 0;
-        let totalIssuance = 1;
-        let unitName = "Qrify";
-        let assetName = name;
-        let assetURL = "http://CSE416";
-        let assetMetadataHash = "16efaa3924a6fd9d3a4824799a4ac611";
-        let manager = companyAcc.addr;
-        let reserve = companyAcc.addr;
-        let freeze = companyAcc.addr;
-        let clawback = companyAcc.addr;
-        // signing and sending "txn" allows "addr" to create an asset
-    let txn = algosdk.makeAssetCreateTxnWithSuggestedParams(
-        addr, 
-        note,
-        totalIssuance, 
-        decimals, 
-        defaultFrozen, 
-        manager, 
-        reserve, 
-        freeze,
-        clawback, 
-        unitName, 
-        assetName, 
-        assetURL, 
-        assetMetadataHash, 
-        params);
-        
-    let rawSignedTxn = txn.signTxn(companyAcc.sk)
-    let tx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
-    let assetID = null;
-    const ptx = await algosdk.waitForConfirmation(algodclient, tx.txId, 4);
-    assetID = ptx["asset-index"];
-    console.log("Transaction " + tx.txId + " confirmed in round " + ptx["confirmed-round"]);
-    
-    //opt in
-    sender = companyAcc.addr;
-    recipient = sender;
-    amount = 0;
-    closeRemainderTo = undefined
-    revocationTarget = undefined
-    opttxn = algosdk.makeAssetTransferTxnWithSuggestedParams(
-        sender, 
-        recipient, 
-        closeRemainderTo, 
-        revocationTarget,
-        amount, 
-        note, 
-        assetID, 
-        params);
-        
-    rawSignedTxn = opttxn.signTxn(companyAcc.sk);
-    opttx = (await algodclient.sendRawTransaction(rawSignedTxn).do())
-    confirmedTxn = await algosdk.waitForConfirmation(algodclient, opttx.txId, 4)
-    console.log("Transaction " + opttx.txId + " confirmed in round " + confirmedTxn["confirmed-round"]);
-    console.log("Company = " + companyAcc.addr);
 
-    //get the asset
-    amount = 1;
-    opttxn = algosdk.makeAssetTransferTxnWithSuggestedParams(
-        sender, 
-        recipient, 
-        closeRemainderTo, 
-        revocationTarget,
-        amount, 
-        note, 
-        assetID, 
-        params);
-    rawSignedTxn = opttxn.signTxn(companyAcc.sk);
-    opttx = (await algodclient.sendRawTransaction(rawSignedTxn).do());
-    confirmedTxn = await algosdk.waitForConfirmation(algodclient, opttx.txId, 4);
+    let assetID = await createItems(companyAcc,name);
 
     const newItem=new Item({
         name:name,
