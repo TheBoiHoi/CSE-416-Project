@@ -14,17 +14,14 @@ import apis from './api'
 
 function App() {
   const [user, setUser]=useState(null)//user here can be regular user or a company
-  const [isUser,setIsUser]=useState(false)
-  const [isCompany,setIsCompany]=useState(false)
+  const [filter, setFilter]=useState('')
   useEffect(() => {
     apis.GetCurrentUser().then(response=>{
       if(response.data.user){
         setUser(response.data.user)
-        setIsUser(true)
       }
       else if(response.data.company){
         setUser(response.data.company)
-        setIsCompany(true)
       }
     }).catch(e => {
       console.log(e.response)
@@ -33,7 +30,7 @@ function App() {
   return (
     <div>
     <BrowserRouter>
-    <Navbar setUser={setUser} user={user} isUser = {isUser} isCompany={isCompany}/>
+    <Navbar setUser={setUser} user={user} setFilter={setFilter}/>
       <Routes>
         <Route path="/" element={<Welcome user={user}/>}/>
         <Route path="/login" element={<Login setUser={setUser}/>}/>
@@ -42,7 +39,7 @@ function App() {
 
         <Route path="/item/profile/:itemId" element={<ItemProfile/>}/>
         <Route path="/item/profile" element={<ItemProfile/>}/>
-        <Route path ="/inventory-table" element={<InventoryTable company={user} filter={"none"}/>}/>
+        <Route path ="/inventory-table" element={<InventoryTable company={user} filter={filter}/>}/>
         <Route path="/register" element={<Register setUser={setUser}/>}/>
       </Routes>
     </BrowserRouter>

@@ -25,31 +25,36 @@ export const TableRow = (props) =>{
   // const toggleModal =() =>{
   //   setShowModal(!showModal);
   // }
-  return (
-    <>
-    <Container className={background} 
-      onMouseEnter={()=>{
-        setBackground("table_row_container_hover");
-      }}
-      onMouseLeave={()=>{
-        setBackground("table_row_container");
-      }}
-      onClick={()=>{
-        setShowModal(true);
-      }}
-    >
-      {item&&<Row>
-        <Col>
-        <ItemNameComponent itemId={item.itemId} name = {item.name}/>
-        </Col>
-        <Col className="m-auto date">{item.manu_date}</Col>
-        <Col className ="m-auto">
-        <div className="serial_number">{item.serialNumber}</div></Col>
-        <Col className="m-auto"><div className="location">{item.manu_location}</div></Col>
-      </Row>}
-      <div className="seperator"></div>
-    </Container>
-    {item&&<TableModal company = {props.company} item={item} showModal={showModal} toggleModal={setShowModal}/>}
-    </>
-  )
+  if(item&&item.name.includes(props.filter)){
+    return (
+      <>
+      <Container className={background} 
+        onMouseEnter={()=>{
+          setBackground("table_row_container_hover");
+        }}
+        onMouseLeave={()=>{
+          setBackground("table_row_container");
+        }}
+        onClick={()=>{
+          setShowModal(true);
+        }}
+      >
+        <Row>
+          <Col>
+          <ItemNameComponent itemId={item.itemId} name = {item.name}/>
+          </Col>
+          <Col className="m-auto date">{item.manu_date}</Col>
+          <Col className ="m-auto">
+          <div className="serial_number">{item.serialNumber}</div></Col>
+          <Col className="m-auto"><div className="location">{item.manu_location}</div></Col>
+        </Row>
+        <div className="seperator"></div>
+      </Container>
+      <TableModal company = {props.company} item={item} showModal={showModal} toggleModal={setShowModal}/>
+      </>
+    )
+  }
+  else{
+    return null
+  }
 }

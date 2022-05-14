@@ -15,7 +15,7 @@ export const InventoryTable  = (props) => {
         <div className="table_head_seperator"></div>
         <div className="inventory_rows" >
           {props.company.items.map((element)=>{
-            return <TableRow itemId={element} company = {props.company}/>;
+            return <TableRow filter={props.filter} itemId={element} company = {props.company}/>;
             
           })}
         </div>

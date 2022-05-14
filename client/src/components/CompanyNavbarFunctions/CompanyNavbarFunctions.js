@@ -31,16 +31,12 @@ export const CompanyNavbarFunctions = (props) =>{
     })
   }
 
+  const handleSearch=(e)=>{
+    props.setFilter(e.target.value)
+  }
   return(
     <>
     <Box   sx={{  flexDirection: 'row-reverse', flexGrow: 1, display: { xs: 'none', md: 'flex' } }} className ="company_nav_container">
-
-        {/* <div className='company_nav_search_bar'>
-          <Box sx={{ display: 'flex', alignItems: 'flex-end', }}>
-              <Search sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-              <TextField id="input-with-sx" label="With sx" variant="standard" onBlur={e => handleSerch(e.target.value)}/>
-          </Box>
-        </div> */}
           <Button  variant="text" onClick={handleSignOut}>Sign out</Button>
           <Button variant="text" onClick={handleInventoryTable}>Inventory Table</Button>
           <div className ="company_add">
@@ -48,6 +44,12 @@ export const CompanyNavbarFunctions = (props) =>{
             <Add/>
             </IconButton>
           </div>
+          <div className='company_nav_search_bar'>
+          <Box sx={{ display: 'flex', alignItems: 'flex-end', }}>
+              <Search sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
+              <TextField id="input-with-sx" variant="standard" onBlur={handleSearch} />
+          </Box>
+        </div> 
         </Box>
         <CompanyAddModal user = {props.user} showModal={showModal} toggleModal={setShowModal}/>
         </>
