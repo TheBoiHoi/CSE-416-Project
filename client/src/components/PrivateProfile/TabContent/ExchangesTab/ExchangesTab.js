@@ -6,7 +6,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import ExchangeModal from '../../ExchangeModal';
 const ExchangesTab=(props)=>{
-  const [trade, setTrade]=useState([])
+  const [trades, setTrades]=useState([])
   const [search,setSearch]=useState("")
   const [selectedExchange,setSelectedExchange]=useState('')
   const [showExchangeModal,setShowExchangeModal]=useState(false)
@@ -19,7 +19,7 @@ const ExchangesTab=(props)=>{
       url=`/user/completed-trade/get/${props.user.userId}/${props.keyValue}`
     }
     axios.get(url).then(response=>{
-      setTrade(response.data.transactions)
+      setTrades(response.data.transactions)
     }).catch((e)=>{console.log("ERROR:", e)})
     
   },[])
@@ -59,15 +59,17 @@ const ExchangesTab=(props)=>{
     return(
         <div >
         <Row>
-        <Form.Control onChange={e=>setSearch(e.target.value)} style={{width:'50%'}} placeholder="Search"></Form.Control>
-        <Button onClick={searchFilter} style={{width:'10%'}} variant="primary" type="submit">
-          Search
-        </Button>
+        <Form.Control onChange={e=>setSearch(e.target.value.toLowerCase())} style={{width:'50%'}} placeholder="Search"></Form.Control>
         </Row>
             <MDBTable  maxHeight="450px" borderless scrollY hover paging>
                 <MDBTableHead  columns={data.columns} />
                 <MDBTableBody>
-                {trade.map((data, i)=>{
+                {trades.filter(trade=>{
+                  let sender=trade.senderName.toLowerCase()
+                  let receiver=trade.receiverName.toLowerCase()
+                  let item=trade.item.toLowerCase()
+                  return sender.includes(search)||receiver.includes(search)||item.includes(search)
+                }).map((data, i)=>{
                     return(
                     <tr key={i} onClick={()=>{
                         openModal(data)

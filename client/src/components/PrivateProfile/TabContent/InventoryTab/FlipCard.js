@@ -5,13 +5,14 @@ import {useState, useEffect} from 'react'
 import axios from 'axios'
 const FlipCard = (props)=>{
   const [isFlipped, toggleIsFlipped]=useState(false)
-  const [item, setItem]=useState(false)
-  useEffect(()=>{
-    axios.get(`/item/get/${props.item}`).then(response=>{
-          let item=response.data.item
-          setItem(item)
-      })
-  },[])
+  let item=props.item
+  //const [item, setItem]=useState(props.item)
+  // useEffect(()=>{
+  //   axios.get(`/item/get/${props.item}`).then(response=>{
+  //         let item=response.data.item
+  //         setItem(item)
+  //     })
+  // },[])
     
     const handleClick=(e)=>{
       e.preventDefault();
