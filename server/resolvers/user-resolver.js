@@ -172,6 +172,39 @@ const updateTrade = async(req, res) => {
     });
 }
 
+const cancelTrade = async (req, res) => {
+    const { tradeId } = req.body;
+    const trade = await Trade.findOne({ _id: tradeId });
+    const { buyer_id, seller_id } = trade;
+
+    const seller = await User.findOne({ _id: seller_id });
+    const buyer = await User.findOne({ _id: buyer_id });
+
+    console.log(buyer, seller)
+
+    const sellerPendings = seller.pending_trades;
+    const buyerPendings = buyer.pending_trades;
+    //remove from seller and buyer pending trades list
+    const sellerTradeIndex = sellerPendings.indexOf(tradeId);
+    console.log("SELLER INDEX: ", sellerTradeIndex)
+    if (sellerTradeIndex > -1) {
+        sellerPendings.splice(sellerTradeIndex, 1);
+    }
+    const buyerTradeIndex = buyerPendings.indexOf(tradeId);
+    console.log("BUYER INDEX: ", buyerTradeIndex)
+    if (buyerTradeIndex > -1) {
+        buyerPendings.splice(buyerTradeIndex, 1);
+    }
+
+    seller.pending_trades = sellerPendings;
+    buyer.pending_trades = buyerPendings;
+    await seller.save();
+    await buyer.save();
+    const data = await Trade.deleteOne({ _id: tradeId });
+    console.log(data);
+    return res.status(200).json({msg:"OK"})
+}
+
 const completeTrade = async(req, res)=>{
     const {tradeId}=req.body
     const trade=await Trade.findOne({_id:tradeId})
@@ -391,7 +424,8 @@ module.exports = {
     logout,
     createPendingTrade,
     completeTrade,
-    updateTrade,
+    updateTrade, 
+    cancelTrade,
     getProfileQRCode,
     keyVerification,
     scanQrCode,

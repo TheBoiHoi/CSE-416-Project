@@ -14,20 +14,22 @@ const PrivateTabs=(props)=>{
     const [disabled, setDisabled] = useState(false);
     const [loading, setLoading] = useState (false);
     const [buttonShow, setButtonShow] = useState(true);
+    const [completeDisabled, setCompleteDisabled] = useState(false);
 
     const showModal = (trade) => {
         setShow(true);
         setTrade(trade);
         if((trade.seller_id == props.user.userId && trade.seller_status == true)
                 || (trade.buyer_id == props.user.userId && trade.buyer_status == true)){
-            setDisabled(true);
+            setCompleteDisabled(true);
         }else{
-            setDisabled(false);
+            setCompleteDisabled(false);
         }
     }
     
     const hideModal = () => {
         setShow(false);
+        setDisabled(false);
         setLoading(false);
         setButtonShow(true);
     }
@@ -51,6 +53,19 @@ const PrivateTabs=(props)=>{
                 }
             }
         }
+        await fetchPendingTrades();
+        hideModal();
+    }
+
+    const cancelTrade = async () => {
+        setLoading(true);
+        setButtonShow(false);
+        setDisabled(true);
+        const data = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/user/trade/cancel`, {
+            tradeId: trade._id
+        });
+        console.log("done cancelling");
+        console.log(data);
         await fetchPendingTrades();
         hideModal();
     }
@@ -120,7 +135,7 @@ const PrivateTabs=(props)=>{
                 </Tab>
                 <Tab style={{width:"50%",boxShadow: "1px 1px 1px #9E9E9E"}} eventKey="Pending" title="Pending" >
                     <PendingTab pendings={trades} handleShowModal={showModal}></PendingTab>
-                    <PendingModal buttonShow={buttonShow} handleConfirm={confirmTrade} show={show} hide={hideModal} disabled={disabled}/>
+                    <PendingModal completeDisabled={completeDisabled} buttonShow={buttonShow} handleCancel={cancelTrade} handleConfirm={confirmTrade} show={show} hide={hideModal} disabled={disabled}/>
                 </Tab>
             </Tabs>
             {loading && <Spinner className="loading" animation="grow" />}
