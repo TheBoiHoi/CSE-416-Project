@@ -43,13 +43,6 @@ const getItemTransactions=(req, res)=>{
         let assetId=item.asset_id
         let ret=[]
         indexerClient.lookupAssetTransactions(assetId).do().then(async (data)=>{
-            // if(transaction['asset-config-transaction']){
-                //     transactions.push({
-                //         transactionId:id, 
-                //         creator:transaction['asset-config-transaction']['params']['creator'],
-                //         timestamp:date
-                //     })
-                // }
             ret=await parseTransactions(data.transactions)
             return res.status(200).json({transactions:ret.reverse()})
         })
@@ -90,18 +83,9 @@ const getProfilePic=(req, res)=>{
     })
 }
 
-const search=async (req, res)=>{
-    let q=req.query.query
-    let items=await Item.find({name:q})
-    if(items){
-        return res.status(200).json({items:items})
-    }
-    return res.sendStatus(404)
-}
 module.exports={
     getItemInfo,
     getItemTransactions,
     uploadProfilePic,
     getProfilePic,
-    search
 }

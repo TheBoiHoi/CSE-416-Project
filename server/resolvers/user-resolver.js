@@ -38,7 +38,7 @@ const login = async(req, res)=>{
         if(user==null){
             return res.status(404).send()
         }
-        const hash=await user.password
+        const hash=user.password
         const valid = await bcrypt.compare(password, hash)
         if(!valid){
             return res.status(404).send('Invalid Password')
@@ -72,7 +72,6 @@ const register = async(req, res)=>{
     let encrypted = cipher.update(algoPass, "utf-8", "hex");
     encrypted += cipher.final("hex");
     (async ()=>{
-
         await fundAccount(algoAddr)
     })().catch(e=>{
         console.log(e);
@@ -80,7 +79,17 @@ const register = async(req, res)=>{
     })
 
     const hash = await bcrypt.hash(password, 10)
-    const user = new User({name:name, email:email, password:hash,algoAddr:algoAddr,algoPass:encrypted, items_owned:[], pending_trades:[], completed_trades:[]})
+    const user = new User({
+        name:name, 
+        email:email,
+        password:hash,
+        algoAddr:algoAddr,
+        algoPass:encrypted, 
+        items_owned:[], 
+        pending_trades:[], 
+        completed_trades:[],
+        profilePic:"duckpfp.png"
+    })
     const saved = await user.save()
     token=auth.generate(user)
     res.cookie('token', token, {
@@ -331,11 +340,11 @@ const uploadProfilePic=(req, res)=>{
     const userId=req.userId
     const file=req.file
     const image=req.file.buffer
-    fs.writeFile(`./images/user-profile-pics/${file.originalName}`, image, 'base64', function(err){
+    fs.writeFile(`./images/user-profile-pics/${file.originalname}`, image, 'base64', function(err){
         if(err) throw err
         console.log('User profile picture saved')
     })
-    User.updateOne({_id:userId}, {profilePic:file.originalName}).then(data=>{
+    User.updateOne({_id:userId}, {profilePic:file.originalname}).then(data=>{
         return res.status(200).json({message:"OK", newPath:file.originalname})
     })
 }
@@ -357,6 +366,25 @@ const getProfilePic=(req, res)=>{
     })
 }
 
+const changePassword=async (req, res)=>{
+    const userId=req.userId
+    const {originalPassword, newPassword} =req.body
+    const user=await User.findOne({_id:userId})
+    const valid=await bcrypt.compare(originalPassword, user.password)
+    if(!valid){
+        return res.status(404).json({message:"ERROR: invalid password"})
+    }
+
+    //hashing the new password
+    const hash=await bcrypt.hash(newPassword, 10)
+    const saved=await User.updateOne({_id:userId}, {password:hash})
+    if(saved){
+        return res.status(200).json({message:"password has successfully changed"})
+    }
+
+    return res.status(404).json*{message:"Something went wrong; password has NOT successfully changed"}
+}
+
 module.exports = {
     login,
     register,
@@ -371,5 +399,6 @@ module.exports = {
     getCompletedTrades,
     getUserById,
     uploadProfilePic,
-    getProfilePic
+    getProfilePic,
+    changePassword
 }
