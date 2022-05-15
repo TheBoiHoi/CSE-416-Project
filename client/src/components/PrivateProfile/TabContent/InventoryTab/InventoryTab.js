@@ -1,12 +1,13 @@
 import {useState,createElement,useEffect} from 'react';
 import ReactDOM from 'react-dom'
-import {Table,Row,Col,Container} from 'react-bootstrap';
+import {Table,Row,Col,Container,Form,Button} from 'react-bootstrap';
 import FlipCard from './FlipCard'
 import { MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
 import './InventoryTab.css';
 const InventoryTab =(props)=>{
   //const [inventoryList,setInventoryList]=useState([])
   const [publicProfile,setPublicProfile]=useState(false)
+  const [search,setSearch]=useState("")
   useEffect(()=>{
     console.log("printing props.user")
     console.log(props.user)
@@ -51,10 +52,18 @@ const InventoryTab =(props)=>{
   //     ]
   //   };
 
-  
+  const searchFilter=()=>{
+    console.log(search)
+  }
   if(publicProfile){
     return(
         <Container >
+        <Row>
+        <Form.Control onChange={e=>setSearch(e.target.value)} style={{width:'50%'}} placeholder="Search"></Form.Control>
+        <Button onClick={searchFilter} style={{width:'10%'}} variant="primary" type="submit">
+          Search
+        </Button>
+        </Row>
             {/* <MDBTable maxHeight="450px" borderless scrollY>
                 <MDBTableHead  columns={data.columns} />
                 <MDBTableBody>
@@ -93,6 +102,12 @@ const InventoryTab =(props)=>{
   else{
     return(
         <Container >
+        <Row>
+        <Form.Control onChange={e=>setSearch(e.target.value)} style={{width:'50%'}} placeholder="Search"></Form.Control>
+        <Button onClick={searchFilter} style={{width:'10%'}} variant="primary" type="submit">
+          Search
+        </Button>
+        </Row>
             <div style={{height:'500px',overflow:'scroll'}} >
             {
               newInventoryList.map((row)=>
