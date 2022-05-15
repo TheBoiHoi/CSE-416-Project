@@ -19,6 +19,7 @@ router.post('/trade/update-status', auth.verify, user.updateTrade)
 router.get('/completed-trade/get', auth.verify, user.getCompletedTrades)
 router.get('/completed-trade/get/:userId/:key', user.keyVerification, user.getCompletedTrades)
 
-router.post('/profile-pic/upload', multer().fields('file'), user.uploadProfilePic)
+router.post('/profile-pic/upload', auth.verify, multer().single('file'),  user.uploadProfilePic)
 router.get('/profile-pic/get/:userId', user.getProfilePic)
+router.post('/password/change', auth.verify, user.changePassword)
 module.exports=router

@@ -7,7 +7,7 @@ import {Buffer} from 'buffer'
 const PublicProfileCard = (props) =>{
     return (
         <Card style={{ width: '18rem' }}>
-        <Card.Img style={{width:"50%",margin:"auto"}} variant="top" src={Duckpfp} />
+        <Card.Img style={{width:"50%",margin:"auto"}} variant="top" src={`${process.env.REACT_APP_BACKEND_URL}/user/profile-pic/get/${props.user.userId}`} />
         <Card.Body>
             {props.user&&<Card.Title style={{textAlign:"center"}}>{props.user.name}</Card.Title>}
             <Card.Text style={{textAlign:"center"}}>
