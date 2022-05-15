@@ -38,7 +38,7 @@ export const CompanyNavbarFunctions = (props) =>{
     <>
     <Box   sx={{  flexDirection: 'row-reverse', flexGrow: 1, display: { xs: 'none', md: 'flex' } }} className ="company_nav_container">
           <Button  variant="text" onClick={handleSignOut}>Sign out</Button>
-          <Button variant="text" onClick={handleInventoryTable}>Inventory Table</Button>
+          <Button variant="text" onClick={handleInventoryTable}>{props.user.name}</Button>
           <div className ="company_add">
             <IconButton onClick={handleAddItem}>
             <Add/>
@@ -47,7 +47,7 @@ export const CompanyNavbarFunctions = (props) =>{
           <div className='company_nav_search_bar'>
           <Box sx={{ display: 'flex', alignItems: 'flex-end', }}>
               <Search sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-              <TextField id="input-with-sx" variant="standard" onBlur={handleSearch} />
+              <TextField id="input-with-sx" variant="standard" onChange={handleSearch} />
           </Box>
         </div> 
         </Box>

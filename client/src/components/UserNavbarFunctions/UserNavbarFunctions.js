@@ -20,7 +20,7 @@ export const UserNavbarFunctions = (props) =>{
   }
   return (
     <>
-    <Box   sx={{  flexDirection: 'row-reverse', flexGrow: 1, display: { xs: 'none', md: 'flex' } }} className ="company_nav_container">
+    <Box  sx={{  flexDirection: 'row-reverse', flexGrow: 1, display: { xs: 'none', md: 'flex' } }} className ="company_nav_container">
 
         {/* <div className='company_nav_search_bar'>
           <Box sx={{ display: 'flex', alignItems: 'flex-end', }}>
@@ -32,8 +32,7 @@ export const UserNavbarFunctions = (props) =>{
         
         <Button onClick={handleSignOut} variant="text">Sign out</Button>
         <Button variant="text" onClick={handleAccSettings}>Account Settings</Button>
-        <Button variant="text" onClick={handleProfile}>Profile</Button>
-        <Button variant="text">{props.username}</Button>
+        <Button variant="text" onClick={handleProfile}>{props.username}</Button>
         </Box>
         </>
   )
