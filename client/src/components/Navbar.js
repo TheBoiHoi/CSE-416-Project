@@ -48,7 +48,10 @@ export const Navbar = (props) => {
   }
   //const isCompany = props.isCompany;
   //const isUser = props.isUser;
-
+  //console.log(props.user.name)
+  if(props.user){
+    console.log(props.user.name)
+  }
   return (
     <AppBar style={{backgroundColor:'white'}}  position="static">
       <Container  maxWidth="xl">
@@ -114,6 +117,7 @@ export const Navbar = (props) => {
         </Box>
         
         
+
         {
         !props.user? (<Box sx={{  flexDirection: 'row-reverse', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
           <Link class="link-remove-outline" style={{padding:'5px'}} to="/login">
@@ -132,7 +136,7 @@ export const Navbar = (props) => {
           </Link>
           </Box>):
           props.user.isCompany?<CompanyNavbarFunctions setFilter={props.setFilter} user={props.user} setUser={props.setUser}/>:
-                              <UserNavbarFunctions setUser={props.setUser}/>
+                              <UserNavbarFunctions username={props.user.name} setUser={props.setUser}/>
         }
         </Toolbar>
       </Container>

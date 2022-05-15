@@ -30,6 +30,7 @@ export const UserNavbarFunctions = (props) =>{
         <Button onClick={handleSignOut} variant="text">Sign out</Button>
         <Button variant="text">Account Settings</Button>
         <Button variant="text" onClick={handleProfile}>Profile</Button>
+        <Button variant="text">{props.username}</Button>
         </Box>
         </>
   )
