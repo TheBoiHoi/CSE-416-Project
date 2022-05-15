@@ -12,29 +12,31 @@ const ExchangeModal=(props)=> {
       e.stopPropagation()
       navigate(`/item/profile/${props.trans.itemId}`)
   }
-
+  console.log(props.trans)
     return (
       <>
   
         <Modal show={props.show} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title style={{fontSize:'13px'}}>Exchange # {props.transid}</Modal.Title>
+          <Modal.Header style={{backgroundColor:"white"}} closeButton>
+            <Modal.Title style={{fontSize:'13px',color:"black"}}>Exchange # {props.trans.txid}</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            <p style={{fontWeight:'bold'}}>Transaction ID: </p>
-            <p>{props.trans.txid}</p>
-            <p style={{fontWeight:'bold'}}>Sender: </p>
-            <p>{props.trans.senderName}</p>
-            <p style={{fontWeight:'bold'}}>Sender ID: </p>
-            <p>{props.trans.senderId}</p>
-            <p style={{fontWeight:'bold'}}>Receiver: </p>
-            <p>{props.trans.receiverName}</p>
-            <p style={{fontWeight:'bold'}}>Receiver ID: </p>
-            <p>{props.trans.receiverId}</p>
-            <p style={{fontWeight:'bold'}}>Date: </p> 
-            <p>{props.trans.date}</p>
-            <p>Item Transferred: </p>
+          <Modal.Body style={{backgroundColor:"white"}}>
+            <p style={{fontWeight:'bold',color:"black"}}>Item: </p>
             <a href='#' onClick={handleItemProfile}>{props.trans.item}</a> 
+            <p style={{fontWeight:'bold',color:"black"}}>Item ID: </p>
+            <p style={{color:"black",fontSize:'14px'}}>{props.trans.itemId}</p>
+            <p style={{fontWeight:'bold',color:"black"}}>Sender: </p>
+            <p style={{color:"black"}}>{props.trans.senderName}</p>
+            <p style={{fontWeight:'bold',color:"black"}}>Sender ID: </p>
+            <p style={{color:"black"}}>{props.trans.senderId}</p>
+            <p style={{fontWeight:'bold',color:"black"}}>Receiver: </p>
+            <p style={{color:"black"}}>{props.trans.receiverName}</p>
+            <p style={{fontWeight:'bold',color:"black"}}>Receiver ID: </p>
+            <p style={{color:"black"}}>{props.trans.receiverId}</p>
+            <p style={{fontWeight:'bold',color:"black"}}>Date: </p> 
+            <p style={{color:"black"}}>{props.trans.date}</p>
+            <p>Item Transferred: </p>
+            
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
