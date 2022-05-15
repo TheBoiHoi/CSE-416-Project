@@ -3,11 +3,9 @@ import {Card,Button} from 'react-bootstrap'
 import ShoeImg from '../../../img/airmags.jpg'
 import axios from 'axios'
 import OperateModal from './InventoryTab/OperateModal'
-
 import {useNavigate} from 'react-router-dom'
 import StartTradeModal from './InventoryTab/StartTradeModal'
 export const InventoryCard =(props)=>{
-    console.log("the public status is", props.public)
     const navigate=useNavigate()
     const [front,setFront]= React.useState(false)
     const [operation, setOperation]=React.useState(null)

@@ -13,10 +13,7 @@ const PendingTab = (props) => {
     return(
         <ListGroup>
         <Row>
-        <Form.Control onChange={e=>setSearch(e.target.value)} style={{width:'50%'}} placeholder="Search"></Form.Control>
-        <Button onClick={searchFilter} style={{width:'10%'}} variant="primary" type="submit">
-          Search
-        </Button>
+        <Form.Control onChange={e=>setSearch(e.target.value.toLowerCase())} style={{width:'50%'}} placeholder="Search"></Form.Control>
         </Row>
             {props.pendings.trades.map((trade, index) => {
                 return (

@@ -32,7 +32,7 @@ export const CompanyNavbarFunctions = (props) =>{
   }
 
   const handleSearch=(e)=>{
-    props.setFilter(e.target.value)
+    props.setFilter(e.target.value.toLowerCase())
   }
   return(
     <>
