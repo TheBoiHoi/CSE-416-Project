@@ -1,14 +1,23 @@
-import React from 'react';
-import { ListGroup } from 'react-bootstrap';
+import React,{useState} from 'react';
+import { ListGroup,Form, Button,Row } from 'react-bootstrap';
 import './pendingTab.css';
 
 const PendingTab = (props) => {
+    const [search,setSearch]=useState("")
     const showModal = (trade, item, buyer, seller) => {
         props.handleShowModal(trade, item, buyer, seller);
     }
-
+    const searchFilter=()=>{
+        console.log(search)
+      }
     return(
         <ListGroup>
+        <Row>
+        <Form.Control onChange={e=>setSearch(e.target.value)} style={{width:'50%'}} placeholder="Search"></Form.Control>
+        <Button onClick={searchFilter} style={{width:'10%'}} variant="primary" type="submit">
+          Search
+        </Button>
+        </Row>
             {props.pendings.trades.map((trade, index) => {
                 return (
                     <>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Table} from 'react-bootstrap'
+import {Table,Form,Button,Row} from 'react-bootstrap'
 import ShoeImg from '../../../../img/airmags.jpg'
 import { MDBTable, MDBTableBody, MDBTableHead,MDBDataTable } from 'mdbreact';
 import {useEffect, useState} from 'react'
@@ -7,6 +7,7 @@ import axios from 'axios'
 import ExchangeModal from '../../ExchangeModal';
 const ExchangesTab=(props)=>{
   const [trade, setTrade]=useState([])
+  const [search,setSearch]=useState("")
   const [selectedExchange,setSelectedExchange]=useState('')
   const [showExchangeModal,setShowExchangeModal]=useState(false)
   useEffect(()=>{
@@ -52,9 +53,17 @@ const ExchangesTab=(props)=>{
       setSelectedExchange(transaction)
       setShowExchangeModal(true)
     }
-    console.log(trade)
+    const searchFilter=()=>{
+      console.log(search)
+    }
     return(
         <div >
+        <Row>
+        <Form.Control onChange={e=>setSearch(e.target.value)} style={{width:'50%'}} placeholder="Search"></Form.Control>
+        <Button onClick={searchFilter} style={{width:'10%'}} variant="primary" type="submit">
+          Search
+        </Button>
+        </Row>
             <MDBTable  maxHeight="450px" borderless scrollY hover paging>
                 <MDBTableHead  columns={data.columns} />
                 <MDBTableBody>
