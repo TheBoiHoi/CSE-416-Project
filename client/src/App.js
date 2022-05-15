@@ -11,6 +11,7 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {Navbar} from './components/Navbar';
 import {useState, useEffect} from "react"
 import apis from './api'
+import AccountSettings from './components/AccountSettings';
 
 function App() {
   const [user, setUser]=useState(null)//user here can be regular user or a company
@@ -36,7 +37,7 @@ function App() {
         <Route path="/login" element={<Login setUser={setUser}/>}/>
         <Route path="/profile" element={<Profile user={user}/>}/>
         <Route path="/public-profile/:userId/:key" element={<PublicProfile user={user}/>}/>
-
+        <Route path="/profile/account_settings" element={<AccountSettings user={user}/>}/>
         <Route path="/item/profile/:itemId" element={<ItemProfile/>}/>
         <Route path="/item/profile" element={<ItemProfile/>}/>
         <Route path ="/inventory-table" element={<InventoryTable company={user} filter={filter}/>}/>

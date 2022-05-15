@@ -15,6 +15,9 @@ export const UserNavbarFunctions = (props) =>{
       navigate('/')
     })
   }
+  const handleAccSettings=()=>{
+    navigate('/profile/account_settings')
+  }
   return (
     <>
     <Box   sx={{  flexDirection: 'row-reverse', flexGrow: 1, display: { xs: 'none', md: 'flex' } }} className ="company_nav_container">
@@ -28,7 +31,7 @@ export const UserNavbarFunctions = (props) =>{
 
         
         <Button onClick={handleSignOut} variant="text">Sign out</Button>
-        <Button variant="text">Account Settings</Button>
+        <Button variant="text" onClick={handleAccSettings}>Account Settings</Button>
         <Button variant="text" onClick={handleProfile}>Profile</Button>
         <Button variant="text">{props.username}</Button>
         </Box>
