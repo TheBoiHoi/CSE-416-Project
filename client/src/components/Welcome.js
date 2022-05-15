@@ -3,9 +3,10 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import {Table,Row,Col} from 'react-bootstrap'
 import ecommerce from '../img/E-commerce.png'
-import choosePNG from '../img/LandingPageSteps/choose_item.png'
-import startPNG from '../img/LandingPageSteps/start_trade.png'
-import confirmPNG from '../img/LandingPageSteps/confirm_trade.png'
+import choosePNG from '../img/LandingPageSteps2/landing_pic1.PNG'
+import startPNG from '../img/LandingPageSteps2/landing_pic2.PNG'
+import startPNG2 from '../img/LandingPageSteps2/landing_pic3.PNG'
+import confirmPNG from '../img/LandingPageSteps2/landing_pic4.PNG'
 const Welcome = (props) => {
   if(props.user){
     return (
@@ -41,15 +42,15 @@ const Welcome = (props) => {
             <Row  style={{backgroundColor:'rgb(100,252,217)'}} >
               <Col style={{color:'white'}} align="center" >
                 <h1>Choose Item</h1>
-                <img src={choosePNG}></img>
+                <img style={{width:'55%'}} src={choosePNG}></img>
               </Col>
               <Col style={{color:'white'}} align="center">
                 <h1>Start Trade</h1>
-                <img src={startPNG}></img>
+                <img src={startPNG2}></img>
               </Col>
               <Col style={{color:'white'}} align="center">
                 <h1>Confirm</h1>
-                <img src={confirmPNG}></img>
+                <img style={{width:'100%'}} src={confirmPNG}></img>
               </Col>
             </Row>
           </div>
