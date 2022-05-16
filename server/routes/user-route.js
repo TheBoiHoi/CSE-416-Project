@@ -17,6 +17,7 @@ router.post('/trade/create',auth.verify, user.createPendingTrade)
 router.post('/trade/complete', auth.verify, user.completeTrade)
 router.post('/trade/update-status', auth.verify, user.updateTrade)
 router.post('/trade/cancel', auth.verify, user.cancelTrade)
+router.post('/search', auth.verify, user.searchPending)
 router.get('/completed-trade/get', auth.verify, user.getCompletedTrades)
 router.get('/completed-trade/get/:userId/:key', user.keyVerification, user.getCompletedTrades)
 

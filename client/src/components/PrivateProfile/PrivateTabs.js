@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Tab,Tabs, Spinner} from 'react-bootstrap';
+import {Tab,Tabs, Spinner, Form, Button} from 'react-bootstrap';
 import ExchangesTab from './TabContent/ExchangesTab/ExchangesTab';
 import InventoryTab  from './TabContent/InventoryTab/InventoryTab';
 import PendingTab from './TabContent/PendingTab/PendingTab';
@@ -84,7 +84,6 @@ const PrivateTabs=(props)=>{
     }, []);
 
     const fetchPendingTrades =  async () => {
-        console.log("fetching trades")
         const data = await axios.get(`/user/pending-trade/get/${props.user.userId}`);
         if(data.data){ 
             const itemsList = await fetchPendingItems(data.data);
@@ -123,6 +122,32 @@ const PrivateTabs=(props)=>{
         return {buyersList, sellersList};
     }
 
+    //SEARCHING FILTER
+    const [search, setSearch] = useState("");
+
+    const searchFilter = async (e) => {
+        e.preventDefault();
+        if (search == "") {
+            await fetchPendingTrades();
+            return;
+        }
+        const data = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/user/search`, {
+            query: search,
+            userId: props.user.userId
+        });
+        if (data.data) {
+            const itemsList = await fetchPendingItems(data.data);
+            const { buyersList, sellersList } = await fetchBuyersAndSellers(data.data);
+            const trades = {
+                trades: data.data,
+                items: itemsList,
+                buyers: buyersList,
+                sellers: sellersList
+            }
+            setTrades(trades)
+        }
+    }
+
 
     return(
         <>
@@ -133,7 +158,13 @@ const PrivateTabs=(props)=>{
                 <Tab style={{width:"50%",boxShadow: "1px 1px 1px #9E9E9E"}} eventKey="Inventory" title="Inventory">
                     <InventoryTab user={props.user}></InventoryTab>
                 </Tab>
-                <Tab style={{width:"50%",boxShadow: "1px 1px 1px #9E9E9E"}} eventKey="Pending" title="Pending" >
+                <Tab style={{ width: "50%", boxShadow: "1px 1px 1px #9E9E9E" }} eventKey="Pending" title="Pending" >
+                    <Form>
+                        <Form.Group>
+                            <Form.Control onChange={e=>setSearch(e.target.value.toLowerCase())} style={{width:'50%'}} placeholder="Search" />
+                            <Button onClick={searchFilter} variant="primary" type="submit"> Search </Button>
+                        </Form.Group>
+                    </Form>
                     <PendingTab pendings={trades} handleShowModal={showModal}></PendingTab>
                     <PendingModal completeDisabled={completeDisabled} buttonShow={buttonShow} handleCancel={cancelTrade} handleConfirm={confirmTrade} show={show} hide={hideModal} disabled={disabled}/>
                 </Tab>

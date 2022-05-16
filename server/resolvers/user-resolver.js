@@ -186,12 +186,10 @@ const cancelTrade = async (req, res) => {
     const buyerPendings = buyer.pending_trades;
     //remove from seller and buyer pending trades list
     const sellerTradeIndex = sellerPendings.indexOf(tradeId);
-    console.log("SELLER INDEX: ", sellerTradeIndex)
     if (sellerTradeIndex > -1) {
         sellerPendings.splice(sellerTradeIndex, 1);
     }
     const buyerTradeIndex = buyerPendings.indexOf(tradeId);
-    console.log("BUYER INDEX: ", buyerTradeIndex)
     if (buyerTradeIndex > -1) {
         buyerPendings.splice(buyerTradeIndex, 1);
     }
@@ -352,6 +350,30 @@ const getPendingTrades = async (req, res) => {
     res.status(200).send(pendingList)
 }
 
+const searchPending = async (req, res) => {
+    const { query, userId } = req.body;
+    const user = await User.findOne({_id: userId});
+    const pendingTrades = user.pending_trades
+    const pendingList = []
+    for(const tradeId of pendingTrades){
+        const trade = await Trade.findOne({_id: tradeId})
+        pendingList.push(trade)
+    }
+    const filteredPendings = [];
+    for (const trade of pendingList) {
+        const { buyer_id, seller_id, item_id } = trade;
+        const seller = await User.findOne({ _id: seller_id });
+        const buyer = await User.findOne({ _id: buyer_id });
+        const item = await Item.findOne({ _id: item_id });
+        if (seller.name.indexOf(query) > -1 || buyer.name.indexOf(query) > -1 || item.name.indexOf(query) > -1
+         || item.serial_number == query || buyer.email == query || seller.email == query) {
+            filteredPendings.push(trade);
+        }
+    }
+    res.status(200).send(filteredPendings)
+
+}
+
 const getCompletedTrades=(req, res)=>{
     const userId=req.userId
     User.findOne({_id:userId}).then(async (data) => {
@@ -426,6 +448,7 @@ module.exports = {
     completeTrade,
     updateTrade, 
     cancelTrade,
+    searchPending,
     getProfileQRCode,
     keyVerification,
     scanQrCode,
