@@ -11,7 +11,15 @@ Yu Peng Lu\
 Yuqiang Lin
 
 # Client
-
+Before running the client, add an .env file to the client directory. The .env file should contain the following variables:
+- PORT //the port number the client will run on locally
+- REACT_APP_BACKEND_URL //the server url, which will be http://localhost:3000
+Running the client
+```
+cd client
+npm install
+npm start
+```
 # Server
 Before running anything on the server side, an .env file should be added to the server directory. The .env file should contain the following variables:
 - JWT_SECRET //The secret that will be used to encrypt and descrype jwt tokens\
