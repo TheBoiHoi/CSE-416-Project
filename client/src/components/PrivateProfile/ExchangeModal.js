@@ -24,7 +24,7 @@ const ExchangeModal=(props)=> {
             <p style={{fontWeight:'bold',color:"black"}}>Item: </p>
             <a href='#' onClick={handleItemProfile}>{props.trans.item}</a> 
             <p style={{fontWeight:'bold',color:"black"}}>Item ID: </p>
-            <p style={{color:"black",fontSize:'14px'}}>{props.trans.itemId}</p>
+            <p style={{color:"black"}}>{props.trans.itemId}</p>
             <p style={{fontWeight:'bold',color:"black"}}>Sender: </p>
             <p style={{color:"black"}}>{props.trans.senderName}</p>
             <p style={{fontWeight:'bold',color:"black"}}>Sender ID: </p>
@@ -35,7 +35,6 @@ const ExchangeModal=(props)=> {
             <p style={{color:"black"}}>{props.trans.receiverId}</p>
             <p style={{fontWeight:'bold',color:"black"}}>Date: </p> 
             <p style={{color:"black"}}>{props.trans.date}</p>
-            <p>Item Transferred: </p>
             
           </Modal.Body>
           <Modal.Footer style={{backgroundColor:"white"}}>
