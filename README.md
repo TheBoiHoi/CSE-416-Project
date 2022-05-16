@@ -29,9 +29,9 @@ fallback:{
 into the ```resolve``` JSON object in client/node_modules/react-scripts/config/webpack.config.js
 # Server
 Before running anything on the server side, an .env file should be added to the server directory. The .env file should contain the following variables:
-- JWT_SECRET //The secret that will be used to encrypt and descrype jwt tokens\
-- MONGO_URI //mongo uri that's used to connect to a mongo database\
-- TOKEN //api key used for making algorand api calls via the purestake endpoint; key can be obtained by signing up an account on https://www.purestake.com/\
+- JWT_SECRET //The secret that will be used to encrypt and descrype jwt tokens
+- MONGO_URI //mongo uri that's used to connect to a mongo database
+- TOKEN //api key used for making algorand api calls via the purestake endpoint; key can be obtained by signing up an account on https://www.purestake.com/
 Running the server
 ```
 cd server
