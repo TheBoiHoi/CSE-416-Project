@@ -25,7 +25,7 @@ export const TableRow = (props) =>{
   // const toggleModal =() =>{
   //   setShowModal(!showModal);
   // }
-  if(item&&item.name.includes(props.filter)){
+  if(item&&item.name.toLowerCase().includes(props.filter)){
     return (
       <>
       <Container className={background} 

@@ -16,7 +16,7 @@ const ExchangeModal=(props)=> {
     return (
       <>
   
-        <Modal show={props.show} onHide={handleClose}>
+        <Modal  show={props.show} onHide={handleClose}>
           <Modal.Header style={{backgroundColor:"white"}} closeButton>
             <Modal.Title style={{fontSize:'13px',color:"black"}}>Exchange # {props.trans.txid}</Modal.Title>
           </Modal.Header>
@@ -38,7 +38,7 @@ const ExchangeModal=(props)=> {
             <p>Item Transferred: </p>
             
           </Modal.Body>
-          <Modal.Footer>
+          <Modal.Footer style={{backgroundColor:"white"}}>
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>

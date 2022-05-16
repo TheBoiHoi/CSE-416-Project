@@ -14,7 +14,7 @@ const PendingModal = (props) => {
     }
 
     return (
-        <Modal className='modal' show={props.show} centered size='sm' onHide={props.hide}>
+        <Modal style={{color: "transparent"}} show={props.show} centered size='sm' onHide={props.hide}>
             {props.buttonShow && <Button disabled={props.disabled}  variant={"danger"} onClick={cancelTrade}>Cancel Trade</Button>}
             {props.buttonShow && <Button disabled={props.completeDisabled} variant={"success"} onClick={confirmTrade}>Complete Trade</Button>}
         </Modal>        

@@ -7,9 +7,7 @@ const PendingTab = (props) => {
     const showModal = (trade, item, buyer, seller) => {
         props.handleShowModal(trade, item, buyer, seller);
     }
-    const searchFilter=()=>{
-        console.log(search)
-      }
+
     return(
         <ListGroup>
         <Row>
