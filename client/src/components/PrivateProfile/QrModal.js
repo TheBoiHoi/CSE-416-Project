@@ -25,11 +25,11 @@ const QrModal=(props)=> {
       return (
         <>
           <Modal centered show={true}>
-            <Modal.Header>
-              <Modal.Title>Generating QRCode</Modal.Title>
+            <Modal.Header style={{backgroundColor:"white"}}>
+              <Modal.Title style={{color:"black"}}>Generating QRCode</Modal.Title>
             </Modal.Header>
-            <Modal.Body>{props.code&&<img src={`data:image/png;base64, ${props.code}`}/>}</Modal.Body>
-            <Modal.Footer>
+            <Modal.Body style={{backgroundColor:"white"}}>{props.code&&<img src={`data:image/png;base64, ${props.code}`}/>}</Modal.Body>
+            <Modal.Footer style={{backgroundColor:"white"}}>
               <Button variant="secondary" onClick={handleClose}>
                 Close
 
@@ -48,16 +48,16 @@ const QrModal=(props)=> {
       return(
         <>
           <Modal centered show={true}>
-            <Modal.Header>
-              <Modal.Title>Scanning QRCode</Modal.Title>
+            <Modal.Header style={{backgroundColor:"white"}}>
+              <Modal.Title style={{color:"black"}}>Scanning QRCode</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body style={{backgroundColor:"white"}}>
               <input onChange={uploadQRCode} type="file" id="qrcode-upload" name="file" accept="image/*"/>
               {scanningImage&&<img src={`${scanningImage}`}/>}
               <br></br>
               <a href={url}>{url}</a>
             </Modal.Body>
-            <Modal.Footer>
+            <Modal.Footer style={{backgroundColor:"white"}}>
             <Button variant="primary" onClick={scanQRCode}>
                 Scan
               </Button>
