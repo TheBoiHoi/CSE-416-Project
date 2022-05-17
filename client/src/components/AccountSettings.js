@@ -34,7 +34,7 @@ const AccountSettings=(props)=>{
         axios.post('/user/profile-pic/upload', formData)
     }
     return(
-        <div>
+        <div >
         <br></br><br></br><br></br><br></br>
             <h3>Change Password</h3>
             <Form.Control style={{width:'50%'}} type="password" placeholder="Enter Original Password" onChange={e=>setOriginal(e.target.value)}/>

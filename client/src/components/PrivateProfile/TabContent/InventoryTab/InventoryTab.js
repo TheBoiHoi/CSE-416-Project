@@ -47,17 +47,17 @@ const InventoryTab =(props)=>{
   if(publicProfile){
     return(
         <Container >
-        <Row>
+        <Row >
         <Form.Control onChange={handleSearch} style={{width:'50%'}} placeholder="Search"></Form.Control>
         </Row>
-            <div style={{height:'500px',overflow:'scroll'}} >
+            <div style={{height:'500px',overflow:'scroll',overflowX:'hidden'}} >
             {
               inventory.map((row)=>
-                <Row>
+                <Row style={{marginTop:'30px'}}>
                   {
                     row.map((col,i)=>{
                       return <Col>
-                        <FlipCard key={col} curr_user={props.curr_user} user={props.user} public={true} index={i} item={col}></FlipCard>
+                        <FlipCard  key={col} curr_user={props.curr_user} user={props.user} public={true} index={i} item={col}></FlipCard>
                       </Col>
                     })
                   }
@@ -70,18 +70,18 @@ const InventoryTab =(props)=>{
   }
   else{
     return(
-        <Container >
+        <Container  >
         <Row>
         <Form.Control onChange={handleSearch} style={{width:'50%'}} placeholder="Search"></Form.Control>
         </Row>
-            <div style={{height:'500px',overflow:'scroll'}} >
+            <div style={{height:'500px',overflow:'scroll',overflowX:'hidden'}} >
             {
               inventory.map((row)=>
-                <Row>
+                <Row style={{marginTop:'30px'}}>
                   {
                     row.map((col,i)=>{
                       return <Col>
-                        <FlipCard key={col} public={false} index={i} item={col}></FlipCard>
+                        <FlipCard  key={col} public={false} index={i} item={col}></FlipCard>
                       </Col>
                     })
                   }

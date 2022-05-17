@@ -1,17 +1,24 @@
-import * as React from 'react';
+import * as React  from 'react';
 import {Table,Row,Col} from 'react-bootstrap'
 import {useParams} from 'react-router-dom'
+import ExchangeModal from '../PrivateProfile/ExchangeModal';
 import { MDBTable, MDBTableBody, MDBTableHead,MDBDataTable } from 'mdbreact';
 import axios from 'axios';
 const ItemExchanges=(props)=>{
   const {itemId} = useParams()
   const [transactions, setTransactions]=React.useState([])
+  const [selectedExchange,setSelectedExchange]=React.useState('')
+  const [showExchangeModal,setShowExchangeModal]=React.useState(false)
   React.useEffect(()=>{
     axios.get(`item-transactions/get/${itemId}`).then((response)=>{
         console.log("item transactions:", response.data.transactions)
         setTransactions(response.data.transactions)
     })
   }, [])
+  const openModal=(transaction)=>{
+    setSelectedExchange(transaction)
+    setShowExchangeModal(true)
+  }
   const data = {
     columns: [
       {
@@ -45,7 +52,9 @@ const ItemExchanges=(props)=>{
                 <MDBTableBody>
                 {transactions.map((transaction)=>{
                     return(
-                    <tr>
+                    <tr style={{cursor:'pointer'}} onClick={()=>{
+                      openModal(transaction)
+                    }}>
                         <td>{transaction.date}</td>
                         <td>{transaction.senderName+"("+transaction.senderId+")"}</td>
                         <td>{transaction.receiverName+"("+transaction.receiverId+")"}</td>
@@ -56,6 +65,8 @@ const ItemExchanges=(props)=>{
                 </MDBTableBody>
                 
             </MDBTable>
+            {showExchangeModal}
+            <ExchangeModal  setShow={setShowExchangeModal} show={showExchangeModal} trans={selectedExchange}></ExchangeModal>
         </div>
     );
 };

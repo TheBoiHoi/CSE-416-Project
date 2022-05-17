@@ -1,7 +1,11 @@
 .pendingTrade {
+ 
     display: flex;
 }
-
+.pendingTrade:hover{
+    background:rgb(241,241,241);
+    cursor:pointer;
+}
 .box {
     width: 25%;
 }

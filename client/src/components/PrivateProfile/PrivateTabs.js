@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Tab,Tabs, Spinner, Form, Button} from 'react-bootstrap';
+import {Tab,Tabs, Spinner, Form, Button,Row} from 'react-bootstrap';
 import ExchangesTab from './TabContent/ExchangesTab/ExchangesTab';
 import InventoryTab  from './TabContent/InventoryTab/InventoryTab';
 import PendingTab from './TabContent/PendingTab/PendingTab';
@@ -158,14 +158,17 @@ const PrivateTabs=(props)=>{
                 <Tab style={{width:"50%",boxShadow: "1px 1px 1px #9E9E9E"}} eventKey="Inventory" title="Inventory">
                     <InventoryTab user={props.user}></InventoryTab>
                 </Tab>
-                <Tab style={{ width: "50%", boxShadow: "1px 1px 1px #9E9E9E" }} eventKey="Pending" title="Pending" >
+                <Tab style={{ width: "50%", boxShadow: "1px 1px 1px #9E9E9E"}} eventKey="Pending" title="Pending" >
+                   
                     <Form>
                         <Form.Group>
-                            <Form.Control onChange={e=>setSearch(e.target.value.toLowerCase())} style={{width:'50%'}} placeholder="Search" />
-                            <Button onClick={searchFilter} variant="primary" type="submit"> Search </Button>
+                            <Row>
+                                <Form.Control onChange={e=>setSearch(e.target.value.toLowerCase())} style={{width:'50%'}} placeholder="Search" />
+                                <Button style={{width:'100px'}} onClick={searchFilter} variant="primary" type="submit"> Search </Button>
+                            </Row>
                         </Form.Group>
                     </Form>
-                    <PendingTab pendings={trades} handleShowModal={showModal}></PendingTab>
+                    <PendingTab  pendings={trades} handleShowModal={showModal}></PendingTab>
                     <PendingModal completeDisabled={completeDisabled} buttonShow={buttonShow} handleCancel={cancelTrade} handleConfirm={confirmTrade} show={show} hide={hideModal} disabled={disabled}/>
                 </Tab>
             </Tabs>

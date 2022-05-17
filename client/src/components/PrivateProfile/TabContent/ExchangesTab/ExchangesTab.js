@@ -27,6 +27,16 @@ const ExchangesTab=(props)=>{
   let data = {
     columns:[
       {
+        label: '',
+        field: '',
+        sort: ''
+      },
+      {
+        label: 'Item',
+        field: 'item',
+        sort: 'asc'
+      },
+      {
         label: 'Sender',
         field: 'sender',
         sort: 'asc'
@@ -36,11 +46,7 @@ const ExchangesTab=(props)=>{
         field: 'receiver',
         sort: 'asc'
       },
-      {
-        label: 'Item',
-        field: 'item',
-        sort: 'asc'
-      },
+      
       {
         label: 'Date',
         field: 'date',
@@ -56,6 +62,7 @@ const ExchangesTab=(props)=>{
     const searchFilter=()=>{
       console.log(search)
     }
+    console.log(trades)
     return(
         <div >
         <Row>
@@ -71,12 +78,14 @@ const ExchangesTab=(props)=>{
                   return sender.includes(search)||receiver.includes(search)||item.includes(search)
                 }).map((data, i)=>{
                     return(
-                    <tr key={i} onClick={()=>{
+                    <tr style={{cursor:'pointer'}} key={i} onClick={()=>{
                         openModal(data)
                     }}>
+                        <td><img style={{width:'40px',height:'40px',borderRadius:'50%'}}src={`${process.env.REACT_APP_BACKEND_URL}/profile-pic/get/${data.itemId}`}></img></td>
+                        <td>{data.item}</td>
                         <td>{data.senderName}</td>
                         <td>{data.receiverName}</td>
-                        <td>{data.item}</td>
+                        
                         <td>{data.date}</td>
                     </tr>
                     )
