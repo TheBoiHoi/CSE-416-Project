@@ -28,10 +28,10 @@ const ProfileCard = (props) =>{
             Joined 02/22/2022
             </Card.Text> */}
             <div class="col-md-12 text-center">
-                <Button style={{margin:"auto"}} variant="primary" onClick={generateQRCode}>Generate QR Code</Button>
+                <Button style={{margin:"auto"}} variant="primary" onClick={generateQRCode}>Generate Profile Code</Button>
             </div>
             <div class="col-md-12 text-center">
-                <Button style={{marginTop:"20px"}} onClick={()=>{setOperation('scanning-qrcode')}}>Scan QR code</Button>
+                <Button style={{marginTop:"20px"}} onClick={()=>{setOperation('scanning-qrcode')}}>Scan Profile Code</Button>
             </div>
         </Card.Body>
         {operation&&<QrModal operation={operation} code={code} setOperation={setOperation}/>}

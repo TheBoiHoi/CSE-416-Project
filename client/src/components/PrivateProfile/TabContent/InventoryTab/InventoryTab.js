@@ -53,7 +53,7 @@ const InventoryTab =(props)=>{
             <div style={{height:'500px',overflow:'scroll',overflowX:'hidden'}} >
             {
               inventory.map((row)=>
-                <Row style={{marginTop:'30px'}}>
+                <Row  style={{marginTop:'30px'}}>
                   {
                     row.map((col,i)=>{
                       return <Col>
@@ -77,7 +77,7 @@ const InventoryTab =(props)=>{
             <div style={{height:'500px',overflow:'scroll',overflowX:'hidden'}} >
             {
               inventory.map((row)=>
-                <Row style={{marginTop:'30px'}}>
+                <Row  style={{marginTop:'30px'}}>
                   {
                     row.map((col,i)=>{
                       return <Col>

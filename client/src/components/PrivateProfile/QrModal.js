@@ -52,6 +52,7 @@ const QrModal=(props)=> {
               <Modal.Title style={{color:"black"}}>Scanning QRCode</Modal.Title>
             </Modal.Header>
             <Modal.Body style={{backgroundColor:"white"}}>
+            <p>Please Upload A Profile QRCode To View Profile</p>
               <input onChange={uploadQRCode} type="file" id="qrcode-upload" name="file" accept="image/*"/>
               {scanningImage&&<img src={`${scanningImage}`}/>}
               <br></br>

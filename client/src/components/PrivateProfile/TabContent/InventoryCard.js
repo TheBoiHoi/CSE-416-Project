@@ -5,6 +5,7 @@ import axios from 'axios'
 import OperateModal from './InventoryTab/OperateModal'
 import {useNavigate} from 'react-router-dom'
 import StartTradeModal from './InventoryTab/StartTradeModal'
+import './InventoryCard.css'
 export const InventoryCard =(props)=>{
     const navigate=useNavigate()
     const [front,setFront]= React.useState(false)
@@ -23,7 +24,7 @@ export const InventoryCard =(props)=>{
       }
     if(front){
         return (
-            <Card style={{ height:'13rem',width: '13rem' }}>
+            <Card className="item_card" style={{ height:'13rem',width: '13rem' }}>
                 {props.item&&<Card.Img style={{height:'100%',width:'100%'}} alt="Profile Image" src={`${process.env.REACT_APP_BACKEND_URL}/profile-pic/get/${props.item.itemId}`}/>}
                 <Card.Title>{props.item.name}</Card.Title>
             </Card>
@@ -32,7 +33,7 @@ export const InventoryCard =(props)=>{
     else{
         return(
             <div>
-                <Card style={{ height:'13rem',width: '13rem' }}>
+                <Card className="item_card" style={{ height:'13rem',width: '13rem' }}>
                     <Card.Body>
                     <Card.Title>{props.item.name}</Card.Title>
                     <Card.Text>Serial Number: {props.item.serialNumber}</Card.Text>
